@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE muclient>
+
+<muclient>
+<plugin
+   name="Horse_Tracker"
+   author="Proeliator"
+   id="1a51e592868f18f275a46619"
+   language="Lua"
+   purpose="Track the success/failure of horse usage"
+   date_written="2022-11-21 10:05:30"
+   save_state="y"
+   requires="5.06"
+   version="1.0"
+   >
+
+</plugin>
+
+<!--  Aliases  -->
+<aliases>
+  <alias
+   script="MyHorseStats"
+   match="HorseStats"
+   enabled="y"
+   ignore_case="y"
+   sequence="30"
+  >
+  </alias>
+  <alias
+   script="MyHorseStatsReset"
+   match="HorseStatsReset"
+   enabled="y"
+   ignore_case="y"
+   sequence="30"
+  >
+  </alias>
+
+</aliases>
+
+<!--  Triggers  -->
+<triggers>
+  <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="You mount .+the .+horse."
+   omit_from_output="n"
+   sequence="18"
+   regexp="y"
+   script="HorseMountSuccess"
+   name="ProHorseMountSuccess"
+  >
+  </trigger>
+
+  <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="You try to climb onto .+horse, but .+easily shakes you off and you land with a thump on the ground."
+   omit_from_output="n"
+   sequence="19"
+   regexp="y"
+   script="HorseMountFail"
+   name="ProHorseMountFail"
+  >
+  </trigger>
+
+  <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="You .+ horse's pair of brown leather saddlebags."
+   omit_from_output="n"
+   sequence="20"
+   regexp="y"
+   script="HorseStashSuccess"
+   name="ProHorseStashSuccess"
+  >
+  </trigger>
+
+  <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="You try to access .+ horse's saddlebag and promptly get kicked for your trouble."
+   omit_from_output="n"
+   sequence="21"
+   regexp="y"
+   script="HorseStashFail"
+   name="ProHorseStashFail"
+  >
+  </trigger>
+
+  <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="You try to convince .+ horse to follow you, but .+ is having none of it."
+   omit_from_output="n"
+   sequence="22"
+   regexp="y"
+   script="HorseLeadFail"
+   name="ProHorseLeadFail"
+  >
+  </trigger>
+
+  <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match=".+ horse starts to follow you."
+   omit_from_output="n"
+   sequence="23"
+   regexp="y"
+   script="HorseLeadSuccess"
+   name="ProHorseLeadSuccess"
+  >
+  </trigger>
+
+  <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="You dress .+ horse with the"
+   omit_from_output="n"
+   sequence="23"
+   regexp="y"
+   script="HorseDressSuccess"
+   name="ProHorseDressSuccess"
+  >
+  </trigger>
+
+  <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="You try to dress .+ horse with the "
+   omit_from_output="n"
+   sequence="23"
+   regexp="y"
+   script="HorseDressFail"
+   name="ProHorseDressFail"
+  >
+  </trigger>
+
+  <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="You approach .+ horse, preparing to groom"
+   omit_from_output="n"
+   sequence="23"
+   regexp="y"
+   script="HorseGroomSuccess"
+   name="ProHorseGroomSuccess"
+  >
+  </trigger>
+
+  <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="You pick out a brush and have a go at .+ horse's tail with it"
+   omit_from_output="n"
+   sequence="23"
+   regexp="y"
+   script="HorseGroomFail"
+   name="ProHorseGroomFail"
+  >
+  </trigger>
+
+  <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="You mess up the rhythm of your riding and are promptly tossed off .+ horse onto the ground."
+   omit_from_output="n"
+   sequence="24"
+   regexp="y"
+   script="FallOffHorse"
+   name="ProFallOffHorse"
+  >
+  </trigger>
+
+  <trigger
+   enabled="y"
+   keep_evaluating="n"
+   match="You hunch down over .+ horse and spur .+ into a (\w*) at the"
+   omit_from_output="n"
+   sequence="25"
+   regexp="y"
+   script="HorseChargeSuccess"
+   name="ProHorseChargeSuccess"
+  >
+  </trigger>
+
+  <trigger
+   enabled="y"
+   keep_evaluating="n"
+   match="You hunch down over .+ horse and try to spur .+ into a (\w*) at the"
+   omit_from_output="n"
+   sequence="26"
+   regexp="y"
+   script="HorseChargeFail"
+   name="ProHorseChargeFail"
+  >
+  </trigger>
+
+
+
+
+</triggers>
+
+<script>
+<![CDATA[
+
+imountsuccess = tonumber(GetVariable("imountsuccess"))
+if (imountsuccess == nil) then
+  imountsuccess = 0
+end
+imountfail = tonumber(GetVariable("imountfail"))
+if (imountfail == nil) then
+  imountfail = 0
+end
+istashsuccess = tonumber(GetVariable("istashsuccess"))
+if (istashsuccess == nil) then
+  istashsuccess = 0
+end
+istashfail = tonumber(GetVariable("istashfail"))
+if (istashfail == nil) then
+  istashfail = 0
+end
+ileadsuccess = tonumber(GetVariable("ileadsuccess"))
+if (ileadsuccess == nil) then
+  ileadsuccess = 0
+end
+ileadfail = tonumber(GetVariable("ileadfail"))
+if (ileadfail == nil) then
+  ileadfail = 0
+end
+idresssuccess = tonumber(GetVariable("idresssuccess"))
+if (idresssuccess == nil) then
+  idresssuccess = 0
+end
+idressfail = tonumber(GetVariable("idressfail"))
+if (idressfail == nil) then
+  idressfail = 0
+end
+igroomsuccess = tonumber(GetVariable("igroomsuccess"))
+if (igroomsuccess == nil) then
+  igroomsuccess = 0
+end
+igroomfail = tonumber(GetVariable("igroomfail"))
+if (igroomfail == nil) then
+  igroomfail = 0
+end
+ifalloff = tonumber(GetVariable("ifalloff"))
+if (ifalloff == nil) then
+  ifalloff = 0
+end
+ichargewalksuccess = tonumber(GetVariable("ichargewalksuccess"))
+if (ichargewalksuccess == nil) then
+  ichargewalksuccess = 0
+end
+ichargetrotsuccess = tonumber(GetVariable("ichargetrotsuccess"))
+if (ichargetrotsuccess == nil) then
+  ichargetrotsuccess = 0
+end
+ichargecantersuccess = tonumber(GetVariable("ichargecantersuccess"))
+if (ichargecantersuccess == nil) then
+  ichargecantersuccess = 0
+end
+ichargegallopsuccess = tonumber(GetVariable("ichargegallopsuccess"))
+if (ichargegallopsuccess == nil) then
+  ichargegallopsuccess = 0
+end
+ichargewalkfail = tonumber(GetVariable("ichargewalkfail"))
+if (ichargewalkfail == nil) then
+  ichargewalkfail = 0
+end
+ichargetrotfail = tonumber(GetVariable("ichargetrotfail"))
+if (ichargetrotfail == nil) then
+  ichargetrotfail = 0
+end
+ichargecanterfail = tonumber(GetVariable("ichargecanterfail"))
+if (ichargecanterfail == nil) then
+  ichargecanterfail = 0
+end
+ichargegallopfail = tonumber(GetVariable("ichargegallopfail"))
+if (ichargegallopfail == nil) then
+  ichargegallopfail = 0
+end
+
+if (imountsuccess + imountfail == 0) then
+	imountratio = "-"
+end
+if (istashsuccess + istashfail == 0) then
+	istashratio = "-"
+end
+if (ileadsuccess + ileadfail == 0) then
+	ileadratio = "-"
+end
+if (idresssuccess + idressfail == 0) then
+	idressratio = "-"
+end
+if (igroomsuccess + igroomfail == 0) then
+	igroomratio = "-"
+end
+
+if (ichargewalksuccess + ichargewalkfail == 0) then
+	ichargewalkratio = "-"
+end
+if (ichargetrotsuccess + ichargetrotfail == 0) then
+	ichargetrotratio = "-"
+end
+if (ichargecantersuccess + ichargecanterfail == 0) then
+	ichargecanterratio = "-"
+end
+if (ichargegallopsuccess + ichargegallopfail == 0) then
+	ichargegallopratio = "-"
+end
+
+
+
+function MyHorseStatsReset ()
+	imountsuccess = 0
+	imountfail = 0
+	imountratio = 0
+	istashsuccess = 0
+	istashfail = 0
+	istashratio = 0
+	ileadsuccess = 0
+	ileadfail = 0
+	ileadratio = 0
+	idresssuccess = 0
+	idressfail = 0
+	idressratio = 0
+	igroomsuccess = 0
+	igroomfail = 0
+	igroomratio = 0
+	ifalloff = 0
+
+	ichargewalksuccess = 0
+	ichargewalkfail = 0
+	ichargewalkratio = 0
+
+	ichargetrotsuccess = 0
+	ichargetrotfail = 0
+	ichargetrotratio = 0
+
+	ichargecantersuccess = 0
+	ichargecanterfail = 0
+	ichargecanterratio = 0
+
+	ichargegallopsuccess = 0
+	ichargegallopfail = 0
+	ichargegallopratio = 0
+
+    ColourNote("orange","", "Horse tracker has been reset")
+end
+
+
+function HorseMountSuccess ()
+    imountsuccess = imountsuccess + 1
+	imountratio = bc.trunc((imountsuccess/(imountsuccess + imountfail))*100)
+end
+
+function HorseMountFail ()
+    imountfail = imountfail + 1
+	imountratio = bc.trunc((imountsuccess/(imountsuccess + imountfail))*100)
+end
+
+function HorseStashSuccess ()
+    istashsuccess = istashsuccess + 1
+	istashratio = bc.trunc((istashsuccess/(istashsuccess + istashfail))*100)
+end
+
+function HorseStashFail ()
+    istashfail = istashfail + 1
+	istashratio = bc.trunc((istashsuccess/(istashsuccess + istashfail))*100)
+end
+
+function HorseLeadSuccess ()
+    ileadsuccess = ileadsuccess + 1
+	ileadratio = bc.trunc((ileadsuccess/(ileadsuccess + ileadfail))*100)
+end
+
+function HorseLeadFail ()
+    ileadfail = ileadfail + 1
+	ileadratio = bc.trunc((ileadsuccess/(ileadsuccess + ileadfail))*100)
+end
+
+function HorseDressSuccess ()
+    idresssuccess = idresssuccess + 1
+	idressratio = bc.trunc((idresssuccess/(idresssuccess + idressfail))*100)
+end
+
+function HorseDressFail ()
+    idressfail = idressfail + 1
+	idressratio = bc.trunc((idresssuccess/(idresssuccess + idressfail))*100)
+end
+
+function HorseGroomSuccess ()
+    igroomsuccess = igroomsuccess + 1
+	igroomratio = bc.trunc((igroomsuccess/(igroomsuccess + igroomfail))*100)
+end
+
+function HorseGroomFail ()
+    igroomfail = igroomfail + 1
+	igroomratio = bc.trunc((igroomsuccess/(igroomsuccess + igroomfail))*100)
+end
+
+function FallOffHorse ()
+	ifalloff = ifalloff + 1
+end
+
+function HorseChargeFail (sname, sline, wildcards)
+		if wildcards[1] == "walk" then
+	ichargewalkfail = ichargewalkfail + 1
+	ichargewalkratio = bc.trunc((ichargewalksuccess/(ichargewalksuccess + ichargewalkfail))*100)
+		elseif wildcards[1] == "trot" then
+	ichargetrotfail = ichargetrotfail + 1
+	ichargetrotratio = bc.trunc((ichargetrotsuccess/(ichargetrotsuccess + ichargetrotfail))*100)
+		elseif wildcards[1] == "canter" then
+	ichargecanterfail = ichargecanterfail + 1
+	ichargecanterratio = bc.trunc((ichargecantersuccess/(ichargecantersuccess + ichargecanterfail))*100)
+		elseif wildcards[1] == "gallop" then
+	ichargegallopfail = ichargegallopfail + 1
+	ichargegallopratio = bc.trunc((ichargegallopsuccess/(ichargegallopsuccess + ichargegallopfail))*100)
+	end
+end
+
+function HorseChargeSuccess (sname, sline, wildcards)
+		if wildcards[1] == "walk" then
+	ichargewalksuccess = ichargewalksuccess + 1
+	ichargewalkratio = bc.trunc((ichargewalksuccess/(ichargewalksuccess + ichargewalkfail))*100)
+		elseif wildcards[1] == "trot" then
+	ichargetrotsuccess = ichargetrotsuccess + 1
+	ichargetrotratio = bc.trunc((ichargetrotsuccess/(ichargetrotsuccess + ichargetrotfail))*100)
+		elseif wildcards[1] == "canter" then
+	ichargecantersuccess = ichargecantersuccess + 1
+	ichargecanterratio = bc.trunc((ichargecantersuccess/(ichargecantersuccess + ichargecanterfail))*100)
+		elseif wildcards[1] == "gallop" then
+	ichargegallopsuccess = ichargegallopsuccess + 1
+	ichargegallopratio = bc.trunc((ichargegallopsuccess/(ichargegallopsuccess + ichargegallopfail))*100)
+	end
+end
+
+
+function MyHorseStats ()
+    ColourNote("orange","", "Mount:          Success: " .. tostring(imountsuccess) .. " Fail: ".. tostring(imountfail) .. "     (" .. tostring(imountratio) .. "%)")
+    ColourNote("orange","", "Stash/Retrieve: Success: " .. tostring(istashsuccess) .. " Fail: ".. tostring(istashfail) .. "     (" .. tostring(istashratio) .. "%)")
+    ColourNote("orange","", "Lead:           Success: " .. tostring(ileadsuccess) .. " Fail: ".. tostring(ileadfail) .. "     (" .. tostring(ileadratio) .. "%)")
+    ColourNote("orange","", "Groom:          Success: " .. tostring(igroomsuccess) .. " Fail: ".. tostring(igroomfail) .. "     (" .. tostring(igroomratio) .. "%)")
+    ColourNote("orange","", "Dress:          Success: " .. tostring(idresssuccess) .. " Fail: ".. tostring(idressfail) .. "     (" .. tostring(idressratio) .. "%)")
+    ColourNote("orange","", "You have fallen off " .. tostring(ifalloff) .. " times")
+	ColourNote("orange","", "Charge/Storm")
+    ColourNote("orange","", "Walk:           Success: " .. tostring(ichargewalksuccess) .. " Fail: ".. tostring(ichargewalkfail) .. "     (" .. tostring(ichargewalkratio) .. "%)")
+    ColourNote("orange","", "Trot:           Success: " .. tostring(ichargetrotsuccess) .. " Fail: ".. tostring(ichargetrotfail) .. "     (" .. tostring(ichargetrotratio) .. "%)")
+    ColourNote("orange","", "Canter:         Success: " .. tostring(ichargecantersuccess) .. " Fail: ".. tostring(ichargecanterfail) .. "     (" .. tostring(ichargecanterratio) .. "%)")
+    ColourNote("orange","", "Gallop:         Success: " .. tostring(ichargegallopsuccess) .. " Fail: ".. tostring(ichargegallopfail) .. "     (" .. tostring(ichargegallopratio) .. "%)")
+end
+
+
+]]>
+</script> 
+</muclient>
