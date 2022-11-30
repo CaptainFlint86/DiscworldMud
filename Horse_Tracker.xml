@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE muclient>
-
 <muclient>
 <plugin
    name="Horse_Tracker"
@@ -11,7 +10,7 @@
    date_written="2022-11-21 10:05:30"
    save_state="y"
    requires="5.06"
-   version="1.0"
+   version="1.1"
    >
 </plugin>
 
@@ -34,7 +33,7 @@
   >
   </alias>
 </aliases>
-
+-- Many Many Triggers
 <!--  Triggers  -->
 <triggers>
   <trigger
@@ -164,11 +163,23 @@
    omit_from_output="n"
    sequence="24"
    regexp="y"
-   script="FallOffHorse"
-   name="ProFallOffHorse"
+   script="HorseHandler"
+   name="falloff"
   >
   </trigger>
 
+  <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match=".+ horse seems to get bored of following you and wanders off."
+   omit_from_output="n"
+   sequence="24"
+   regexp="y"
+   script="HorseHandler"
+   name="wanderoff"
+  >
+  </trigger>	
+	
   <trigger
    enabled="y"
    keep_evaluating="n"
@@ -196,17 +207,17 @@
 
 <script>
 <![CDATA[
-
+-- When Plugin is installed, set default values
 function OnPluginInstall ()
 DefaultValues ()
 ColourNote("orange","", "Horse tracker has been installed. Use 'horsestats' to see statistics, 'horsestatsreset' will reset statistics to default values.")
 end
-
+-- Reset Horse Statistics
 function MyHorseStatsReset ()
 DefaultValues ()
 ColourNote("orange","", "Horse tracker has been reset")
 end
-
+-- Our Default Values
 function DefaultValues ()
 -- Mount
 	imountsuccess = 0
@@ -230,6 +241,7 @@ function DefaultValues ()
 	igroomratio = "-"
 -- Fall Off
 	ifalloff = 0
+	iwanderoff = 0
 -- Charge/Storm at a Walk
 	ichargesuccesswalk = 0
 	ichargefailwalk = 0
@@ -247,38 +259,36 @@ function DefaultValues ()
 	ichargefailgallop = 0
 	ichargegallopratio = "-"
 end
-
+-- Function for Horse Handling
 function HorseHandler (sName)
 	_G['i' .. sName] = _G['i' .. sName] + 1
 end
-
-function FallOffHorse ()
-	ifalloff = ifalloff + 1
-end
-
+-- Function for Charge/Storm
 function HorseChargeHandler (sName, sline, wildcards)
 	_G['i'..sName .. wildcards[1]] = _G['i' .. sName .. wildcards[1]] + 1
 end
 
 function MyHorseStats ()
+-- Generate Ratios for Horse Handling
 	imountratio = bc.trunc((imountsuccess/(imountsuccess + imountfail))*100)
 	istashratio = bc.trunc((istashsuccess/(istashsuccess + istashfail))*100)
 	ileadratio = bc.trunc((ileadsuccess/(ileadsuccess + ileadfail))*100)
 	igroomratio = bc.trunc((igroomsuccess/(igroomsuccess + igroomfail))*100)
 	idressratio = bc.trunc((idresssuccess/(idresssuccess + idressfail))*100)
-
+-- Generate Ratios for Charge/Storm
 	ichargewalkratio = bc.trunc((ichargesuccesswalk/(ichargesuccesswalk + ichargesuccesswalk))*100)
 	ichargetrotratio = bc.trunc((ichargesuccesstrot/(ichargesuccesstrot + ichargesuccesstrot))*100)
 	ichargecanterratio = bc.trunc((ichargesuccesscanter/(ichargesuccesscanter + ichargesuccesscanter))*100)
 	ichargegallopratio = bc.trunc((ichargesuccessgallop/(ichargesuccessgallop + ichargesuccessgallop))*100)
-
+-- Messages sent to the Mud
     ColourNote("orange","", "Mount:          Success: " .. tostring(imountsuccess) .. " Fail: ".. tostring(imountfail) .. "     (" .. tostring(imountratio) .. "%)")
     ColourNote("orange","", "Stash/Retrieve: Success: " .. tostring(istashsuccess) .. " Fail: ".. tostring(istashfail) .. "     (" .. tostring(istashratio) .. "%)")
     ColourNote("orange","", "Lead:           Success: " .. tostring(ileadsuccess) .. " Fail: ".. tostring(ileadfail) .. "     (" .. tostring(ileadratio) .. "%)")
     ColourNote("orange","", "Groom:          Success: " .. tostring(igroomsuccess) .. " Fail: ".. tostring(igroomfail) .. "     (" .. tostring(igroomratio) .. "%)")
     ColourNote("orange","", "Dress:          Success: " .. tostring(idresssuccess) .. " Fail: ".. tostring(idressfail) .. "     (" .. tostring(idressratio) .. "%)")
     ColourNote("orange","", "You have fallen off " .. tostring(ifalloff) .. " times")
-	ColourNote("orange","", "Charge/Storm")
+    ColourNote("orange","", "Your horse has wandered off " .. tostring(iwanderoff) .. " times")
+    ColourNote("orange","", "Charge/Storm")
     ColourNote("orange","", "Walk:           Success: " .. tostring(ichargesuccesswalk) .. " Fail: ".. tostring(ichargefailwalk) .. "     (" .. tostring(ichargewalkratio) .. "%)")
     ColourNote("orange","", "Trot:           Success: " .. tostring(ichargesuccesstrot) .. " Fail: ".. tostring(ichargefailtrot) .. "     (" .. tostring(ichargetrotratio) .. "%)")
     ColourNote("orange","", "Canter:         Success: " .. tostring(ichargesuccesscanter) .. " Fail: ".. tostring(ichargefailcanter) .. "     (" .. tostring(ichargecanterratio) .. "%)")
