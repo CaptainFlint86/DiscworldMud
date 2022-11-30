@@ -241,7 +241,9 @@ function DefaultValues ()
 	igroomratio = "-"
 -- Fall Off
 	ifalloff = 0
+	ifalloffratio = 0
 	iwanderoff = 0
+	iwanderoffratio = 0
 -- Charge/Storm at a Walk
 	ichargesuccesswalk = 0
 	ichargefailwalk = 0
@@ -261,26 +263,20 @@ function DefaultValues ()
 end
 -- Function for Horse Handling
 function HorseHandler (sName)
+	s = string.gsub(sName,"success","")
+	s = string.gsub(s,"fail","")
 	_G['i' .. sName] = _G['i' .. sName] + 1
+	_G['i' .. s .. 'ratio'] = bc.trunc(( _G['i'..s..'success'] /( _G['i'..s..'success'] + _G['i'..s..'fail'] ))*100)
 end
+
 -- Function for Charge/Storm
 function HorseChargeHandler (sName, sline, wildcards)
 	_G['i'..sName .. wildcards[1]] = _G['i' .. sName .. wildcards[1]] + 1
+	_G['icharge' .. wildcards[1] .. 'ratio'] = bc.trunc(( _G['ichargesuccess' .. wildcards[1]] /( _G['ichargesuccess' .. wildcards[1]] + _G['ichargefail' .. wildcards[1]] ))*100)
 end
 
-function MyHorseStats ()
--- Generate Ratios for Horse Handling
-	imountratio = bc.trunc((imountsuccess/(imountsuccess + imountfail))*100)
-	istashratio = bc.trunc((istashsuccess/(istashsuccess + istashfail))*100)
-	ileadratio = bc.trunc((ileadsuccess/(ileadsuccess + ileadfail))*100)
-	igroomratio = bc.trunc((igroomsuccess/(igroomsuccess + igroomfail))*100)
-	idressratio = bc.trunc((idresssuccess/(idresssuccess + idressfail))*100)
--- Generate Ratios for Charge/Storm
-	ichargewalkratio = bc.trunc((ichargesuccesswalk/(ichargesuccesswalk + ichargesuccesswalk))*100)
-	ichargetrotratio = bc.trunc((ichargesuccesstrot/(ichargesuccesstrot + ichargesuccesstrot))*100)
-	ichargecanterratio = bc.trunc((ichargesuccesscanter/(ichargesuccesscanter + ichargesuccesscanter))*100)
-	ichargegallopratio = bc.trunc((ichargesuccessgallop/(ichargesuccessgallop + ichargesuccessgallop))*100)
 -- Messages sent to the Mud
+function MyHorseStats ()
     ColourNote("orange","", "Mount:          Success: " .. tostring(imountsuccess) .. " Fail: ".. tostring(imountfail) .. "     (" .. tostring(imountratio) .. "%)")
     ColourNote("orange","", "Stash/Retrieve: Success: " .. tostring(istashsuccess) .. " Fail: ".. tostring(istashfail) .. "     (" .. tostring(istashratio) .. "%)")
     ColourNote("orange","", "Lead:           Success: " .. tostring(ileadsuccess) .. " Fail: ".. tostring(ileadfail) .. "     (" .. tostring(ileadratio) .. "%)")
