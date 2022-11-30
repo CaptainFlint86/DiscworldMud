@@ -241,9 +241,8 @@ function DefaultValues ()
 	igroomratio = "-"
 -- Fall Off
 	ifalloff = 0
-	ifalloffratio = 0
+-- Wander Off
 	iwanderoff = 0
-	iwanderoffratio = 0
 -- Charge/Storm at a Walk
 	ichargesuccesswalk = 0
 	ichargefailwalk = 0
@@ -261,12 +260,17 @@ function DefaultValues ()
 	ichargefailgallop = 0
 	ichargegallopratio = "-"
 end
+
 -- Function for Horse Handling
 function HorseHandler (sName)
 	s = string.gsub(sName,"success","")
 	s = string.gsub(s,"fail","")
+
 	_G['i' .. sName] = _G['i' .. sName] + 1
+
+	if (string.match(sName, "success") or string.match(sName, "fail")) then
 	_G['i' .. s .. 'ratio'] = bc.trunc(( _G['i'..s..'success'] /( _G['i'..s..'success'] + _G['i'..s..'fail'] ))*100)
+	end
 end
 
 -- Function for Charge/Storm
