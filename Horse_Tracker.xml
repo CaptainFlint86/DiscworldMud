@@ -13,7 +13,6 @@
    requires="5.06"
    version="1.0"
    >
-
 </plugin>
 
 <!--  Aliases  -->
@@ -34,7 +33,6 @@
    sequence="30"
   >
   </alias>
-
 </aliases>
 
 <!--  Triggers  -->
@@ -46,8 +44,8 @@
    omit_from_output="n"
    sequence="18"
    regexp="y"
-   script="HorseMountSuccess"
-   name="ProHorseMountSuccess"
+   script="HorseHandler"
+   name="mountsuccess"
   >
   </trigger>
 
@@ -58,8 +56,8 @@
    omit_from_output="n"
    sequence="19"
    regexp="y"
-   script="HorseMountFail"
-   name="ProHorseMountFail"
+   script="HorseHandler"
+   name="mountfail"
   >
   </trigger>
 
@@ -70,8 +68,8 @@
    omit_from_output="n"
    sequence="20"
    regexp="y"
-   script="HorseStashSuccess"
-   name="ProHorseStashSuccess"
+   script="HorseHandler"
+   name="stashsuccess"
   >
   </trigger>
 
@@ -82,8 +80,8 @@
    omit_from_output="n"
    sequence="21"
    regexp="y"
-   script="HorseStashFail"
-   name="ProHorseStashFail"
+   script="HorseHandler"
+   name="stashfail"
   >
   </trigger>
 
@@ -94,8 +92,8 @@
    omit_from_output="n"
    sequence="22"
    regexp="y"
-   script="HorseLeadFail"
-   name="ProHorseLeadFail"
+   script="HorseHandler"
+   name="leadfail"
   >
   </trigger>
 
@@ -106,8 +104,8 @@
    omit_from_output="n"
    sequence="23"
    regexp="y"
-   script="HorseLeadSuccess"
-   name="ProHorseLeadSuccess"
+   script="HorseHandler"
+   name="leadsuccess"
   >
   </trigger>
 
@@ -118,8 +116,8 @@
    omit_from_output="n"
    sequence="23"
    regexp="y"
-   script="HorseDressSuccess"
-   name="ProHorseDressSuccess"
+   script="HorseHandler"
+   name="dresssuccess"
   >
   </trigger>
 
@@ -130,8 +128,8 @@
    omit_from_output="n"
    sequence="23"
    regexp="y"
-   script="HorseDressFail"
-   name="ProHorseDressFail"
+   script="HorseHandler"
+   name="dressfail"
   >
   </trigger>
 
@@ -142,8 +140,8 @@
    omit_from_output="n"
    sequence="23"
    regexp="y"
-   script="HorseGroomSuccess"
-   name="ProHorseGroomSuccess"
+   script="HorseHandler"
+   name="groomsuccess"
   >
   </trigger>
 
@@ -154,8 +152,8 @@
    omit_from_output="n"
    sequence="23"
    regexp="y"
-   script="HorseGroomFail"
-   name="ProHorseGroomFail"
+   script="HorseHandler"
+   name="groomfail"
   >
   </trigger>
 
@@ -178,8 +176,8 @@
    omit_from_output="n"
    sequence="25"
    regexp="y"
-   script="HorseChargeSuccess"
-   name="ProHorseChargeSuccess"
+   script="HorseChargeHandler"
+   name="chargesuccess"
   >
   </trigger>
 
@@ -190,253 +188,90 @@
    omit_from_output="n"
    sequence="26"
    regexp="y"
-   script="HorseChargeFail"
-   name="ProHorseChargeFail"
+   script="HorseChargeHandler"
+   name="chargefail"
   >
   </trigger>
-
-
-
-
 </triggers>
 
 <script>
 <![CDATA[
 
-imountsuccess = tonumber(GetVariable("imountsuccess"))
-if (imountsuccess == nil) then
-  imountsuccess = 0
-end
-imountfail = tonumber(GetVariable("imountfail"))
-if (imountfail == nil) then
-  imountfail = 0
-end
-istashsuccess = tonumber(GetVariable("istashsuccess"))
-if (istashsuccess == nil) then
-  istashsuccess = 0
-end
-istashfail = tonumber(GetVariable("istashfail"))
-if (istashfail == nil) then
-  istashfail = 0
-end
-ileadsuccess = tonumber(GetVariable("ileadsuccess"))
-if (ileadsuccess == nil) then
-  ileadsuccess = 0
-end
-ileadfail = tonumber(GetVariable("ileadfail"))
-if (ileadfail == nil) then
-  ileadfail = 0
-end
-idresssuccess = tonumber(GetVariable("idresssuccess"))
-if (idresssuccess == nil) then
-  idresssuccess = 0
-end
-idressfail = tonumber(GetVariable("idressfail"))
-if (idressfail == nil) then
-  idressfail = 0
-end
-igroomsuccess = tonumber(GetVariable("igroomsuccess"))
-if (igroomsuccess == nil) then
-  igroomsuccess = 0
-end
-igroomfail = tonumber(GetVariable("igroomfail"))
-if (igroomfail == nil) then
-  igroomfail = 0
-end
-ifalloff = tonumber(GetVariable("ifalloff"))
-if (ifalloff == nil) then
-  ifalloff = 0
-end
-ichargewalksuccess = tonumber(GetVariable("ichargewalksuccess"))
-if (ichargewalksuccess == nil) then
-  ichargewalksuccess = 0
-end
-ichargetrotsuccess = tonumber(GetVariable("ichargetrotsuccess"))
-if (ichargetrotsuccess == nil) then
-  ichargetrotsuccess = 0
-end
-ichargecantersuccess = tonumber(GetVariable("ichargecantersuccess"))
-if (ichargecantersuccess == nil) then
-  ichargecantersuccess = 0
-end
-ichargegallopsuccess = tonumber(GetVariable("ichargegallopsuccess"))
-if (ichargegallopsuccess == nil) then
-  ichargegallopsuccess = 0
-end
-ichargewalkfail = tonumber(GetVariable("ichargewalkfail"))
-if (ichargewalkfail == nil) then
-  ichargewalkfail = 0
-end
-ichargetrotfail = tonumber(GetVariable("ichargetrotfail"))
-if (ichargetrotfail == nil) then
-  ichargetrotfail = 0
-end
-ichargecanterfail = tonumber(GetVariable("ichargecanterfail"))
-if (ichargecanterfail == nil) then
-  ichargecanterfail = 0
-end
-ichargegallopfail = tonumber(GetVariable("ichargegallopfail"))
-if (ichargegallopfail == nil) then
-  ichargegallopfail = 0
+function OnPluginInstall ()
+DefaultValues ()
+ColourNote("orange","", "Horse tracker has been installed. Use 'horsestats' to see statistics, 'horsestatsreset' will reset statistics to default values.")
 end
 
-if (imountsuccess + imountfail == 0) then
+function MyHorseStatsReset ()
+DefaultValues ()
+ColourNote("orange","", "Horse tracker has been reset")
+end
+
+function DefaultValues ()
+-- Mount
+	imountsuccess = 0
+	imountfail = 0
 	imountratio = "-"
-end
-if (istashsuccess + istashfail == 0) then
+-- Stash/Retrieve
+	istashsuccess = 0
+	istashfail = 0
 	istashratio = "-"
-end
-if (ileadsuccess + ileadfail == 0) then
+-- Lead
+	ileadsuccess = 0
+	ileadfail = 0
 	ileadratio = "-"
-end
-if (idresssuccess + idressfail == 0) then
+-- Dress
+	idresssuccess = 0
+	idressfail = 0
 	idressratio = "-"
-end
-if (igroomsuccess + igroomfail == 0) then
+-- Groom
+	igroomsuccess = 0
+	igroomfail = 0
 	igroomratio = "-"
-end
-
-if (ichargewalksuccess + ichargewalkfail == 0) then
+-- Fall Off
+	ifalloff = 0
+-- Charge/Storm at a Walk
+	ichargesuccesswalk = 0
+	ichargefailwalk = 0
 	ichargewalkratio = "-"
-end
-if (ichargetrotsuccess + ichargetrotfail == 0) then
+-- Charge/Storm at a Trot
+	ichargesuccesstrot = 0
+	ichargefailtrot = 0
 	ichargetrotratio = "-"
-end
-if (ichargecantersuccess + ichargecanterfail == 0) then
+-- Charge/Storm at a Canter
+	ichargesuccesscanter = 0
+	ichargefailcanter = 0
 	ichargecanterratio = "-"
-end
-if (ichargegallopsuccess + ichargegallopfail == 0) then
+-- Charge/Storm at a Gallop
+	ichargesuccessgallop = 0
+	ichargefailgallop = 0
 	ichargegallopratio = "-"
 end
 
-
-
-function MyHorseStatsReset ()
-	imountsuccess = 0
-	imountfail = 0
-	imountratio = 0
-	istashsuccess = 0
-	istashfail = 0
-	istashratio = 0
-	ileadsuccess = 0
-	ileadfail = 0
-	ileadratio = 0
-	idresssuccess = 0
-	idressfail = 0
-	idressratio = 0
-	igroomsuccess = 0
-	igroomfail = 0
-	igroomratio = 0
-	ifalloff = 0
-
-	ichargewalksuccess = 0
-	ichargewalkfail = 0
-	ichargewalkratio = 0
-
-	ichargetrotsuccess = 0
-	ichargetrotfail = 0
-	ichargetrotratio = 0
-
-	ichargecantersuccess = 0
-	ichargecanterfail = 0
-	ichargecanterratio = 0
-
-	ichargegallopsuccess = 0
-	ichargegallopfail = 0
-	ichargegallopratio = 0
-
-    ColourNote("orange","", "Horse tracker has been reset")
-end
-
-
-function HorseMountSuccess ()
-    imountsuccess = imountsuccess + 1
-	imountratio = bc.trunc((imountsuccess/(imountsuccess + imountfail))*100)
-end
-
-function HorseMountFail ()
-    imountfail = imountfail + 1
-	imountratio = bc.trunc((imountsuccess/(imountsuccess + imountfail))*100)
-end
-
-function HorseStashSuccess ()
-    istashsuccess = istashsuccess + 1
-	istashratio = bc.trunc((istashsuccess/(istashsuccess + istashfail))*100)
-end
-
-function HorseStashFail ()
-    istashfail = istashfail + 1
-	istashratio = bc.trunc((istashsuccess/(istashsuccess + istashfail))*100)
-end
-
-function HorseLeadSuccess ()
-    ileadsuccess = ileadsuccess + 1
-	ileadratio = bc.trunc((ileadsuccess/(ileadsuccess + ileadfail))*100)
-end
-
-function HorseLeadFail ()
-    ileadfail = ileadfail + 1
-	ileadratio = bc.trunc((ileadsuccess/(ileadsuccess + ileadfail))*100)
-end
-
-function HorseDressSuccess ()
-    idresssuccess = idresssuccess + 1
-	idressratio = bc.trunc((idresssuccess/(idresssuccess + idressfail))*100)
-end
-
-function HorseDressFail ()
-    idressfail = idressfail + 1
-	idressratio = bc.trunc((idresssuccess/(idresssuccess + idressfail))*100)
-end
-
-function HorseGroomSuccess ()
-    igroomsuccess = igroomsuccess + 1
-	igroomratio = bc.trunc((igroomsuccess/(igroomsuccess + igroomfail))*100)
-end
-
-function HorseGroomFail ()
-    igroomfail = igroomfail + 1
-	igroomratio = bc.trunc((igroomsuccess/(igroomsuccess + igroomfail))*100)
+function HorseHandler (sName)
+	_G['i' .. sName] = _G['i' .. sName] + 1
 end
 
 function FallOffHorse ()
 	ifalloff = ifalloff + 1
 end
 
-function HorseChargeFail (sname, sline, wildcards)
-		if wildcards[1] == "walk" then
-	ichargewalkfail = ichargewalkfail + 1
-	ichargewalkratio = bc.trunc((ichargewalksuccess/(ichargewalksuccess + ichargewalkfail))*100)
-		elseif wildcards[1] == "trot" then
-	ichargetrotfail = ichargetrotfail + 1
-	ichargetrotratio = bc.trunc((ichargetrotsuccess/(ichargetrotsuccess + ichargetrotfail))*100)
-		elseif wildcards[1] == "canter" then
-	ichargecanterfail = ichargecanterfail + 1
-	ichargecanterratio = bc.trunc((ichargecantersuccess/(ichargecantersuccess + ichargecanterfail))*100)
-		elseif wildcards[1] == "gallop" then
-	ichargegallopfail = ichargegallopfail + 1
-	ichargegallopratio = bc.trunc((ichargegallopsuccess/(ichargegallopsuccess + ichargegallopfail))*100)
-	end
+function HorseChargeHandler (sName, sline, wildcards)
+	_G['i'..sName .. wildcards[1]] = _G['i' .. sName .. wildcards[1]] + 1
 end
-
-function HorseChargeSuccess (sname, sline, wildcards)
-		if wildcards[1] == "walk" then
-	ichargewalksuccess = ichargewalksuccess + 1
-	ichargewalkratio = bc.trunc((ichargewalksuccess/(ichargewalksuccess + ichargewalkfail))*100)
-		elseif wildcards[1] == "trot" then
-	ichargetrotsuccess = ichargetrotsuccess + 1
-	ichargetrotratio = bc.trunc((ichargetrotsuccess/(ichargetrotsuccess + ichargetrotfail))*100)
-		elseif wildcards[1] == "canter" then
-	ichargecantersuccess = ichargecantersuccess + 1
-	ichargecanterratio = bc.trunc((ichargecantersuccess/(ichargecantersuccess + ichargecanterfail))*100)
-		elseif wildcards[1] == "gallop" then
-	ichargegallopsuccess = ichargegallopsuccess + 1
-	ichargegallopratio = bc.trunc((ichargegallopsuccess/(ichargegallopsuccess + ichargegallopfail))*100)
-	end
-end
-
 
 function MyHorseStats ()
+	imountratio = bc.trunc((imountsuccess/(imountsuccess + imountfail))*100)
+	istashratio = bc.trunc((istashsuccess/(istashsuccess + istashfail))*100)
+	ileadratio = bc.trunc((ileadsuccess/(ileadsuccess + ileadfail))*100)
+	igroomratio = bc.trunc((igroomsuccess/(igroomsuccess + igroomfail))*100)
+	idressratio = bc.trunc((idresssuccess/(idresssuccess + idressfail))*100)
+
+	ichargewalkratio = bc.trunc((ichargesuccesswalk/(ichargesuccesswalk + ichargesuccesswalk))*100)
+	ichargetrotratio = bc.trunc((ichargesuccesstrot/(ichargesuccesstrot + ichargesuccesstrot))*100)
+	ichargecanterratio = bc.trunc((ichargesuccesscanter/(ichargesuccesscanter + ichargesuccesscanter))*100)
+	ichargegallopratio = bc.trunc((ichargesuccessgallop/(ichargesuccessgallop + ichargesuccessgallop))*100)
+
     ColourNote("orange","", "Mount:          Success: " .. tostring(imountsuccess) .. " Fail: ".. tostring(imountfail) .. "     (" .. tostring(imountratio) .. "%)")
     ColourNote("orange","", "Stash/Retrieve: Success: " .. tostring(istashsuccess) .. " Fail: ".. tostring(istashfail) .. "     (" .. tostring(istashratio) .. "%)")
     ColourNote("orange","", "Lead:           Success: " .. tostring(ileadsuccess) .. " Fail: ".. tostring(ileadfail) .. "     (" .. tostring(ileadratio) .. "%)")
@@ -444,13 +279,11 @@ function MyHorseStats ()
     ColourNote("orange","", "Dress:          Success: " .. tostring(idresssuccess) .. " Fail: ".. tostring(idressfail) .. "     (" .. tostring(idressratio) .. "%)")
     ColourNote("orange","", "You have fallen off " .. tostring(ifalloff) .. " times")
 	ColourNote("orange","", "Charge/Storm")
-    ColourNote("orange","", "Walk:           Success: " .. tostring(ichargewalksuccess) .. " Fail: ".. tostring(ichargewalkfail) .. "     (" .. tostring(ichargewalkratio) .. "%)")
-    ColourNote("orange","", "Trot:           Success: " .. tostring(ichargetrotsuccess) .. " Fail: ".. tostring(ichargetrotfail) .. "     (" .. tostring(ichargetrotratio) .. "%)")
-    ColourNote("orange","", "Canter:         Success: " .. tostring(ichargecantersuccess) .. " Fail: ".. tostring(ichargecanterfail) .. "     (" .. tostring(ichargecanterratio) .. "%)")
-    ColourNote("orange","", "Gallop:         Success: " .. tostring(ichargegallopsuccess) .. " Fail: ".. tostring(ichargegallopfail) .. "     (" .. tostring(ichargegallopratio) .. "%)")
+    ColourNote("orange","", "Walk:           Success: " .. tostring(ichargesuccesswalk) .. " Fail: ".. tostring(ichargefailwalk) .. "     (" .. tostring(ichargewalkratio) .. "%)")
+    ColourNote("orange","", "Trot:           Success: " .. tostring(ichargesuccesstrot) .. " Fail: ".. tostring(ichargefailtrot) .. "     (" .. tostring(ichargetrotratio) .. "%)")
+    ColourNote("orange","", "Canter:         Success: " .. tostring(ichargesuccesscanter) .. " Fail: ".. tostring(ichargefailcanter) .. "     (" .. tostring(ichargecanterratio) .. "%)")
+    ColourNote("orange","", "Gallop:         Success: " .. tostring(ichargesuccessgallop) .. " Fail: ".. tostring(ichargefailgallop) .. "     (" .. tostring(ichargegallopratio) .. "%)")
 end
-
-
 ]]>
 </script> 
 </muclient>
