@@ -281,18 +281,18 @@ end
 
 -- Messages sent to the Mud
 function MyHorseStats ()
-    ColourNote("orange","", "Mount:          Success: " .. imountsuccess .. "\tFail: ".. imountfail .. "\t(" .. imountratio .. ")")
-    ColourNote("orange","", "Stash/Retrieve: Success: " .. istashsuccess .. "\tFail: ".. istashfail .. "\t(" .. istashratio .. ")")
-    ColourNote("orange","", "Lead:           Success: " .. ileadsuccess .. "\tFail: ".. ileadfail .. "\t(" .. ileadratio .. ")")
-    ColourNote("orange","", "Groom:          Success: " .. igroomsuccess .. "\tFail: ".. igroomfail .. "\t(" .. igroomratio .. ")")
-    ColourNote("orange","", "Dress:          Success: " .. idresssuccess .. "\tFail: ".. idressfail .. "\t(" .. idressratio .. ")")
+    ColourNote("orange","", "Mount:          Success: " .. imountsuccess .. "\tFail: ".. imountfail .. "\t\t(" .. imountratio .. ")")
+    ColourNote("orange","", "Stash/Retrieve: Success: " .. istashsuccess .. "\tFail: ".. istashfail .. "\t\t(" .. istashratio .. ")")
+    ColourNote("orange","", "Lead:           Success: " .. ileadsuccess .. "\tFail: ".. ileadfail .. "\t\t(" .. ileadratio .. ")")
+    ColourNote("orange","", "Groom:          Success: " .. igroomsuccess .. "\tFail: ".. igroomfail .. "\t\t(" .. igroomratio .. ")")
+    ColourNote("orange","", "Dress:          Success: " .. idresssuccess .. "\tFail: ".. idressfail .. "\t\t(" .. idressratio .. ")")
     ColourNote("orange","", "You have fallen off " .. ifalloff .. " times")
     ColourNote("orange","", "Your horse has wandered off " .. iwanderoff .. " times")
     ColourNote("orange","", "Charge/Storm")
-    ColourNote("orange","", "Walk:           Success: " .. ichargesuccesswalk .. "\tFail: ".. ichargefailwalk .. "\t(" .. ichargewalkratio .. ")")
-    ColourNote("orange","", "Trot:           Success: " .. ichargesuccesstrot .. "\tFail: ".. ichargefailtrot .. "\t(" .. ichargetrotratio .. ")")
-    ColourNote("orange","", "Canter:         Success: " .. ichargesuccesscanter .. "\tFail: ".. ichargefailcanter .. "\t(" .. ichargecanterratio .. ")")
-    ColourNote("orange","", "Gallop:         Success: " .. ichargesuccessgallop .. "\tFail: ".. ichargefailgallop .. "\t(" .. ichargegallopratio .. ")")
+    ColourNote("orange","", "Walk:           Success: " .. ichargesuccesswalk .. "\tFail: ".. ichargefailwalk .. "\t\t(" .. ichargewalkratio .. ")")
+    ColourNote("orange","", "Trot:           Success: " .. ichargesuccesstrot .. "\tFail: ".. ichargefailtrot .. "\t\t(" .. ichargetrotratio .. ")")
+    ColourNote("orange","", "Canter:         Success: " .. ichargesuccesscanter .. "\tFail: ".. ichargefailcanter .. "\t\t(" .. ichargecanterratio .. ")")
+    ColourNote("orange","", "Gallop:         Success: " .. ichargesuccessgallop .. "\tFail: ".. ichargefailgallop .. "\t\t(" .. ichargegallopratio .. ")")
 end
 ]]>
 </script> 
