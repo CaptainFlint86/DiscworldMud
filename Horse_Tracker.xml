@@ -269,30 +269,30 @@ function HorseHandler (sName)
 	_G['i' .. sName] = _G['i' .. sName] + 1
 
 	if (string.match(sName, "success") or string.match(sName, "fail")) then
-	_G['i' .. s .. 'ratio'] = bc.trunc(( _G['i'..s..'success'] /( _G['i'..s..'success'] + _G['i'..s..'fail'] ))*100)
+	_G['i' .. s .. 'ratio'] = tostring(bc.trunc(( _G['i'..s..'success'] /( _G['i'..s..'success'] + _G['i'..s..'fail'] ))*100))
 	end
 end
 
 -- Function for Charge/Storm
 function HorseChargeHandler (sName, sline, wildcards)
 	_G['i'..sName .. wildcards[1]] = _G['i' .. sName .. wildcards[1]] + 1
-	_G['icharge' .. wildcards[1] .. 'ratio'] = bc.trunc(( _G['ichargesuccess' .. wildcards[1]] /( _G['ichargesuccess' .. wildcards[1]] + _G['ichargefail' .. wildcards[1]] ))*100)
+	_G['icharge' .. wildcards[1] .. 'ratio'] = tostring(bc.trunc(( _G['ichargesuccess' .. wildcards[1]] /( _G['ichargesuccess' .. wildcards[1]] + _G['ichargefail' .. wildcards[1]] ))*100))
 end
 
 -- Messages sent to the Mud
 function MyHorseStats ()
-    ColourNote("orange","", "Mount:          Success: " .. tostring(imountsuccess) .. " Fail: ".. tostring(imountfail) .. "     (" .. tostring(imountratio) .. "%)")
-    ColourNote("orange","", "Stash/Retrieve: Success: " .. tostring(istashsuccess) .. " Fail: ".. tostring(istashfail) .. "     (" .. tostring(istashratio) .. "%)")
-    ColourNote("orange","", "Lead:           Success: " .. tostring(ileadsuccess) .. " Fail: ".. tostring(ileadfail) .. "     (" .. tostring(ileadratio) .. "%)")
-    ColourNote("orange","", "Groom:          Success: " .. tostring(igroomsuccess) .. " Fail: ".. tostring(igroomfail) .. "     (" .. tostring(igroomratio) .. "%)")
-    ColourNote("orange","", "Dress:          Success: " .. tostring(idresssuccess) .. " Fail: ".. tostring(idressfail) .. "     (" .. tostring(idressratio) .. "%)")
-    ColourNote("orange","", "You have fallen off " .. tostring(ifalloff) .. " times")
-    ColourNote("orange","", "Your horse has wandered off " .. tostring(iwanderoff) .. " times")
+    ColourNote("orange","", "Mount:          Success: " .. imountsuccess .. " Fail: ".. imountfail .. "     (" .. imountratio .. "%)")
+    ColourNote("orange","", "Stash/Retrieve: Success: " .. istashsuccess .. " Fail: ".. istashfail .. "     (" .. istashratio .. "%)")
+    ColourNote("orange","", "Lead:           Success: " .. ileadsuccess .. " Fail: ".. ileadfail .. "     (" .. ileadratio .. "%)")
+    ColourNote("orange","", "Groom:          Success: " .. igroomsuccess .. " Fail: ".. igroomfail .. "     (" .. igroomratio .. "%)")
+    ColourNote("orange","", "Dress:          Success: " .. idresssuccess .. " Fail: ".. idressfail .. "     (" .. idressratio .. "%)")
+    ColourNote("orange","", "You have fallen off " .. ifalloff .. " times")
+    ColourNote("orange","", "Your horse has wandered off " .. iwanderoff .. " times")
     ColourNote("orange","", "Charge/Storm")
-    ColourNote("orange","", "Walk:           Success: " .. tostring(ichargesuccesswalk) .. " Fail: ".. tostring(ichargefailwalk) .. "     (" .. tostring(ichargewalkratio) .. "%)")
-    ColourNote("orange","", "Trot:           Success: " .. tostring(ichargesuccesstrot) .. " Fail: ".. tostring(ichargefailtrot) .. "     (" .. tostring(ichargetrotratio) .. "%)")
-    ColourNote("orange","", "Canter:         Success: " .. tostring(ichargesuccesscanter) .. " Fail: ".. tostring(ichargefailcanter) .. "     (" .. tostring(ichargecanterratio) .. "%)")
-    ColourNote("orange","", "Gallop:         Success: " .. tostring(ichargesuccessgallop) .. " Fail: ".. tostring(ichargefailgallop) .. "     (" .. tostring(ichargegallopratio) .. "%)")
+    ColourNote("orange","", "Walk:           Success: " .. ichargesuccesswalk .. " Fail: ".. ichargefailwalk .. "     (" .. ichargewalkratio .. "%)")
+    ColourNote("orange","", "Trot:           Success: " .. ichargesuccesstrot .. " Fail: ".. ichargefailtrot .. "     (" .. ichargetrotratio .. "%)")
+    ColourNote("orange","", "Canter:         Success: " .. ichargesuccesscanter .. " Fail: ".. ichargefailcanter .. "     (" .. ichargecanterratio .. "%)")
+    ColourNote("orange","", "Gallop:         Success: " .. ichargesuccessgallop .. " Fail: ".. ichargefailgallop .. "     (" .. ichargegallopratio .. "%)")
 end
 ]]>
 </script> 
