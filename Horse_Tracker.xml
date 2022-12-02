@@ -10,7 +10,7 @@
    date_written="2022-11-21 10:05:30"
    save_state="y"
    requires="5.06"
-   version="1.4"
+   version="1.5"
    >
 </plugin>
 
@@ -163,7 +163,7 @@
   <trigger
    enabled="y"
    keep_evaluating="y"
-   match="You pick out a brush and have a go at .+ horse's .+ with it"
+   match="You pick out a .+ and have a go at .+ horse's .+ with it"
    omit_from_output="n"
    sequence="23"
    regexp="y"
