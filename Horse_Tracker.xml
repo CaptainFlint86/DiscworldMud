@@ -418,14 +418,14 @@ function HorseHandler (sName, sline, wildcards)
 	_G['i' .. sName] = _G['i' .. sName] + 1
 
 	if (string.match(sName, "success") or string.match(sName, "fail")) then
-	_G['i' .. s .. 'ratio'] = tostring(bc.trunc(( _G['i'..s..'success'] /( _G['i'..s..'success'] + _G['i'..s..'fail'] ))*100)) .. "%"
+	_G['i' .. s .. 'ratio'] = tostring(math.floor((( _G['i'..s..'success'] /  ( _G['i'..s..'success'] + _G['i'..s..'fail'] ) ) *100)+0.5)) .. "%"
 	end
 end
 
 -- Function for Charge/Storm
 function HorseChargeHandler (sName, sline, wildcards)
 	_G['i'..sName .. wildcards[1]] = _G['i' .. sName .. wildcards[1]] + 1
-	_G['icharge' .. wildcards[1] .. 'ratio'] = tostring(bc.trunc(( _G['ichargesuccess' .. wildcards[1]] /( _G['ichargesuccess' .. wildcards[1]] + _G['ichargefail' .. wildcards[1]] ))*100)) .. "%"
+	_G['icharge' .. wildcards[1] .. 'ratio'] = tostring(math.floor((( _G['ichargesuccess' .. wildcards[1]] /( _G['ichargesuccess' .. wildcards[1]] + _G['ichargefail' .. wildcards[1]] ))*100)+0.5)) .. "%"
 end
 
 -- Messages sent to the Mud
