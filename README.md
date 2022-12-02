@@ -1,6 +1,6 @@
 # Horse Tracker
 
-V1.4 now includes Riding data
+V1.5 now includes Riding data, should save data when mushclient closed
 
 Want to see how often you successfully you handle your horse?  
 This plugin will keep a tally of:  
@@ -16,7 +16,7 @@ How well you prepare mounted specials (charge/strom)
 
 just type 'horsestats' to see an up to date report  
 
-If you want to reset the report, just type 'HorseStatsReset'
+If you want to reset the report, just type HorseStatsReset
 
 To reset just the handler stats: HorseHandlerReset
 To reset just the charge stats: HorseChargeReset
