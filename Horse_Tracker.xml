@@ -147,7 +147,7 @@
   <trigger
    enabled="y"
    keep_evaluating="y"
-   match="You pick out a brush and have a go at .+ horse's tail with it"
+   match="You pick out a brush and have a go at .+ horse's .+ with it"
    omit_from_output="n"
    sequence="23"
    regexp="y"
