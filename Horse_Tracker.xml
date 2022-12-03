@@ -269,9 +269,9 @@ iridesuccess = tonumber(GetVariable("iridesuccess"))
 iridefail = tonumber(GetVariable("iridefail"))
 irideratio = GetVariable("irideratio")
 
-ifalloffsuccess = tonumber(GetVariable("ifalloffsuccess"))
+ifalloff = tonumber(GetVariable("ifalloff"))
 
-iwanderoffsuccess = tonumber(GetVariable("iwanderoffsuccess"))
+iwanderoff = tonumber(GetVariable("iwanderoff"))
 
 ichargesuccesswalk = tonumber(GetVariable("ichargesuccesswalk"))
 ichargefailwalk = tonumber(GetVariable("ichargefailwalk"))
