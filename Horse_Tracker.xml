@@ -10,7 +10,7 @@
    date_written="2022-11-21 10:05:30"
    save_state="y"
    requires="5.06"
-   version="1.5"
+   version="1.4"
    >
 </plugin>
 
@@ -163,7 +163,7 @@
   <trigger
    enabled="y"
    keep_evaluating="y"
-   match="You pick out a .+ and have a go at .+ horse's .+ with it"
+   match="You pick out a brush and have a go at .+ horse's .+ with it"
    omit_from_output="n"
    sequence="23"
    regexp="y"
@@ -285,8 +285,8 @@ ichargesuccesscanter = tonumber(GetVariable("ichargesuccesscanter"))
 ichargefailcanter = tonumber(GetVariable("ichargefailcanter"))
 ichargecanterratio = GetVariable("ichargecanterratio")
 
-ichargesuccess = tonumber(GetVariable("ichargesuccess"))
-ichargefail = tonumber(GetVariable("ichargefail"))
+ichargesuccessgallop = tonumber(GetVariable("ichargesuccessgallop"))
+ichargefailgallop = tonumber(GetVariable("ichargefailgallop"))
 ichargegallopratio = GetVariable("ichargegallopratio")
 
 if (imountsuccess == nil) then imountsuccess = 0 end
@@ -430,19 +430,19 @@ end
 
 -- Messages sent to the Mud
 function MyHorseStats ()
-    ColourNote("orange","", "Mount:          Success: " .. imountsuccess .. "\tFail: ".. imountfail .. "\t\t(" .. imountratio .. ")")
-    ColourNote("orange","", "Stash/Retrieve: Success: " .. istashsuccess .. "\tFail: ".. istashfail .. "\t\t(" .. istashratio .. ")")
-    ColourNote("orange","", "Lead:           Success: " .. ileadsuccess .. "\tFail: ".. ileadfail .. "\t\t(" .. ileadratio .. ")")
-    ColourNote("orange","", "Groom:          Success: " .. igroomsuccess .. "\tFail: ".. igroomfail .. "\t\t(" .. igroomratio .. ")")
-    ColourNote("orange","", "Dress:          Success: " .. idresssuccess .. "\tFail: ".. idressfail .. "\t\t(" .. idressratio .. ")")
-    ColourNote("orange","", "Riding:         Success: " .. iridesuccess .. "\tFail: ".. iridefail .. "\t\t(" .. irideratio .. ")")
+    ColourNote("orange","", "Mount:          Success: " .. imountsuccess .. "\tFail: ".. imountfail .. " \t(" .. imountratio .. ")")
+    ColourNote("orange","", "Stash/Retrieve: Success: " .. istashsuccess .. "\tFail: ".. istashfail .. " \t(" .. istashratio .. ")")
+    ColourNote("orange","", "Lead:           Success: " .. ileadsuccess .. "\tFail: ".. ileadfail .. " \t(" .. ileadratio .. ")")
+    ColourNote("orange","", "Groom:          Success: " .. igroomsuccess .. "\tFail: ".. igroomfail .. " \t(" .. igroomratio .. ")")
+    ColourNote("orange","", "Dress:          Success: " .. idresssuccess .. "\tFail: ".. idressfail .. " \t(" .. idressratio .. ")")
+    ColourNote("orange","", "Riding:         Success: " .. iridesuccess .. "\tFail: ".. iridefail .. " \t(" .. irideratio .. ")")
     ColourNote("orange","", "You have fallen off " .. ifalloff .. " times")
     ColourNote("orange","", "Your horse has wandered off " .. iwanderoff .. " times")
     ColourNote("orange","", "Charge/Storm")
-    ColourNote("orange","", "Walk:           Success: " .. ichargesuccesswalk .. "\tFail: ".. ichargefailwalk .. "\t\t(" .. ichargewalkratio .. ")")
-    ColourNote("orange","", "Trot:           Success: " .. ichargesuccesstrot .. "\tFail: ".. ichargefailtrot .. "\t\t(" .. ichargetrotratio .. ")")
-    ColourNote("orange","", "Canter:         Success: " .. ichargesuccesscanter .. "\tFail: ".. ichargefailcanter .. "\t\t(" .. ichargecanterratio .. ")")
-    ColourNote("orange","", "Gallop:         Success: " .. ichargesuccessgallop .. "\tFail: ".. ichargefailgallop .. "\t\t(" .. ichargegallopratio .. ")")
+    ColourNote("orange","", "Walk:           Success: " .. ichargesuccesswalk .. "\tFail: ".. ichargefailwalk .. " \t(" .. ichargewalkratio .. ")")
+    ColourNote("orange","", "Trot:           Success: " .. ichargesuccesstrot .. "\tFail: ".. ichargefailtrot .. " \t(" .. ichargetrotratio .. ")")
+    ColourNote("orange","", "Canter:         Success: " .. ichargesuccesscanter .. "\tFail: ".. ichargefailcanter .. " \t(" .. ichargecanterratio .. ")")
+    ColourNote("orange","", "Gallop:         Success: " .. ichargesuccessgallop .. "\tFail: ".. ichargefailgallop .. " \t(" .. ichargegallopratio .. ")")
 end
 
 
