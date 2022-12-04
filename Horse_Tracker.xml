@@ -243,95 +243,38 @@
 
 <script>
 <![CDATA[
+-- Lets load our variables from Mush
+--Variables used for retrieving/storing/reseting values
+	VarHNames = {'mount', 'stash', 'lead', 'dress', 'groom', 'ride'}
+	VarXNames = {'falloff', 'wanderoff'}
+	VarCNames = {'walk', 'trot', 'canter', 'gallop'}
 
--- load stats from mush (oh god, so many variables)
-imountsuccess = tonumber(GetVariable("imountsuccess"))
-imountfail = tonumber(GetVariable("imountfail"))
-imountratio = GetVariable("imountratio")
-
-istashsuccess = tonumber(GetVariable("istashsuccess"))
-istashfail = tonumber(GetVariable("istashfail"))
-istashratio = GetVariable("istashratio")
-
-ileadsuccess = tonumber(GetVariable("ileadsuccess"))
-ileadfail = tonumber(GetVariable("ileadfail"))
-ileadratio = GetVariable("ileadratio")
-
-idresssuccess = tonumber(GetVariable("idresssuccess"))
-idressfail = tonumber(GetVariable("idressfail"))
-idressratio = GetVariable("idressratio")
-
-igroomsuccess = tonumber(GetVariable("igroomsuccess"))
-igroomfail = tonumber(GetVariable("igroomfail"))
-igroomratio = GetVariable("igroomratio")
-
-iridesuccess = tonumber(GetVariable("iridesuccess"))
-iridefail = tonumber(GetVariable("iridefail"))
-irideratio = GetVariable("irideratio")
-
-ifalloff = tonumber(GetVariable("ifalloff"))
-
-iwanderoff = tonumber(GetVariable("iwanderoff"))
-
-ichargesuccesswalk = tonumber(GetVariable("ichargesuccesswalk"))
-ichargefailwalk = tonumber(GetVariable("ichargefailwalk"))
-ichargewalkratio = GetVariable("ichargewalkratio")
-
-ichargesuccesstrot = tonumber(GetVariable("ichargesuccesstrot"))
-ichargefailtrot = tonumber(GetVariable("ichargefailtrot"))
-ichargetrotratio = GetVariable("ichargetrotratio")
-
-ichargesuccesscanter = tonumber(GetVariable("ichargesuccesscanter"))
-ichargefailcanter = tonumber(GetVariable("ichargefailcanter"))
-ichargecanterratio = GetVariable("ichargecanterratio")
-
-ichargesuccessgallop = tonumber(GetVariable("ichargesuccessgallop"))
-ichargefailgallop = tonumber(GetVariable("ichargefailgallop"))
-ichargegallopratio = GetVariable("ichargegallopratio")
-
-if (imountsuccess == nil) then imountsuccess = 0 end
-if (imountfail == nil) then imountfail = 0 end
-if (imountratio == nil) then imountratio = "-" end
-
-if (istashsuccess == nil) then istashsuccess = 0 end
-if (istashfail == nil) then istashfail = 0 end
-if (istashratio == nil) then istashratio = "-" end
-
-if (ileadsuccess == nil) then ileadsuccess = 0 end
-if (ileadfail == nil) then ileadfail = 0 end
-if (ileadratio == nil) then ileadratio = "-" end
-
-if (idresssuccess == nil) then idresssuccess = 0 end
-if (idressfail == nil) then idressfail = 0 end
-if (idressratio == nil) then idressratio = "-" end
-
-if (igroomsuccess == nil) then igroomsuccess = 0 end
-if (igroomfail == nil) then igroomfail = 0 end
-if (igroomratio == nil) then igroomratio = "-" end
-
-if (iridesuccess == nil) then iridesuccess = 0 end
-if (iridefail == nil) then iridefail = 0 end
-if (irideratio == nil) then irideratio = "-" end
-
-if (ifalloff == nil) then ifalloff = 0 end
-
-if (iwanderoff == nil) then iwanderoff = 0 end
-
-if (ichargesuccesswalk == nil) then ichargesuccesswalk = 0 end
-if (ichargefailwalk == nil) then ichargefailwalk = 0 end
-if (ichargewalkratio == nil) then ichargewalkratio = "-" end
-
-if (ichargesuccesstrot == nil) then ichargesuccesstrot = 0 end
-if (ichargefailtrot == nil) then ichargefailtrot = 0 end
-if (ichargetrotratio == nil) then ichargetrotratio = "-" end
-
-if (ichargesuccesscanter == nil) then ichargesuccesscanter = 0 end
-if (ichargefailcanter == nil) then ichargefailcanter = 0 end
-if (ichargecanterratio == nil) then ichargecanterratio = "-" end
-
-if (ichargesuccessgallop == nil) then ichargesuccessgallop = 0 end
-if (ichargefailgallop == nil) then ichargefailgallop = 0 end
-if (ichargegallopratio == nil) then ichargegallopratio = "-" end
+-- Handling Variables
+	for i, VarHName in ipairs(VarHNames) do
+		_G['i' .. VarHName .. 'success'] = tonumber(GetVariable("i" .. VarHName .. "success"))
+		_G['i' .. VarHName .. 'fail'] = tonumber(GetVariable("i" .. VarHName .. "fail"))
+		_G['i' .. VarHName .. 'ratio'] = tostring(GetVariable("i" .. VarHName .. "ratio"))
+		-- Defaults if Nil returned
+		if (_G['i' .. VarHName .. 'success'] == nil) then _G['i' .. VarHName .. 'success'] = 0 end
+		if (_G['i' .. VarHName .. 'fail'] == nil) then _G['i' .. VarHName .. 'fail'] = 0 end
+		if (_G['i' .. VarHName .. 'ratio'] == nil) then _G['i' .. VarHName .. 'ratio'] = "-" end
+	end
+-- Handling Variables that don't have a fail ratio
+	for i, VarXName in ipairs(VarXNames) do
+		_G['i' .. VarXName] = tonumber(GetVariable("i" .. VarXName))
+		-- Defaults if Nil returned
+		if (_G['i' .. VarXName] == nil) then _G['i' .. VarXName] = 0 end
+	end
+-- Charge Variables
+	for i, VarCName in ipairs(VarCNames) do
+		_G['ichargesuccess' .. VarCName] = tonumber(GetVariable("ichargesuccess" .. VarCName))
+		_G['ichargefail' .. VarCName] = tonumber(GetVariable("ichargefail" .. VarCName))
+		_G['icharge' .. VarCName .. 'ratio'] = tostring(GetVariable("icharge" .. VarCName .. "ratio"))
+		-- Defaults if Nil returned
+		if (_G['ichargesuccess' .. VarCName] == nil) then _G['ichargesuccess' .. VarCName] = 0 end
+		if (_G['ichargefail' .. VarCName] == nil) then _G['ichargefail' .. VarCName] = 0 end
+		if (_G['icharge' .. VarCName .. 'ratio'] == nil) then _G['icharge' .. VarCName .. 'ratio'] = "-" end
+	end
 
 -- When Plugin is installed
 function OnPluginInstall ()
@@ -361,53 +304,23 @@ end
 -- Our Default Values
 	-- Handler Values
 function DefaultHandlerValues ()
--- Mount
-	imountsuccess = 0
-	imountfail = 0
-	imountratio = "-"
--- Stash/Retrieve
-	istashsuccess = 0
-	istashfail = 0
-	istashratio = "-"
--- Lead
-	ileadsuccess = 0
-	ileadfail = 0
-	ileadratio = "-"
--- Dress
-	idresssuccess = 0
-	idressfail = 0
-	idressratio = "-"
--- Groom
-	igroomsuccess = 0
-	igroomfail = 0
-	igroomratio = "-"
--- Ride
-	iridesuccess = 0
-	iridefail = 0
-	irideratio = "-"
--- Fall Off
-	ifalloff = 0
--- Wander Off
-	iwanderoff = 0
+	for i, VarHName in ipairs(VarHNames) do
+		_G['i' .. VarHName .. 'success'] = 0
+		_G['i' .. VarHName .. 'fail'] = 0
+		_G['i' .. VarHName .. 'ratio'] = "-"
+	end
+
+	for i, VarXName in ipairs(VarXNames) do
+		_G['i' .. VarXName] = 0
+	end
 end
 	-- Charge Values
 function DefaultChargeValues ()
--- Charge/Storm at a Walk
-	ichargesuccesswalk = 0
-	ichargefailwalk = 0
-	ichargewalkratio = "-"
--- Charge/Storm at a Trot
-	ichargesuccesstrot = 0
-	ichargefailtrot = 0
-	ichargetrotratio = "-"
--- Charge/Storm at a Canter
-	ichargesuccesscanter = 0
-	ichargefailcanter = 0
-	ichargecanterratio = "-"
--- Charge/Storm at a Gallop
-	ichargesuccessgallop = 0
-	ichargefailgallop = 0
-	ichargegallopratio = "-"
+	for i, VarCName in ipairs(VarCNames) do
+		_G['ichargesuccess' .. VarCName] = 0
+		_G['ichargefail' .. VarCName] = 0
+		_G['icharge' .. VarCName .. 'ratio'] = "-"
+	end
 end
 
 -- Function for Horse Handling
@@ -448,50 +361,24 @@ end
 
 -- Save variables when session closed
 function OnPluginClose ()
-    SetVariable("imountsuccess", tostring(imountsuccess))
-    SetVariable("imountfail", tostring(imountfail))
-    SetVariable("imountratio", tostring(imountratio))
-
-    SetVariable("istashsuccess", tostring(istashsuccess))
-    SetVariable("istashfail", tostring(istashfail))
-    SetVariable("istashratio", tostring(istashratio))
-
-    SetVariable("ileadsuccess", tostring(ileadsuccess))
-    SetVariable("ileadfail", tostring(ileadfail))
-    SetVariable("ileadratio", tostring(ileadratio))
-
-    SetVariable("idresssuccess", tostring(idresssuccess))
-    SetVariable("idressfail", tostring(idressfail))
-    SetVariable("idressratio", tostring(idressratio))
-
-    SetVariable("igroomsuccess", tostring(igroomsuccess))
-    SetVariable("igroomfail", tostring(igroomfail))
-    SetVariable("igroomratio", tostring(igroomratio))
-
-    SetVariable("iridesuccess", tostring(iridesuccess))
-    SetVariable("iridefail", tostring(iridefail))
-    SetVariable("irideratio", tostring(irideratio))
-
-    SetVariable("ifalloff", tostring(ifalloff))
-
-    SetVariable("iwanderoff", tostring(iwanderoff))
-
-    SetVariable("ichargesuccesswalk", tostring(ichargesuccesswalk))
-    SetVariable("ichargefailwalk", tostring(ichargefailwalk))
-    SetVariable("ichargewalkratio", tostring(ichargewalkratio))
-
-    SetVariable("ichargesuccesstrot", tostring(ichargesuccesstrot))
-    SetVariable("ichargefailtrot", tostring(ichargefailtrot))
-    SetVariable("ichargetrotratio", tostring(ichargetrotratio))
-
-    SetVariable("ichargesuccesscanter", tostring(ichargesuccesscanter))
-    SetVariable("ichargefailcanter", tostring(ichargefailcanter))
-    SetVariable("ichargecanterratio", tostring(ichargecanterratio))
-
-    SetVariable("ichargesuccessgallop", tostring(ichargesuccessgallop))
-    SetVariable("ichargefailgallop", tostring(ichargefailgallop))
-    SetVariable("ichargegallopratio", tostring(ichargegallopratio))
+	-- Handling Variables
+	for i, VarHName in ipairs(VarHNames) do
+		SetVariable("i" .. VarHName .. "success", tostring(_G['i' .. VarHName .. 'success']))
+		SetVariable("i" .. VarHName .. "fail", tostring(_G['i' .. VarHName .. 'fail']))
+		SetVariable("i" .. VarHName .. "ratio", tostring(_G['i' .. VarHName .. 'ratio']))
+	end
+	-- Handling Variables that don't have a fail ratio
+	for i, VarXName in ipairs(VarXNames) do
+		SetVariable("i" .. VarXName, tostring(_G['i' .. VarXName]))
+	end
+	-- Charge Variables
+	for i, VarCName in ipairs(VarCNames) do
+		SetVariable("ichargesuccess" .. VarCName, tostring(_G['ichargesuccess' .. VarCName]))
+		SetVariable("ichargefail" .. VarCName, tostring(_G['ichargefail' .. VarCName]))
+		SetVariable("icharge" .. VarCName .. "ratio", tostring(_G['icharge' .. VarCName .. 'ratio']))
+	end
 end
+  
 ]]>
 </script> 
 </muclient>
