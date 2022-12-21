@@ -1,6 +1,6 @@
 # Horse Tracker
 
-**V1.5 now includes Riding data, should save data when mushclient closed**  
+**V1.6 now includes resistance to tipping during combat**  
 
 Keep track of your success rates when using your horse  
 Plugin cobbled together by Proeliator  
@@ -12,4 +12,4 @@ To reset just the charge stats: HorseChargeReset
 
 Example of how it looks when 'HorseStats' is entered:
 
-<img width="454" alt="Screenshot 2022-12-03 at 14 27 44" src="https://user-images.githubusercontent.com/119447171/205445841-41cd21f7-b47d-454b-88b9-844a2f0a5e60.png">
+<img width="436" alt="Screenshot 2022-12-21 at 11 54 48" src="https://user-images.githubusercontent.com/119447171/208899464-71ee52d3-dca1-4f2a-84ae-d7bdcd2722d7.png">
