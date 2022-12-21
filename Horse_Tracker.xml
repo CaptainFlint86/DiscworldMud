@@ -10,7 +10,7 @@
    date_written="2022-11-21 10:05:30"
    save_state="y"
    requires="5.06"
-   version="1.5"
+   version="1.6"
    >
 </plugin>
 
@@ -64,7 +64,7 @@
   >
   </trigger>
 
-  <trigger
+<trigger
    enabled="y"
    keep_evaluating="y"
    match="You try to climb onto .+horse, but .+easily shakes you off and you land with a thump on the ground."
@@ -76,7 +76,7 @@
   >
   </trigger>
 
-  <trigger
+<trigger
    enabled="y"
    keep_evaluating="y"
    match="You .+ horse's pair of brown leather saddlebags."
@@ -88,7 +88,7 @@
   >
   </trigger>
 
-  <trigger
+<trigger
    enabled="y"
    keep_evaluating="y"
    match="You try to access .+ horse's saddlebag and promptly get kicked for your trouble."
@@ -100,7 +100,7 @@
   >
   </trigger>
 
-  <trigger
+<trigger
    enabled="y"
    keep_evaluating="y"
    match="You try to convince .+ horse to follow you, but .+ is having none of it."
@@ -112,7 +112,7 @@
   >
   </trigger>
 
-  <trigger
+<trigger
    enabled="y"
    keep_evaluating="y"
    match=".+ horse starts to follow you."
@@ -124,7 +124,7 @@
   >
   </trigger>
 
-  <trigger
+<trigger
    enabled="y"
    keep_evaluating="y"
    match="You dress .+ horse with the"
@@ -136,7 +136,7 @@
   >
   </trigger>
 
-  <trigger
+<trigger
    enabled="y"
    keep_evaluating="y"
    match="You try to dress .+ horse with the "
@@ -148,7 +148,7 @@
   >
   </trigger>
 
-  <trigger
+<trigger
    enabled="y"
    keep_evaluating="y"
    match="You approach .+ horse, preparing to groom"
@@ -160,7 +160,7 @@
   >
   </trigger>
 
-  <trigger
+<trigger
    enabled="y"
    keep_evaluating="y"
    match="You pick out a brush and have a go at .+ horse's .+ with it"
@@ -172,7 +172,7 @@
   >
   </trigger>
 
-  <trigger
+<trigger
    enabled="y"
    keep_evaluating="y"
    match="You mess up the rhythm of your riding and are promptly tossed off .+ horse onto the ground."
@@ -184,7 +184,7 @@
   >
   </trigger>
 
-  <trigger
+<trigger
    enabled="y"
    keep_evaluating="y"
    match=".+ horse seems to get bored of following you and wanders off."
@@ -195,7 +195,8 @@
    name="wanderoff"
   >
   </trigger>	
-	<trigger
+	
+<trigger
    enabled="y"
    keep_evaluating="y"
    match="You tell .+ horse to take you to .+ and .+ starts off at a trot."
@@ -206,7 +207,8 @@
    name="ridesuccess"
   >
   </trigger>
-	<trigger
+	
+<trigger
    enabled="y"
    keep_evaluating="y"
    match="You tell .+ horse to take you to .+, but .+ seems unwilling to move."
@@ -217,7 +219,32 @@
    name="ridefail"
   >
   </trigger>	
-	<trigger
+
+<trigger
+   enabled="y"
+   keep_evaluating="y"
+   match=".+ you, almost unseating you from the .+ horse."
+   omit_from_output="n"
+   sequence="24"
+   regexp="y"
+   script="HorseHandler"
+   name="tipsuccess"
+  >
+  </trigger>	
+	 
+<trigger
+   enabled="y"
+   keep_evaluating="y"
+   match=".+ off the .+ horse, sending you crashing to the ground."
+   omit_from_output="n"
+   sequence="24"
+   regexp="y"
+   script="HorseHandler"
+   name="tipfail"
+  >
+  </trigger>	
+	
+<trigger
    enabled="y"
    keep_evaluating="n"
    match="You hunch down over .+ horse and spur .+ into a (\w*) at the"
@@ -228,7 +255,8 @@
    name="chargesuccess"
   >
   </trigger>
-	<trigger
+	
+<trigger
    enabled="y"
    keep_evaluating="n"
    match="You hunch down over .+ horse and try to spur .+ into a (\w*) at the"
@@ -244,37 +272,29 @@
 <script>
 <![CDATA[
 -- Lets load our variables from Mush
+function LoadVariables ()
 --Variables used for retrieving/storing/reseting values
-	VarHNames = {'mount', 'stash', 'lead', 'dress', 'groom', 'ride'}
+	VarHNames = {'mount', 'stash', 'lead', 'dress', 'groom', 'ride', 'tip'}
 	VarXNames = {'falloff', 'wanderoff'}
 	VarCNames = {'walk', 'trot', 'canter', 'gallop'}
 
 -- Handling Variables
 	for i, VarHName in ipairs(VarHNames) do
-		_G['i' .. VarHName .. 'success'] = tonumber(GetVariable("i" .. VarHName .. "success"))
-		_G['i' .. VarHName .. 'fail'] = tonumber(GetVariable("i" .. VarHName .. "fail"))
-		_G['i' .. VarHName .. 'ratio'] = tostring(GetVariable("i" .. VarHName .. "ratio"))
-		-- Defaults if Nil returned
-		if (_G['i' .. VarHName .. 'success'] == nil) then _G['i' .. VarHName .. 'success'] = 0 end
-		if (_G['i' .. VarHName .. 'fail'] == nil) then _G['i' .. VarHName .. 'fail'] = 0 end
-		if (_G['i' .. VarHName .. 'ratio'] == nil) then _G['i' .. VarHName .. 'ratio'] = "-" end
+		_G['i' .. VarHName .. 'success'] = tonumber(GetVariable("i" .. VarHName .. "success")) or 0
+		_G['i' .. VarHName .. 'fail'] = tonumber(GetVariable("i" .. VarHName .. "fail")) or 0
+		_G['i' .. VarHName .. 'ratio'] = tostring(GetVariable("i" .. VarHName .. "ratio") or "-")
 	end
 -- Handling Variables that don't have a fail ratio
 	for i, VarXName in ipairs(VarXNames) do
-		_G['i' .. VarXName] = tonumber(GetVariable("i" .. VarXName))
-		-- Defaults if Nil returned
-		if (_G['i' .. VarXName] == nil) then _G['i' .. VarXName] = 0 end
+		_G['i' .. VarXName] = tonumber(GetVariable("i" .. VarXName)) or 0
 	end
 -- Charge Variables
 	for i, VarCName in ipairs(VarCNames) do
-		_G['ichargesuccess' .. VarCName] = tonumber(GetVariable("ichargesuccess" .. VarCName))
-		_G['ichargefail' .. VarCName] = tonumber(GetVariable("ichargefail" .. VarCName))
-		_G['icharge' .. VarCName .. 'ratio'] = tostring(GetVariable("icharge" .. VarCName .. "ratio"))
-		-- Defaults if Nil returned
-		if (_G['ichargesuccess' .. VarCName] == nil) then _G['ichargesuccess' .. VarCName] = 0 end
-		if (_G['ichargefail' .. VarCName] == nil) then _G['ichargefail' .. VarCName] = 0 end
-		if (_G['icharge' .. VarCName .. 'ratio'] == nil) then _G['icharge' .. VarCName .. 'ratio'] = "-" end
+		_G['ichargesuccess' .. VarCName] = tonumber(GetVariable("ichargesuccess" .. VarCName)) or 0
+		_G['ichargefail' .. VarCName] = tonumber(GetVariable("ichargefail" .. VarCName)) or 0
+		_G['icharge' .. VarCName .. 'ratio'] = tostring(GetVariable("icharge" .. VarCName .. "ratio") or "-")
 	end
+end
 
 -- When Plugin is installed
 function OnPluginInstall ()
@@ -282,6 +302,7 @@ ColourNote("orange","", "Horse tracker has been installed. Use 'HorseStats' to s
 ColourNote("orange","", "'HorseStatsReset' will reset all data.")
 ColourNote("orange","", "'HorseHandlerReset' will reset handler data.")
 ColourNote("orange","", "'HorseChargeReset' will reset charge data.")
+LoadVariables ()
 end
 
 -- Reset All Horse Statistics
@@ -349,6 +370,7 @@ function MyHorseStats ()
     ColourNote("orange","", "Groom:          Success: " .. igroomsuccess .. "\tFail: ".. igroomfail .. " \t(" .. igroomratio .. ")")
     ColourNote("orange","", "Dress:          Success: " .. idresssuccess .. "\tFail: ".. idressfail .. " \t(" .. idressratio .. ")")
     ColourNote("orange","", "Riding:         Success: " .. iridesuccess .. "\tFail: ".. iridefail .. " \t(" .. irideratio .. ")")
+    ColourNote("orange","", "Resist tipped:  Success: " .. itipsuccess .. "\tFail: ".. itipfail .. " \t(" .. itipratio .. ")")
     ColourNote("orange","", "You have fallen off " .. ifalloff .. " times")
     ColourNote("orange","", "Your horse has wandered off " .. iwanderoff .. " times")
     ColourNote("orange","", "Charge/Storm")
