@@ -272,12 +272,12 @@
 <script>
 <![CDATA[
 -- Lets load our variables from Mush
-function LoadVariables ()
+
 --Variables used for retrieving/storing/reseting values
 	VarHNames = {'mount', 'stash', 'lead', 'dress', 'groom', 'ride', 'tip'}
 	VarXNames = {'falloff', 'wanderoff'}
 	VarCNames = {'walk', 'trot', 'canter', 'gallop'}
-
+function LoadVariables ()
 -- Handling Variables
 	for i, VarHName in ipairs(VarHNames) do
 		_G['i' .. VarHName .. 'success'] = tonumber(GetVariable("i" .. VarHName .. "success")) or 0
