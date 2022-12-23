@@ -231,6 +231,18 @@
    name="tipsuccess"
   >
   </trigger>	
+	
+<trigger
+   enabled="y"
+   keep_evaluating="y"
+   match=".+ you, slightly unseating you from the .+ horse before you regain your balance."
+   omit_from_output="n"
+   sequence="24"
+   regexp="y"
+   script="HorseHandler"
+   name="tipsuccess"
+  >
+  </trigger>
 	 
 <trigger
    enabled="y"
