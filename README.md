@@ -1,6 +1,6 @@
 # Horse Tracker
 
-**V1.6.1 now includes resistance to tipping during combat**  
+**V1.7 now includes resistance to tipping during combat**  
 **fixed silly bug that stopped tipping stats from registering**
 
 
