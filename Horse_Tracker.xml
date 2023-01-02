@@ -10,7 +10,7 @@
    date_written="2022-11-21 10:05:30"
    save_state="y"
    requires="5.06"
-   version="1.6"
+   version="1.6.1"
    >
 </plugin>
 
@@ -228,7 +228,7 @@
    sequence="24"
    regexp="y"
    script="HorseHandler"
-   name="tipsuccess"
+   name="tipsuccess1"
   >
   </trigger>	
 	
@@ -240,7 +240,7 @@
    sequence="24"
    regexp="y"
    script="HorseHandler"
-   name="tipsuccess"
+   name="tipsuccess2"
   >
   </trigger>
 	 
@@ -360,6 +360,11 @@ end
 function HorseHandler (sName, sline, wildcards)
 	s = string.gsub(sName,"success","")
 	s = string.gsub(s,"fail","")
+
+	if string.match(s,"%d") then
+	s = string.gsub(s,"%d","")
+	sName = string.gsub(sName,"%d","")
+	end
 
 	_G['i' .. sName] = _G['i' .. sName] + 1
 
