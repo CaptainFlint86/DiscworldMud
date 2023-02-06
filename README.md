@@ -2,6 +2,7 @@
 
 **V1.7 now includes resistance to tipping during combat**  
 **fixed silly bug that stopped tipping stats from registering**
+
 **added colour highlights to text, very fancy!**
 
 
