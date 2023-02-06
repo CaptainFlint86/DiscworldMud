@@ -54,6 +54,7 @@
 <triggers>
   <trigger
    enabled="y"
+   custom_colour="15"
    keep_evaluating="y"
    match="You mount .+the .+horse."
    omit_from_output="n"
@@ -66,6 +67,7 @@
 
 <trigger
    enabled="y"
+   custom_colour="7"
    keep_evaluating="y"
    match="You try to climb onto .+horse, but .+easily shakes you off and you land with a thump on the ground."
    omit_from_output="n"
@@ -78,6 +80,7 @@
 
 <trigger
    enabled="y"
+   custom_colour="15"
    keep_evaluating="y"
    match="You .+ horse's pair of brown leather saddlebags."
    omit_from_output="n"
@@ -90,6 +93,7 @@
 
 <trigger
    enabled="y"
+   custom_colour="7"
    keep_evaluating="y"
    match="You try to access .+ horse's saddlebag and promptly get kicked for your trouble."
    omit_from_output="n"
@@ -102,6 +106,7 @@
 
 <trigger
    enabled="y"
+   custom_colour="7"
    keep_evaluating="y"
    match="You try to convince .+ horse to follow you, but .+ is having none of it."
    omit_from_output="n"
@@ -114,6 +119,7 @@
 
 <trigger
    enabled="y"
+   custom_colour="15"
    keep_evaluating="y"
    match=".+ horse starts to follow you."
    omit_from_output="n"
@@ -126,6 +132,7 @@
 
 <trigger
    enabled="y"
+   custom_colour="15"
    keep_evaluating="y"
    match="You dress .+ horse with the"
    omit_from_output="n"
@@ -138,6 +145,7 @@
 
 <trigger
    enabled="y"
+   custom_colour="7"
    keep_evaluating="y"
    match="You try to dress .+ horse with the "
    omit_from_output="n"
@@ -150,6 +158,7 @@
 
 <trigger
    enabled="y"
+   custom_colour="15"
    keep_evaluating="y"
    match="You approach .+ horse, preparing to groom"
    omit_from_output="n"
@@ -162,6 +171,7 @@
 
 <trigger
    enabled="y"
+   custom_colour="7"
    keep_evaluating="y"
    match="You pick out a brush and have a go at .+ horse's .+ with it"
    omit_from_output="n"
@@ -174,6 +184,7 @@
 
 <trigger
    enabled="y"
+   custom_colour="7"
    keep_evaluating="y"
    match="You mess up the rhythm of your riding and are promptly tossed off .+ horse onto the ground."
    omit_from_output="n"
@@ -186,6 +197,7 @@
 
 <trigger
    enabled="y"
+   custom_colour="7"
    keep_evaluating="y"
    match=".+ horse seems to get bored of following you and wanders off."
    omit_from_output="n"
