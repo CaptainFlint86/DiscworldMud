@@ -1,9 +1,7 @@
 # Horse Tracker
 
-**V1.8 now includes resistance to tipping during combat**  
-**fixed silly bug that stopped tipping stats from registering**
-
-**added colour highlights to text, very fancy!**
+**V1.9**
+**Fixed minor issues with colour triggers**
 
 
 Keep track of your success rates when using your horse  
