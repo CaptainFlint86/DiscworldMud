@@ -1,6 +1,6 @@
 # Horse Tracker
 
-**V1.9**
+**V1.11**
 **Fixed minor issues with colour triggers**
 
 
