@@ -25,7 +25,6 @@
   >
   </alias>
 
-
   <alias
    script="AddWarcry"
    match="warcry add (?P<what>.*)"
@@ -36,7 +35,6 @@
   >
   </alias>
 
-
   <alias
    script="RemoveWarcry"
    match="warcry delete (?P<what>.*)"
@@ -46,7 +44,6 @@
    sequence="1"
   >
   </alias>
-
 
   <alias
    script="EditWarcry"
@@ -77,7 +74,6 @@
    sequence="1"
   >
   </alias>
- 
 </aliases>
 
 <!--  Triggers  -->
@@ -93,8 +89,6 @@
    name="WarcryList"
   >
   </trigger>
-
-
 </triggers>
 
 <script>
@@ -117,84 +111,77 @@ end
 
 -- add to end of warcry table
 function AddWarcry (sName, sLine, wildcards)
-
 	if type(warcrytable) == 'table' then
-	table.insert(warcrytable,wildcards.what)
-	UpdateWarcry ()
-	ColourNote("orange","","You have added "..wildcards.what.." to your .warcries alias")
-else
-ColourNote("orange","","You need to import your warcry list first. Please type 'alias .warcries'.")
+		table.insert(warcrytable,wildcards.what)
+		UpdateWarcry ()
+		ColourNote("orange","","You have added "..wildcards.what.." to your .warcries alias")
+	else
+		ColourNote("orange","","You need to import your warcry list first. Please type 'alias .warcries'.")
+	end
 end
-end
-
 
 -- Edit a Warcry
 function EditWarcry (sName, sLine, wildcards)
-WarcryID = tonumber(wildcards.which)
-WarcryMSG = tostring(wildcards.what)
-	if type(warcrytable) == 'table' then
-	if warcrytable[WarcryID] == nil then
-	ColourNote("orange","","Invalid selection")
-	else
-	ColourNote("orange","",warcrytable[WarcryID] .. " has been changed to " .. WarcryMSG )
-	warcrytable[WarcryID] = WarcryMSG
-	UpdateWarcry ()
-	end
-	else
-	ColourNote("orange","","You need to import your warcry list first. Please type 'alias .warcries'.")
-end
+	WarcryID = tonumber(wildcards.which)
+	WarcryMSG = tostring(wildcards.what)
+		if type(warcrytable) == 'table' then
+			if warcrytable[WarcryID] == nil then
+				ColourNote("orange","","Invalid selection")
+			else
+				ColourNote("orange","",warcrytable[WarcryID] .. " has been changed to " .. WarcryMSG )
+				warcrytable[WarcryID] = WarcryMSG
+				UpdateWarcry ()
+			end
+		else
+			ColourNote("orange","","You need to import your warcry list first. Please type 'alias .warcries'.")
+		end
 end
 
 -- remove a warcry from the table
 function RemoveWarcry (sName, sLine, wildcards)
-WarcryID = tonumber(wildcards.what)
-	if type(warcrytable) == 'table' then
-	if warcrytable[WarcryID] == nil then
-	ColourNote("orange","","Invalid selection")
-	else
-	ColourNote("orange","",wildcards.what .." "..warcrytable[WarcryID] .. " has been deleted.")
-	table.remove(warcrytable,wildcards.what)
-	UpdateWarcry ()
-	end
-	else
-	ColourNote("orange","","You need to import your warcry list first. Please type 'alias .warcries'.")
-end
+	WarcryID = tonumber(wildcards.what)
+		if type(warcrytable) == 'table' then
+			if warcrytable[WarcryID] == nil then
+				ColourNote("orange","","Invalid selection")
+			else
+				ColourNote("orange","",wildcards.what .." "..warcrytable[WarcryID] .. " has been deleted.")
+				table.remove(warcrytable,wildcards.what)
+				UpdateWarcry ()
+			end
+		else
+			ColourNote("orange","","You need to import your warcry list first. Please type 'alias .warcries'.")
+		end
 end
 
 -- update .wacries alias in the mud
 function UpdateWarcry ()
-warcrylist = "alias .warcries "
-
-for k,v in pairs(warcrytable) do
-    warcrylist = warcrylist .. v .. ";"
-end
-
-warcrylist = warcrylist:sub(1, -2)
-
-SendNoEcho(warcrylist)
+	warcrylist = "alias .warcries "
+		for k,v in pairs(warcrytable) do
+		    warcrylist = warcrylist .. v .. ";"
+		end
+	warcrylist = warcrylist:sub(1, -2)
+	SendNoEcho(warcrylist)
 end
 
 -- Display the contents of the warcry table
 function WarcryShowList ()
-for k,v in pairs(warcrytable) do
-ColourNote("orange","",k.." "..v)
-end
+	for k,v in pairs(warcrytable) do
+	ColourNote("orange","",k.." "..v)
+	end
 end
 
 -- Update the warcry table from the mud
 function UpdateWarcry ()
-SendNoEcho("alias .warcries")
+	SendNoEcho("alias .warcries")
 end
 
 -- Help!
 function HelpWarcry ()
-
-ColourNote("orange","","\"Warcry Update\" will pull you .warcries alias into the plugin. ")
-ColourNote("orange","","\"Warcry List\" will list your warcries. ")
-ColourNote("orange","","\"Warcry Add [warcry message]\" to add a new warcry. ")
-ColourNote("orange","","\"Warcry Delete [number]\" will delete the specified warcry from your list. ")
-ColourNote("orange","","\"Warcry Edit [number] [warcry message]\" changed the specified warcry to a different message.")
-
+	ColourNote("orange","","\"Warcry Update\" will pull you .warcries alias into the plugin. ")
+	ColourNote("orange","","\"Warcry List\" will list your warcries. ")
+	ColourNote("orange","","\"Warcry Add [warcry message]\" to add a new warcry. ")
+	ColourNote("orange","","\"Warcry Delete [number]\" will delete the specified warcry from your list. ")
+	ColourNote("orange","","\"Warcry Edit [number] [warcry message]\" changed the specified warcry to a different message.")
 end
 
 ]]>
