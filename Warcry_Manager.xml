@@ -20,7 +20,7 @@
    match="Warcry List"
    enabled="y"
    ignore_case="y"
-	omit_from_output="y"
+   omit_from_output="y"
    sequence="1"
   >
   </alias>
@@ -30,7 +30,7 @@
    match="warcry add (?P<what>.*)"
    enabled="y"
    ignore_case="y"
-	regexp="y"
+   regexp="y"
    sequence="1"
   >
   </alias>
@@ -40,7 +40,7 @@
    match="warcry delete (?P<what>.*)"
    enabled="y"
    ignore_case="y"
-	regexp="y"
+   regexp="y"
    sequence="1"
   >
   </alias>
@@ -50,7 +50,7 @@
    match="warcry edit (?P<which>\S*) (?P<what>.*)"
    enabled="y"
    ignore_case="y"
-	regexp="y"
+   regexp="y"
    sequence="1"
   >
   </alias>
@@ -60,7 +60,7 @@
    match="warcry update"
    enabled="y"
    ignore_case="y"
-	regexp="y"
+   regexp="y"
    sequence="1"
   >
   </alias>
@@ -70,7 +70,7 @@
    match="warcry help"
    enabled="y"
    ignore_case="y"
-	regexp="y"
+   regexp="y"
    sequence="1"
   >
   </alias>
