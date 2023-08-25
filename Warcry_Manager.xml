@@ -106,6 +106,7 @@ end
 -- Load the current warcry list to a table
 function WarcryToString (sName, sLine, wildcards)
 WClist = string.gsub(tostring (sLine),".warcries: ","")
+WClist = string.gsub(WClist," %$%*%$","")
 	WCsplit(WClist,";")
 end
 
