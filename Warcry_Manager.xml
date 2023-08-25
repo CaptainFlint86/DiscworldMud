@@ -56,7 +56,7 @@
   </alias>
 
   <alias
-   script="UpdateWarcry"
+   script="PullWarcry"
    match="warcry update"
    enabled="y"
    ignore_case="y"
@@ -172,7 +172,7 @@ function WarcryShowList ()
 end
 
 -- Update the warcry table from the mud
-function UpdateWarcry ()
+function PullWarcry ()
 	SendNoEcho("alias .warcries")
 end
 
