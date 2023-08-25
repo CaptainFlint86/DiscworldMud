@@ -20,8 +20,8 @@
    match="Warcry List"
    enabled="y"
    ignore_case="y"
-   omit_from_output="y"
-   sequence="1"
+   omit_from_output="n"
+   sequence="10"
   >
   </alias>
 
@@ -31,7 +31,7 @@
    enabled="y"
    ignore_case="y"
    regexp="y"
-   sequence="1"
+   sequence="10"
   >
   </alias>
 
@@ -41,7 +41,7 @@
    enabled="y"
    ignore_case="y"
    regexp="y"
-   sequence="1"
+   sequence="10"
   >
   </alias>
 
@@ -51,7 +51,7 @@
    enabled="y"
    ignore_case="y"
    regexp="y"
-   sequence="1"
+   sequence="10"
   >
   </alias>
 
@@ -61,7 +61,7 @@
    enabled="y"
    ignore_case="y"
    regexp="y"
-   sequence="1"
+   sequence="10"
   >
   </alias>
 
@@ -71,7 +71,7 @@
    enabled="y"
    ignore_case="y"
    regexp="y"
-   sequence="1"
+   sequence="10"
   >
   </alias>
 </aliases>
@@ -82,17 +82,37 @@
    enabled="y"
    keep_evaluating="y"
    match="^.warcries: .+$"
-   omit_from_output="n"
-   sequence="18"
+   omit_from_output="y"
+   sequence="1"
    regexp="y"
    script="WarcryToString"
    name="WarcryList"
+  >
+  </trigger>
+
+  <trigger
+   enabled="n"
+   keep_evaluating="y"
+   match="^Changed alias .+warcries.+ from .+$"
+   omit_from_output="y"
+   sequence="2"
+   regexp="y"
+   script="WarcryDisableTrigger"
+   name="WarcryHideUpdate"
   >
   </trigger>
 </triggers>
 
 <script>
 <![CDATA[
+-- 
+function WarcryEnableTrigger ()
+	EnableTrigger("WarcryHideUpdate",true)
+end
+-- 
+function WarcryDisableTrigger ()
+	EnableTrigger("WarcryHideUpdate",false)
+end
 
 -- Turn the .warcries string to a table
 function WCsplit (string, separator)
@@ -105,21 +125,23 @@ end
 
 -- Load the current warcry list to a table
 function WarcryToString (sName, sLine, wildcards)
-WClist = string.gsub(tostring (sLine),".warcries: ","")
-WClist = string.gsub(WClist," %$%*%$","")
+	WClist = string.gsub(tostring (sLine),".warcries: ","")
+	WClist = string.gsub(WClist," %$%*%$","")
 	WCsplit(WClist,";")
+	ColourNote("orange","","Warcries successfully imported")
 end
 
 -- add to end of warcry table
 function AddWarcry (sName, sLine, wildcards)
 	if type(warcrytable) == 'table' then
-		table.insert(warcrytable,wildcards.what)
-		UpdateWarcry ()
-		ColourNote("orange","","You have added "..wildcards.what.." to your .warcries alias")
-	else
+				table.insert(warcrytable,wildcards.what)
+				UpdateWarcry ()
+				ColourNote("orange","","You have added "..wildcards.what.." to your .warcries alias")
+			else
 		ColourNote("orange","","You need to import your warcry list first. Please type 'Warcry Update'.")
 	end
 end
+
 
 -- Edit a Warcry
 function EditWarcry (sName, sLine, wildcards)
@@ -156,18 +178,23 @@ end
 
 -- update .wacries alias in the mud
 function UpdateWarcry ()
+	WarcryEnableTrigger ()
 	warcrylist = "alias .warcries "
-		for k,v in pairs(warcrytable) do
-		    warcrylist = warcrylist .. v .. ";"
-		end
+	for k,v in pairs(warcrytable) do
+    		warcrylist = warcrylist .. v .. ";"
+	end
 	warcrylist = warcrylist:sub(1, -2)
 	SendNoEcho(warcrylist)
 end
 
 -- Display the contents of the warcry table
 function WarcryShowList ()
-	for k,v in pairs(warcrytable) do
-	ColourNote("orange","",k.." "..v)
+	if type(warcrytable) == 'table' then
+			for k,v in pairs(warcrytable) do
+			ColourNote("orange","",k.." "..v)
+			end
+		else
+		ColourNote("orange","","No warcries loaded, please type 'Warcry Update' to load .warcries alias into the plugin.")
 	end
 end
 
