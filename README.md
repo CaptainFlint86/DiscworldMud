@@ -31,3 +31,5 @@ From there you can:
 
 **Make sure you have 'alias .warcries' in-game before you try to use the plugin**
 
+<img width="805" alt="image" src="https://github.com/CaptainFlint86/DiscworldMud/assets/119447171/070ac818-67d8-42ec-abdd-a3aa80a46a51">
+
