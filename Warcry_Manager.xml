@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE muclient>
+<muclient>
+<plugin
+   name="Warcry_Manager"
+   author="Proeliator"
+   id="b44807fefdde4d4996389aaa"
+   language="Lua"
+   purpose="Manage your .warcries alias"
+   date_written="2023-08-25 12:03:31"
+   requires="5.06"
+   version="1.0"
+   >
+</plugin>
+
+<!--  Aliases  -->
+<aliases>
+  <alias
+   script="WarcryShowList"
+   match="Warcry List"
+   enabled="y"
+   ignore_case="y"
+	omit_from_output="y"
+   sequence="1"
+  >
+  </alias>
+
+
+  <alias
+   script="AddWarcry"
+   match="warcry add (?P<what>.*)"
+   enabled="y"
+   ignore_case="y"
+	regexp="y"
+   sequence="1"
+  >
+  </alias>
+
+
+  <alias
+   script="RemoveWarcry"
+   match="warcry delete (?P<what>.*)"
+   enabled="y"
+   ignore_case="y"
+	regexp="y"
+   sequence="1"
+  >
+  </alias>
+
+
+  <alias
+   script="EditWarcry"
+   match="warcry edit (?P<which>\S*) (?P<what>.*)"
+   enabled="y"
+   ignore_case="y"
+	regexp="y"
+   sequence="1"
+  >
+  </alias>
+
+  <alias
+   script="UpdateWarcry"
+   match="warcry update"
+   enabled="y"
+   ignore_case="y"
+	regexp="y"
+   sequence="1"
+  >
+  </alias>
+
+  <alias
+   script="HelpWarcry"
+   match="warcry help"
+   enabled="y"
+   ignore_case="y"
+	regexp="y"
+   sequence="1"
+  >
+  </alias>
+ 
+</aliases>
+
+<!--  Triggers  -->
+<triggers>
+  <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="^.warcries: .+$"
+   omit_from_output="n"
+   sequence="18"
+   regexp="y"
+   script="WarcryToString"
+   name="WarcryList"
+  >
+  </trigger>
+
+
+</triggers>
+
+<script>
+<![CDATA[
+
+-- Turn the .warcries string to a table
+function WCsplit (string, separator)
+    warcrytable = {}
+    for str in string.gmatch(string, "[^"..separator.."]+") do
+        table.insert (warcrytable, str)
+    end
+    return warcrytable
+end
+
+-- Load the current warcry list to a table
+function WarcryToString (sName, sLine, wildcards)
+WClist = string.gsub(tostring (sLine),".warcries: ","")
+	WCsplit(WClist,";")
+end
+
+-- add to end of warcry table
+function AddWarcry (sName, sLine, wildcards)
+
+	if type(warcrytable) == 'table' then
+	table.insert(warcrytable,wildcards.what)
+	UpdateWarcry ()
+	ColourNote("orange","","You have added "..wildcards.what.." to your .warcries alias")
+else
+ColourNote("orange","","You need to import your warcry list first. Please type 'alias .warcries'.")
+end
+end
+
+
+-- Edit a Warcry
+function EditWarcry (sName, sLine, wildcards)
+WarcryID = tonumber(wildcards.which)
+WarcryMSG = tostring(wildcards.what)
+	if type(warcrytable) == 'table' then
+	if warcrytable[WarcryID] == nil then
+	ColourNote("orange","","Invalid selection")
+	else
+	ColourNote("orange","",warcrytable[WarcryID] .. " has been changed to " .. WarcryMSG )
+	warcrytable[WarcryID] = WarcryMSG
+	UpdateWarcry ()
+	end
+	else
+	ColourNote("orange","","You need to import your warcry list first. Please type 'alias .warcries'.")
+end
+end
+
+-- remove a warcry from the table
+function RemoveWarcry (sName, sLine, wildcards)
+WarcryID = tonumber(wildcards.what)
+	if type(warcrytable) == 'table' then
+	if warcrytable[WarcryID] == nil then
+	ColourNote("orange","","Invalid selection")
+	else
+	ColourNote("orange","",wildcards.what .." "..warcrytable[WarcryID] .. " has been deleted.")
+	table.remove(warcrytable,wildcards.what)
+	UpdateWarcry ()
+	end
+	else
+	ColourNote("orange","","You need to import your warcry list first. Please type 'alias .warcries'.")
+end
+end
+
+-- update .wacries alias in the mud
+function UpdateWarcry ()
+warcrylist = "alias .warcries "
+
+for k,v in pairs(warcrytable) do
+    warcrylist = warcrylist .. v .. ";"
+end
+
+warcrylist = warcrylist:sub(1, -2)
+
+SendNoEcho(warcrylist)
+end
+
+-- Display the contents of the warcry table
+function WarcryShowList ()
+for k,v in pairs(warcrytable) do
+ColourNote("orange","",k.." "..v)
+end
+end
+
+-- Update the warcry table from the mud
+function UpdateWarcry ()
+SendNoEcho("alias .warcries")
+end
+
+-- Help!
+function HelpWarcry ()
+
+ColourNote("orange","","\"Warcry Update\" will pull you .warcries alias into the plugin. ")
+ColourNote("orange","","\"Warcry List\" will list your warcries. ")
+ColourNote("orange","","\"Warcry Add [warcry message]\" to add a new warcry. ")
+ColourNote("orange","","\"Warcry Delete [number]\" will delete the specified warcry from your list. ")
+ColourNote("orange","","\"Warcry Edit [number] [warcry message]\" changed the specified warcry to a different message.")
+
+end
+
+]]>
+</script> 
+</muclient>
