@@ -25,7 +25,7 @@ To start type in "Warcry Update" to pull your .warcries into the plugin.
 From there you can:  
 "Warcry Add [warcry message]" to add a new warcry  
 "Warcry delete [warcry number]" to remove a warcry you no longer want  
-"Warcry Edite [warcry number] [warcry message]" to change on of your warcries (handy if you're good at making typos)  
+"Warcry Edit [warcry number] [warcry message]" to change on of your warcries (handy if you're good at making typos)  
 "Warcry Help" will give you a list of commands in-game
 
 **Make sure you have 'alias .warcries' in-game before you try to use the plugin**. 
