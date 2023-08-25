@@ -116,7 +116,7 @@ function AddWarcry (sName, sLine, wildcards)
 		UpdateWarcry ()
 		ColourNote("orange","","You have added "..wildcards.what.." to your .warcries alias")
 	else
-		ColourNote("orange","","You need to import your warcry list first. Please type 'alias .warcries'.")
+		ColourNote("orange","","You need to import your warcry list first. Please type 'Warcry Update'.")
 	end
 end
 
@@ -133,7 +133,7 @@ function EditWarcry (sName, sLine, wildcards)
 				UpdateWarcry ()
 			end
 		else
-			ColourNote("orange","","You need to import your warcry list first. Please type 'alias .warcries'.")
+			ColourNote("orange","","You need to import your warcry list first. Please type 'Warcry Update'.")
 		end
 end
 
@@ -149,7 +149,7 @@ function RemoveWarcry (sName, sLine, wildcards)
 				UpdateWarcry ()
 			end
 		else
-			ColourNote("orange","","You need to import your warcry list first. Please type 'alias .warcries'.")
+			ColourNote("orange","","You need to import your warcry list first. Please type 'Warcry Update'.")
 		end
 end
 
