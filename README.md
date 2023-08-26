@@ -16,7 +16,8 @@ Example of how it looks when 'HorseStats' is entered:
 <img width="436" alt="Screenshot 2022-12-21 at 11 54 48" src="https://user-images.githubusercontent.com/119447171/208899464-71ee52d3-dca1-4f2a-84ae-d7bdcd2722d7.png">
 
 # Warcry Manager  
-**V1.0**  
+**V1.1**  
+**Quite a few bugs have been squished**
 
 Keeping track of your warcries in 'alias .warcries' can be a bit of a pain, let alone adding new warcries to the list or editing them.  
 This little plugin takes some of the faff out of all that and makes it simpler to managed your warcries.  
