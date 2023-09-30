@@ -33,3 +33,13 @@ From there you can:
 
 <img width="805" alt="image" src="https://github.com/CaptainFlint86/DiscworldMud/assets/119447171/070ac818-67d8-42ec-abdd-a3aa80a46a51">
 
+# Firebreathe Assessment  
+**V1.0** 
+
+Creates a table that keeps track of the results you get from firebreathing and 'firebreathe assay'
+
+Just type 'firebreathe list' to see your current results
+
+<img width="296" alt="Screenshot 2023-09-30 at 21 26 32" src="https://github.com/CaptainFlint86/DiscworldMud/assets/119447171/e58cdad8-b7b3-461d-8a59-fcc94921c644">
+
+
