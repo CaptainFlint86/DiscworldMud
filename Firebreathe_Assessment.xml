@@ -33,7 +33,7 @@
   <trigger
    enabled="y"
    keep_evaluating="y"
-   match="^(?P<fuel>\S*) is (a|an) (?P<strength>.*) fuel.$"
+   match="^\b(?P<fuel>[\w\s]*) is (a|an) (?P<strength>.*) fuel.$"
    omit_from_output="n"
    sequence="1"
    regexp="y"
