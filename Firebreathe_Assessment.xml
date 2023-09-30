@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE muclient>
+<muclient>
+<plugin
+   name="Firebreathe_Assessment"
+   author="Proeliator"
+   id="0bad6d00cb5a7eb6734787c7"
+   language="Lua"
+   purpose="Keep a track of fuels you've found"
+   date_written="2023-09-30 12:46:13"
+   requires="5.06"
+   version="1.0"
+   >
+
+</plugin>
+
+<!--  Aliases  -->
+<aliases>
+  <alias
+   script="FirebreatheShowList"
+   match="firebreathe list"
+   enabled="y"
+   ignore_case="y"
+   omit_from_output="n"
+   sequence="10"
+  >
+  </alias>
+</aliases>
+
+<!--  Triggers  -->
+<triggers>
+  <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="^(?P<fuel>\S*) is (a|an) (?P<strength>.*) fuel.$"
+   omit_from_output="n"
+   sequence="1"
+   regexp="y"
+   script="AddStrength"
+   name="FBFuel"
+  >
+  </trigger>
+
+  <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="^You drop to one knee and hold your .+ up in front of your face.  Pursing your lips, you spray a fine mist of (?P<fuel>.*) through the flame of your .+.  As the mist hits the flame it expands into a (?P<size>.*) fireball that (blossoms quickly before fading away.|engulfs the .+!)$"
+   omit_from_output="n"
+   sequence="1"
+   regexp="y"
+   script="AddSize"
+   name="FBSize"
+  >
+  </trigger>
+</triggers>
+
+<script>
+<![CDATA[
+require "serialize"
+fueltable = {}
+
+-- Do this when the plugin is loaded
+function OnPluginInstall () 
+	assert (loadstring (GetVariable ("fueltable") or "")) ()
+end - function OnPluginInstall
+
+
+-- Add fuel assay results to fuel table
+function AddStrength (sName, sLine, wildcards)
+	if type(fueltable) == 'table' then
+	FuelType = tostring(wildcards.fuel)
+	FuelStrength = tostring(wildcards.strength)
+
+		if fueltable[FuelType] == nil then
+			fueltable[FuelType] = tostring(FuelStrength .. "-unknown")
+		else
+			for i,j in string.gmatch(fueltable[FuelType], "(%w+)-(%w+)") do
+			    fueltable[FuelType] = tostring(FuelStrength .. "-" .. j)
+			end
+		end
+
+			ColourNote("orange","","Added assay results to table.")
+		else
+			ColourNote("orange","","Couldn't add assay results to table!")
+		end
+end - function AddStrength
+
+-- Add firebreathe results to fuel table
+function AddSize (sName, sLine, wildcards)
+	if type(fueltable) == 'table' then
+		FuelType = tostring(wildcards.fuel)
+		FuelSize = tostring(wildcards.size)
+		FuelType = FuelType:gsub("^%l", string.upper)
+
+	if fueltable[FuelType] == nil then
+		fueltable[FuelType] = tostring("unknown-" .. FuelSize)
+	else
+		for i,j in string.gmatch(fueltable[FuelType], "(%w+)-(%w+)") do
+		    fueltable[FuelType] = tostring(i .. "-" .. FuelSize)
+	    	end
+	end
+
+		ColourNote("orange","","Added fireball size to table.")
+	else
+		ColourNote("orange","","Couldn't add fireball size to table!")
+	end
+end -- function AddSize
+
+-- Display the contents of the fuel table
+function FirebreatheShowList ()
+	if type(fueltable) == 'table' then
+		var = 9
+		for k,v in pairs(fueltable) do
+			if string.len(k) > var then
+			var = string.len(k)
+		end
+	end
+	var = var+4
+	ColourNote("orange","",tostring(('%-' ..var..'s'):format("Fuel Type")) .. tostring(('%-12s'):format("Strength")) .. "Size")
+		for k,v in pairs(fueltable) do
+		     for i, j in string.gmatch(v, "(%w+)-(%w+)") do
+		         if i == "unknown" then
+		             i = "-"
+				end
+		         if j == "unknown" then
+		             j = "-"
+		             end
+            ColourNote("orange","",tostring(('%-'..var..'s'):format(tostring(k))).. tostring(('%-12s'):format(tostring(i))) .. j)
+ 		end	
+	end
+	else
+		ColourNote("orange","","No Table to display!")
+	end
+end -- function FirebreatheShowList
+
+-- Save the table when the plugin closes
+function OnPluginClose ()
+	SetVariable ("fueltable","fueltable = " .. serialize.save_simple(fueltable))
+end -- function OnPluginClose
+
+]]>
+</script> 
+</muclient>
