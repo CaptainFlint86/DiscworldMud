@@ -40,11 +40,22 @@
    name="FBFuel"
   >
   </trigger>
+  <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="^(?P<fuel>\w+) is (?P<strength>so insanely powerful that you feel drunk just from looking at it).$"
+   omit_from_output="n"
+   sequence="1"
+   regexp="y"
+   script="AddStrength"
+   name="FBFuel2"
+  >
+  </trigger>
 
   <trigger
    enabled="y"
    keep_evaluating="y"
-   match="^You drop to one knee and hold your .+ up in front of your face.  Pursing your lips, you spray a fine mist of (?P<fuel>.*) through the flame of your .+.  As the mist hits the flame it expands into a (?P<size>.*) fireball that (blossoms quickly before fading away.|engulfs the .+!)$"
+   match="^You drop to one knee and hold your .+ up in front of your face.  Pursing your lips, you spray a fine mist of (?P<fuel>.*) through the flame of your .+.  As the mist hits the flame it expands into a (?P<size>\S*)(, .+ fireball| fireball) that (blossoms quickly before fading away.|engulfs the .+!)$"
    omit_from_output="n"
    sequence="1"
    regexp="y"
@@ -110,13 +121,20 @@ end -- function AddSize
 function FirebreatheShowList ()
 	if type(fueltable) == 'table' then
 		var = 9
+		var2 = 10
 		for k,v in pairs(fueltable) do
 			if string.len(k) > var then
 			var = string.len(k)
+			end
+			for i, j in string.gmatch(v, "(.+)-(.+)") do
+			if string.len(i) > var2 then
+			var2 = string.len(i)
+			end
 		end
 	end
-	var = var+4
-	ColourNote("orange","",tostring(('%-' ..var..'s'):format("Fuel Type")) .. tostring(('%-15s'):format("Strength")) .. "Size")
+	var = var+5
+	var2 = var2+5
+	ColourNote("orange","",tostring(('%-' ..var..'s'):format("Fuel Type")) .. tostring(('%-'..var2..'s'):format("Strength")) .. "Size")
 		for k,v in pairs(fueltable) do
 		     for i, j in string.gmatch(v, "(.+)-(.+)") do
 		         if i == "unknown" then
@@ -125,7 +143,7 @@ function FirebreatheShowList ()
 		         if j == "unknown" then
 		             j = "-"
 		             end
-            ColourNote("orange","",tostring(('%-'..var..'s'):format(tostring(k))).. tostring(('%-15s'):format(tostring(i))) .. j)
+            ColourNote("orange","",tostring(('%-'..var..'s'):format(tostring(k))).. tostring(('%-'..var2..'s'):format(tostring(i))) .. j)
  		end	
 	end
 	else
