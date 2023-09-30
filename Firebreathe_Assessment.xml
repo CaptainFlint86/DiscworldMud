@@ -62,7 +62,7 @@ fueltable = {}
 -- Do this when the plugin is loaded
 function OnPluginInstall () 
 	assert (loadstring (GetVariable ("fueltable") or "")) ()
-end - function OnPluginInstall
+end -- function OnPluginInstall
 
 
 -- Add fuel assay results to fuel table
@@ -74,7 +74,7 @@ function AddStrength (sName, sLine, wildcards)
 		if fueltable[FuelType] == nil then
 			fueltable[FuelType] = tostring(FuelStrength .. "-unknown")
 		else
-			for i,j in string.gmatch(fueltable[FuelType], "(%w+)-(%w+)") do
+			for i,j in string.gmatch(fueltable[FuelType], "(.+)-(.+)") do
 			    fueltable[FuelType] = tostring(FuelStrength .. "-" .. j)
 			end
 		end
@@ -83,7 +83,7 @@ function AddStrength (sName, sLine, wildcards)
 		else
 			ColourNote("orange","","Couldn't add assay results to table!")
 		end
-end - function AddStrength
+end -- function AddStrength
 
 -- Add firebreathe results to fuel table
 function AddSize (sName, sLine, wildcards)
@@ -95,7 +95,7 @@ function AddSize (sName, sLine, wildcards)
 	if fueltable[FuelType] == nil then
 		fueltable[FuelType] = tostring("unknown-" .. FuelSize)
 	else
-		for i,j in string.gmatch(fueltable[FuelType], "(%w+)-(%w+)") do
+		for i,j in string.gmatch(fueltable[FuelType], "(.+)-(.+)") do
 		    fueltable[FuelType] = tostring(i .. "-" .. FuelSize)
 	    	end
 	end
@@ -116,16 +116,16 @@ function FirebreatheShowList ()
 		end
 	end
 	var = var+4
-	ColourNote("orange","",tostring(('%-' ..var..'s'):format("Fuel Type")) .. tostring(('%-12s'):format("Strength")) .. "Size")
+	ColourNote("orange","",tostring(('%-' ..var..'s'):format("Fuel Type")) .. tostring(('%-15s'):format("Strength")) .. "Size")
 		for k,v in pairs(fueltable) do
-		     for i, j in string.gmatch(v, "(%w+)-(%w+)") do
+		     for i, j in string.gmatch(v, "(.+)-(.+)") do
 		         if i == "unknown" then
 		             i = "-"
 				end
 		         if j == "unknown" then
 		             j = "-"
 		             end
-            ColourNote("orange","",tostring(('%-'..var..'s'):format(tostring(k))).. tostring(('%-12s'):format(tostring(i))) .. j)
+            ColourNote("orange","",tostring(('%-'..var..'s'):format(tostring(k))).. tostring(('%-15s'):format(tostring(i))) .. j)
  		end	
 	end
 	else
