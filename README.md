@@ -40,6 +40,6 @@ Creates a table that keeps track of the results you get from firebreathing and '
 
 Just type 'firebreathe list' to see your current results
 
-<img width="296" alt="Screenshot 2023-09-30 at 21 26 32" src="https://github.com/CaptainFlint86/DiscworldMud/assets/119447171/e58cdad8-b7b3-461d-8a59-fcc94921c644">
+<img width="780" alt="Screenshot 2023-09-30 at 23 19 23" src="https://github.com/CaptainFlint86/DiscworldMud/assets/119447171/c76dacb1-8699-4a75-900e-608eafe92a9c">
 
 
