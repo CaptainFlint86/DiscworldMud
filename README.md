@@ -40,6 +40,8 @@ Creates a table that keeps track of the results you get from firebreathing and '
 
 Just type 'firebreathe list' to see your current results
 
-<img width="780" alt="Screenshot 2023-09-30 at 23 19 23" src="https://github.com/CaptainFlint86/DiscworldMud/assets/119447171/c76dacb1-8699-4a75-900e-608eafe92a9c">
+<img width="780" alt="Screenshot 2023-09-30 at 23 19 23" src="https://github.com/CaptainFlint86/DiscworldMud/assets/119447171/02587525-2268-46e9-9bf9-f636a079db49">
+
+*there are known issues with the table not saving when Mushclient is closed.
 
 
