@@ -63,20 +63,20 @@
 
 -- Do this when the plugin is loaded
 function OnPluginInstall () 
-	_G['isandcast'] = tonumber(GetVariable("isandcast")) or 0
-	_G['isandfail'] = tonumber(GetVariable("isandfail")) or 0
+	isandcast = tonumber(GetVariable("isandcast")) or 0
+	isandfail = tonumber(GetVariable("isandfail")) or 0
 end -- function OnPluginInstall
 
 
 
 -- function for Mystic casting spells
 function MysticSandCast ()
-	_G['isandcast'] = _G['isandcast'] + 1
+	isandcast = isandcast + 1
 end -- function for Mystic casting spells
 
 -- function for Mystic casting spells
 function MysticSandFail ()
-	_G['isandfail'] = _G['isandfail'] + 1
+	isandfail = isandfail + 1
 end -- function for Mystic casting spells
 
 function MysticShowStats ()
@@ -86,8 +86,8 @@ end
 
 -- Save the table when the plugin closes
 function OnPluginClose ()
-	SetVariable("isandcast", tostring(_G['isandcast']))
-	SetVariable("isandfail", tostring(_G['isandfail']))
+	SetVariable("isandcast", "isandcast")
+	SetVariable("isandfail", "isandfail")
 end -- function OnPluginClose
 
 ]]>
