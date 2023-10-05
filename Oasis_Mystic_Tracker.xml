@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE muclient>
+<muclient>
+<plugin
+   name="Oasis_Mystic_Tracker"
+   author="Proeliator"
+   id="a502df7a2d59255de9188e31"
+   language="Lua"
+   purpose="Keep tabs on those silly Mystics throwing pocket sand"
+   date_written="2023-10-05 22:52:21"
+   save_state="y"
+   requires="5.06"
+   version="1.0"
+   >
+
+</plugin>
+
+<!--  Aliases  -->
+<aliases>
+  <alias
+   script="MysticShowStats"
+   match="mystic stats"
+   enabled="y"
+   ignore_case="y"
+   omit_from_output="n"
+   sequence="10"
+  >
+  </alias>
+</aliases>
+
+<!--  Triggers  -->
+<triggers>
+
+  <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="^The .+ scoops up a handful of sand and waves .+ hand over it mysteriously.$"
+   omit_from_output="n"
+   sequence="1"
+   regexp="y"
+   script="MysticSandCast"
+   name="SandCast"
+  >
+  </trigger>
+
+  <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="^The .+ hurls a handful of sand at you.  An eldritch gust of wind seizes it and swirls towards you, but you throw yourself out of the way.$"
+   omit_from_output="n"
+   sequence="1"
+   regexp="y"
+   script="MysticSandFail"
+   name="SandFail"
+  >
+  </trigger>
+
+
+</triggers>
+
+<script>
+<![CDATA[
+
+-- Do this when the plugin is loaded
+function OnPluginInstall () 
+	_G['isandcast'] = tonumber(GetVariable("isandcast")) or 0
+	_G['isandfail'] = tonumber(GetVariable("isandfail")) or 0
+end -- function OnPluginInstall
+
+
+
+-- function for Mystic casting spells
+function MysticSandCast ()
+	_G['isandcast'] = _G['isandcast'] + 1
+end -- function for Mystic casting spells
+
+-- function for Mystic casting spells
+function MysticSandFail ()
+	_G['isandfail'] = _G['isandfail'] + 1
+end -- function for Mystic casting spells
+
+function MysticShowStats ()
+ColourNote("orange","", "Mystic has tried to cast sand " .. isandcast .. " times. Failed: ".. isandfail .. " times.")
+end
+
+
+-- Save the table when the plugin closes
+function OnPluginClose ()
+	SetVariable("isandcast", tostring(_G['isandcast']))
+	SetVariable("isandfail", tostring(_G['isandfail']))
+end -- function OnPluginClose
+
+]]>
+</script> 
+</muclient>
