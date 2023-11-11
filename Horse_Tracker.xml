@@ -206,7 +206,20 @@
    script="HorseHandler"
    name="doorframe"
   >
-  </trigger>	
+  </trigger>
+
+<trigger
+   enabled="y"
+   custom_colour="7"
+   keep_evaluating="y"
+   match="^.+ horse seems to get bored of following you and wanders off.$"
+   omit_from_output="n"
+   sequence="24"
+   regexp="y"
+   script="HorseHandler"
+   name="wanderoff"
+  >
+  </trigger>
 	
 <trigger
    enabled="y"
@@ -392,7 +405,6 @@ function MyHorseStats ()
     ColourNote("orange","", "Canter:         Success: " .. ichargesuccesscanter .. "\tFail: ".. ichargefailcanter .. " \t(" .. ichargecanterratio .. ")")
     ColourNote("orange","", "Gallop:         Success: " .. ichargesuccessgallop .. "\tFail: ".. ichargefailgallop .. " \t(" .. ichargegallopratio .. ")")
 end
-
 
 -- Save variables when session closed
 function OnPluginClose ()
