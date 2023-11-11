@@ -1,8 +1,8 @@
 Plugins for mushclient cobbled together by Proeliator  
 
 # Horse Tracker
-**V1.11**
-**Fixed minor issues with colour triggers**
+**V2.0**
+**Now keeps track of how many doors you've ridden into!**
 
 Keep track of your success rates when using your horse  
 
