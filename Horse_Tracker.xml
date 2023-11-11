@@ -10,7 +10,7 @@
    date_written="2022-11-21 10:05:30"
    save_state="y"
    requires="5.06"
-   version="1.11"
+   version="1.2"
    >
 </plugin>
 
@@ -199,12 +199,12 @@
    enabled="y"
    custom_colour="7"
    keep_evaluating="y"
-   match="^.+ horse seems to get bored of following you and wanders off.$"
+   match="^As you ride .+ through the door, you strike your head hard on the doorframe and are sent tumbling out of the saddle.$"
    omit_from_output="n"
    sequence="24"
    regexp="y"
    script="HorseHandler"
-   name="wanderoff"
+   name="doorframe"
   >
   </trigger>	
 	
@@ -235,27 +235,15 @@
 <trigger
    enabled="y"
    keep_evaluating="y"
-   match="^.+ you, almost unseating you from the .+ horse.$"
+   match="(^.+ you, almost unseating you from the .+ horse.$|^.+ you, slightly unseating you from the .+ horse before you regain your balance.$)"
    omit_from_output="n"
    sequence="24"
    regexp="y"
    script="HorseHandler"
-   name="tipsuccess1"
+   name="tipsuccess"
   >
   </trigger>	
 	
-<trigger
-   enabled="y"
-   keep_evaluating="y"
-   match="^.+ you, slightly unseating you from the .+ horse before you regain your balance.$"
-   omit_from_output="n"
-   sequence="24"
-   regexp="y"
-   script="HorseHandler"
-   name="tipsuccess2"
-  >
-  </trigger>
-	 
 <trigger
    enabled="y"
    keep_evaluating="y"
@@ -299,7 +287,7 @@
 
 --Variables used for retrieving/storing/reseting values
 	VarHNames = {'mount', 'stash', 'lead', 'dress', 'groom', 'ride', 'tip'}
-	VarXNames = {'falloff', 'wanderoff'}
+	VarXNames = {'falloff', 'wanderoff', 'doorframe'}
 	VarCNames = {'walk', 'trot', 'canter', 'gallop'}
 function LoadVariables ()
 -- Handling Variables
@@ -373,11 +361,6 @@ function HorseHandler (sName, sline, wildcards)
 	s = string.gsub(sName,"success","")
 	s = string.gsub(s,"fail","")
 
-	if string.match(s,"%d") then
-	s = string.gsub(s,"%d","")
-	sName = string.gsub(sName,"%d","")
-	end
-
 	_G['i' .. sName] = _G['i' .. sName] + 1
 
 	if (string.match(sName, "success") or string.match(sName, "fail")) then
@@ -401,6 +384,7 @@ function MyHorseStats ()
     ColourNote("orange","", "Riding:         Success: " .. iridesuccess .. "\tFail: ".. iridefail .. " \t(" .. irideratio .. ")")
     ColourNote("orange","", "Resist tipped:  Success: " .. itipsuccess .. "\tFail: ".. itipfail .. " \t(" .. itipratio .. ")")
     ColourNote("orange","", "You have fallen off " .. ifalloff .. " times")
+    ColourNote("orange","", "You have ridden into " .. idoorframe .. " doorframes")
     ColourNote("orange","", "Your horse has wandered off " .. iwanderoff .. " times")
     ColourNote("orange","", "Charge/Storm")
     ColourNote("orange","", "Walk:           Success: " .. ichargesuccesswalk .. "\tFail: ".. ichargefailwalk .. " \t(" .. ichargewalkratio .. ")")
