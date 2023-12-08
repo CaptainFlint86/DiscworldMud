@@ -10,7 +10,7 @@
    date_written="2022-11-21 10:05:30"
    save_state="y"
    requires="5.06"
-   version="2.0"
+   version="2.1"
    >
 </plugin>
 
@@ -18,33 +18,55 @@
 <aliases>
   <alias
    script="MyHorseStats"
-   match="HorseStats"
+   match="^(HorseStats|Horse Stats)$"
    enabled="y"
    ignore_case="y"
+   regexp="y"
    sequence="30"
   >
   </alias>
   <alias
    script="MyHorseStatsResetAll"
-   match="HorseStatsReset"
+   match="^(HorseStatsReset|Horse Stats Reset)$"
    enabled="y"
    ignore_case="y"
+   regexp="y"
    sequence="30"
   >
   </alias>
 	  <alias
    script="MyHorseStatsResetHandler"
-   match="HorseHandlerReset"
+   match="^(HorseHandlerReset|Horse Handler Reset)$"
    enabled="y"
    ignore_case="y"
+   regexp="y"
    sequence="30"
   >
   </alias>
 	  <alias
    script="MyHorseStatsResetCharge"
-   match="HorseChargeReset"
+   match="^(HorseChargeReset|Horse Charge Reset)$"
    enabled="y"
    ignore_case="y"
+   regexp="y"
+   sequence="30"
+  >
+  </alias>
+	  <alias
+   script="HorseHelp"
+   match="^(HorseHelp|Horse Help)$"
+   enabled="y"
+   ignore_case="y"
+   regexp="y"
+   sequence="30"
+  >
+  </alias>
+	  <alias
+   script="HorseStableStatus"
+   match="^(HorseStable|Horse Stable)$"
+   enabled="y"
+   ignore_case="y"
+   regexp="y"
    sequence="30"
   >
   </alias>
@@ -52,11 +74,59 @@
 -- Many Many Triggers
 <!--  Triggers  -->
 <triggers>
-  <trigger
+<trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="^(?:> )?You hand (.+ )?the (.+) horse over to the stablehands\.$"
+   omit_from_output="n"
+   sequence="18"
+   regexp="y"
+   script="StableHorse"
+   name="Yes"
+  >
+  </trigger>
+
+ <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="^(?:> )?You pay the stablehands .+ and (?:they bring |one of them leaves to fetch your)(?:(.+)? the)? (.+) (?:horse out of the stalls for you\.|(?:mare|stallion|gelding) for you\.)$"
+   omit_from_output="n"
+   sequence="18"
+   regexp="y"
+   script="StableHorse"
+   name="No"
+  >
+  </trigger>
+
+<trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="^(?:> )?You rename (?:.+ )?the (.+) horse as (.+)\.$$"
+   omit_from_output="n"
+   sequence="18"
+   regexp="y"
+   script="NameMyHorse"
+   name="Named"
+  >
+  </trigger>
+
+ <trigger
+   enabled="y"
+   keep_evaluating="y"
+   match="^(?:> )?You remove (.+) the (.+) horse's name, leaving .+ anonymous once more\.$"
+   omit_from_output="n"
+   sequence="18"
+   regexp="y"
+   script="NameMyHorse"
+   name="Denamed"
+  >
+  </trigger>
+
+<trigger
    enabled="y"
    custom_colour="15"
    keep_evaluating="y"
-   match="^You mount .+the .+horse.$"
+   match="^(?:> )?You mount(?: )?(.+)? the (.+) horse.$"
    omit_from_output="n"
    sequence="18"
    regexp="y"
@@ -69,7 +139,7 @@
    enabled="y"
    custom_colour="7"
    keep_evaluating="y"
-   match="^You try to climb onto .+horse, but .+easily shakes you off and you land with a thump on the ground.$"
+   match="^(?:> )?You try to climb onto(?: )?(.+)? the (.+) horse, but .+ easily shakes you off and you land with a thump on the ground.$"
    omit_from_output="n"
    sequence="19"
    regexp="y"
@@ -82,7 +152,7 @@
    enabled="y"
    custom_colour="15"
    keep_evaluating="y"
-   match="^You .+ horse's pair of.+ saddlebags.$"
+   match="^(?:> )?You (?:stash|retrieve) .+(?:in|from)(?: )?(.+)? the (.+) horse's pair of(?: .+)? saddlebags\.$"
    omit_from_output="n"
    sequence="20"
    regexp="y"
@@ -95,7 +165,7 @@
    enabled="y"
    custom_colour="7"
    keep_evaluating="y"
-   match="^You try to access .+ horse's saddlebag and promptly get kicked for your trouble.$"
+   match="^(?:> )?You try to access(?: )?(.+)? the (.+) horse's saddlebag and promptly get kicked for your trouble.$"
    omit_from_output="n"
    sequence="21"
    regexp="y"
@@ -108,7 +178,7 @@
    enabled="y"
    custom_colour="7"
    keep_evaluating="y"
-   match="^You try to convince .+ horse to follow you, but .+ is having none of it.$"
+   match="^(?:> )?You try to convince(?: )?(.+)? the (.+) horse to follow you, but .+ is having none of it.$"
    omit_from_output="n"
    sequence="22"
    regexp="y"
@@ -121,7 +191,7 @@
    enabled="y"
    custom_colour="15"
    keep_evaluating="y"
-   match="^.+ horse starts to follow you.$"
+   match="^(?:> )?([^([:]+)?(?: the|The) (.+) horse starts to follow you\.$"
    omit_from_output="n"
    sequence="23"
    regexp="y"
@@ -134,7 +204,7 @@
    enabled="y"
    custom_colour="15"
    keep_evaluating="y"
-   match="^You dress .+ horse with the .+$"
+   match="^(?:> )?You dress(?: )?(.+)? the (.+) horse with .+\.$"
    omit_from_output="n"
    sequence="23"
    regexp="y"
@@ -147,7 +217,7 @@
    enabled="y"
    custom_colour="7"
    keep_evaluating="y"
-   match="^You try to dress .+ horse with the .+$"
+   match="^(?:> )?You try to dress(?: )?(.+)? the (.+) horse with .+$"
    omit_from_output="n"
    sequence="23"
    regexp="y"
@@ -160,7 +230,7 @@
    enabled="y"
    custom_colour="15"
    keep_evaluating="y"
-   match="^You approach .+ horse, preparing to groom .+$"
+   match="^(?:> )?You approach(?: )?(.+)? the (.+) horse, preparing to groom .+$"
    omit_from_output="n"
    sequence="23"
    regexp="y"
@@ -173,7 +243,7 @@
    enabled="y"
    custom_colour="7"
    keep_evaluating="y"
-   match="^You pick out a brush and have a go at .+ horse's .+ with it.$"
+   match="^(?:> )?You pick out a brush and have a go at(?: )?(.+)? the (.+) horse's .+ with it\.$"
    omit_from_output="n"
    sequence="23"
    regexp="y"
@@ -186,7 +256,7 @@
    enabled="y"
    custom_colour="7"
    keep_evaluating="y"
-   match="^You mess up the rhythm of your riding and are promptly tossed off .+ horse onto the ground.$"
+   match="^(?:> )?You mess up the rhythm of your riding and are promptly tossed off(?: )?(.+)? the (.+) horse onto the ground\.$"
    omit_from_output="n"
    sequence="24"
    regexp="y"
@@ -199,7 +269,7 @@
    enabled="y"
    custom_colour="7"
    keep_evaluating="y"
-   match="^As you ride .+ through the door, you strike your head hard on the doorframe and are sent tumbling out of the saddle.$"
+   match="^(?:> )?As you ride .+ through the door, you strike your head hard on the doorframe and are sent tumbling out of the saddle\.$"
    omit_from_output="n"
    sequence="24"
    regexp="y"
@@ -212,7 +282,7 @@
    enabled="y"
    custom_colour="7"
    keep_evaluating="y"
-   match="^.+ horse seems to get bored of following you and wanders off.$"
+   match="^(?:> )?([^([:]+ )?(?:the|The) (.+) horse seems to get bored of following you and wanders off\.$"
    omit_from_output="n"
    sequence="24"
    regexp="y"
@@ -224,7 +294,7 @@
 <trigger
    enabled="y"
    keep_evaluating="y"
-   match="^You tell .+ horse to take you to .+ and .+ starts off at a trot.$"
+   match="^(?:> )?You tell(?: )?(.+)? the (.+) horse to take you to .+ and .+ starts off at a trot.$"
    omit_from_output="n"
    sequence="24"
    regexp="y"
@@ -236,7 +306,7 @@
 <trigger
    enabled="y"
    keep_evaluating="y"
-   match="^You tell .+ horse to take you to .+, but .+ seems unwilling to move.$"
+   match="^(?:> )?You tell(?: )?(.+)? the (.+) horse to take you to .+, but .+ seems unwilling to move.$"
    omit_from_output="n"
    sequence="24"
    regexp="y"
@@ -248,7 +318,7 @@
 <trigger
    enabled="y"
    keep_evaluating="y"
-   match="(^.+ you, almost unseating you from the .+ horse.$|^.+ you, slightly unseating you from the .+ horse before you regain your balance.$)"
+   match="^(?:> )?(?:[^(>\[])(?:[^:]+) you, (?:almost|slightly) unseating you from(?: )?(.+)? the (.+) (?:horse\.|horse before you regain your balance\.)$"
    omit_from_output="n"
    sequence="24"
    regexp="y"
@@ -260,7 +330,7 @@
 <trigger
    enabled="y"
    keep_evaluating="y"
-   match="^.+ off the .+ horse, sending you crashing to the ground.$"
+   match="^(?:> )?(?:[^(>\[])(?:[^:]+) off(?: )?(.+)? the (.+) horse, sending you crashing to the ground\.$"
    omit_from_output="n"
    sequence="24"
    regexp="y"
@@ -271,8 +341,19 @@
 	
 <trigger
    enabled="y"
+   custom_colour="7"
+   keep_evaluating="y"
+   match="^(?:> )?The jolt knocks .+ off(?: )?(.+)? the (.+) horse's pack saddle\.$"
+   omit_from_output="n"
+   sequence="24"
+   regexp="y"
+  >
+  </trigger>
+
+<trigger
+   enabled="y"
    keep_evaluating="n"
-   match="^You hunch down over .+ horse and spur .+ into a (\w*) at the .+$"
+   match="^(?:> )?You hunch down over(?: )?(.+)? the (.+) horse and spur .+ into a (\w*) at the .+$"
    omit_from_output="n"
    sequence="25"
    regexp="y"
@@ -284,7 +365,7 @@
 <trigger
    enabled="y"
    keep_evaluating="n"
-   match="^You hunch down over .+ horse and try to spur .+ into a (\w*) at the .+$"
+   match="^(?:> )?You hunch down over(?: )?(.+)? the (.+) horse and try to spur .+ into a (\w*) at the .+$"
    omit_from_output="n"
    sequence="26"
    regexp="y"
@@ -303,6 +384,12 @@
 	VarXNames = {'falloff', 'wanderoff', 'doorframe'}
 	VarCNames = {'walk', 'trot', 'canter', 'gallop'}
 function LoadVariables ()
+-- Horses Name
+	MyHorseID = tostring(GetVariable("MyHorseID")) or  "-"
+	HorseName = tostring(GetVariable("HorseName")) or  "The "
+	HorseColour = tostring(GetVariable("HorseColour")) or  "-"
+-- Stable Status
+	StableStatus = tostring(GetVariable("StableStatus")) or  "-"
 -- Handling Variables
 	for i, VarHName in ipairs(VarHNames) do
 		_G['i' .. VarHName .. 'success'] = tonumber(GetVariable("i" .. VarHName .. "success")) or 0
@@ -323,11 +410,16 @@ end
 
 -- When Plugin is installed
 function OnPluginInstall ()
-ColourNote("orange","", "Horse tracker has been installed. Use 'HorseStats' to see statistics.")
-ColourNote("orange","", "'HorseStatsReset' will reset all data.")
-ColourNote("orange","", "'HorseHandlerReset' will reset handler data.")
-ColourNote("orange","", "'HorseChargeReset' will reset charge data.")
+ColourNote("orange","", "Horse tracker has been installed. Use 'Horse Help' to view list of commands.")
 LoadVariables ()
+end
+
+function HorseHelp ()
+ColourNote("orange","", "'Horse Stats' to view your statistics.")
+ColourNote("orange","", "'Horse Stable' will show if your horse is stabled or not.")
+ColourNote("orange","", "'Horse Stats Reset' will reset all data.")
+ColourNote("orange","", "'Horse Handler Reset' will reset handler data.")
+ColourNote("orange","", "'Horse Charge Reset' will reset charge data.")
 end
 
 -- Reset All Horse Statistics
@@ -349,6 +441,7 @@ end
 
 -- Our Default Values
 	-- Handler Values
+
 function DefaultHandlerValues ()
 	for i, VarHName in ipairs(VarHNames) do
 		_G['i' .. VarHName .. 'success'] = 0
@@ -369,10 +462,40 @@ function DefaultChargeValues ()
 	end
 end
 
+-- Function for Horse Naming
+function NameMyHorse (sName, sline, wildcards)
+	if sName == "Named" then
+		HorseName = tostring(wildcards[2] .. " the ")
+	else
+		HorseName = tostring("The ")
+	end
+end
+
+-- Function for Horse Stabling
+function StableHorse (sName, sline, wildcards)
+	if wildcards[1] == "" then
+	HorseColour = wildcards[2]
+	else
+	HorseName = tostring(wildcards[1] .. " the ")
+	HorseColour = wildcards[2]
+	end
+
+	s = string.gsub(sName,"Yes","stabled")
+	s = string.gsub(s,"No","not stabled")
+	StableStatus = tostring(s)
+end
+
 -- Function for Horse Handling
 function HorseHandler (sName, sline, wildcards)
 	s = string.gsub(sName,"success","")
 	s = string.gsub(s,"fail","")
+	
+	if wildcards[1] == "" then
+	HorseColour = wildcards[2]
+	else
+	HorseName = tostring(wildcards[1] .. " the ")
+	HorseColour = wildcards[2]
+	end
 
 	_G['i' .. sName] = _G['i' .. sName] + 1
 
@@ -383,12 +506,33 @@ end
 
 -- Function for Charge/Storm
 function HorseChargeHandler (sName, sline, wildcards)
-	_G['i'..sName .. wildcards[1]] = _G['i' .. sName .. wildcards[1]] + 1
-	_G['icharge' .. wildcards[1] .. 'ratio'] = tostring(math.floor((( _G['ichargesuccess' .. wildcards[1]] /( _G['ichargesuccess' .. wildcards[1]] + _G['ichargefail' .. wildcards[1]] ))*100)+0.5)) .. "%"
+	if wildcards[1] == "" then
+	HorseColour = wildcards[2]
+	else
+	HorseName = tostring(wildcards[1] .. " the ")
+	HorseColour = wildcards[2]
+	end
+
+	_G['i'..sName .. wildcards[3]] = _G['i' .. sName .. wildcards[3]] + 1
+	_G['icharge' .. wildcards[3] .. 'ratio'] = tostring(math.floor((( _G['ichargesuccess' .. wildcards[3]] /( _G['ichargesuccess' .. wildcards[3]] + _G['ichargefail' .. wildcards[3]] ))*100)+0.5)) .. "%"
 end
 
 -- Messages sent to the Mud
+function HorseStableStatus ()
+	MyHorseID = tostring(HorseName  .. HorseColour .. " horse")
+
+	if StableStatus == "-" then
+		ColourNote("orange","", "Cannot tell if " .. MyHorseID .. " is stabled or not.")
+	else
+		ColourNote("orange","", MyHorseID .. " horse is " .. StableStatus .. ".")
+	end
+end
+
+
 function MyHorseStats ()
+	MyHorseID = tostring(HorseName  .. HorseColour .. " horse")
+
+    ColourNote("orange","", MyHorseID .. ":")
     ColourNote("orange","", "Mount:          Success: " .. imountsuccess .. "\tFail: ".. imountfail .. " \t(" .. imountratio .. ")")
     ColourNote("orange","", "Stash/Retrieve: Success: " .. istashsuccess .. "\tFail: ".. istashfail .. " \t(" .. istashratio .. ")")
     ColourNote("orange","", "Lead:           Success: " .. ileadsuccess .. "\tFail: ".. ileadfail .. " \t(" .. ileadratio .. ")")
@@ -406,8 +550,15 @@ function MyHorseStats ()
     ColourNote("orange","", "Gallop:         Success: " .. ichargesuccessgallop .. "\tFail: ".. ichargefailgallop .. " \t(" .. ichargegallopratio .. ")")
 end
 
+
 -- Save variables when session closed
 function OnPluginClose ()
+	-- My Horse
+	SetVariable("MyHorseID", tostring(_G['MyHorseID']))
+	SetVariable("HorseName", tostring(_G['HorseName']))
+	SetVariable("HorseColour", tostring(_G['HorseColour']))
+	SetVariable("StableStatus", tostring(_G['StableStatus']))
+	
 	-- Handling Variables
 	for i, VarHName in ipairs(VarHNames) do
 		SetVariable("i" .. VarHName .. "success", tostring(_G['i' .. VarHName .. 'success']))
