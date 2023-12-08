@@ -1,17 +1,19 @@
 Plugins for mushclient cobbled together by Proeliator  
 
 # Horse Tracker
-**V2.0**
-**Now keeps track of how many doors you've ridden into!**
+**V2.1**
+**Now with better Triggers (avoiding pesky mis triggers from talker channels), all commands can be entered with or without spaces and a new 'horse stable' command to quickly check if your horse is in a stable (or not)**
 
 Keep track of your success rates when using your horse  
 
-just type 'horsestats' to see an up to date report  
-If you want to reset the report, just type HorseStatsReset  
-To reset just the handler stats: HorseHandlerReset  
-To reset just the charge stats: HorseChargeReset  
+just type 'Horse Stats' to see an up to date report  
+If you want to reset the report, just type Horse Stats Reset  
+To reset just the handler stats: Horse Handler Reset  
+To reset just the charge stats: Horse Charge Reset 
+To see if your horse is stabled: Horse Stable
+To see a list of these commands: Horse Help
 
-Example of how it looks when 'HorseStats' is entered:
+Example of how it looks when 'Horse Stats' is entered:
 
 <img width="436" alt="Screenshot 2022-12-21 at 11 54 48" src="https://user-images.githubusercontent.com/119447171/208899464-71ee52d3-dca1-4f2a-84ae-d7bdcd2722d7.png">
 
