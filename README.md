@@ -1,7 +1,8 @@
 Plugins for mushclient cobbled together by Proeliator  
 
 # Horse Tracker
-**V2.1**
+**V2.2**
+**Fixed a bug when riding through a doorframe**
 **Now with better Triggers (avoiding pesky mis triggers from talker channels), all commands can be entered with or without spaces and a new 'horse stable' command to quickly check if your horse is in a stable (or not)**
 
 Keep track of your success rates when using your horse  
