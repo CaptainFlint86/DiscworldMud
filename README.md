@@ -7,15 +7,15 @@ Plugins for mushclient cobbled together by Proeliator
 
 Keep track of your success rates when using your horse  
 
-'Horse Help'            See these commands in-game.
-'ID Mount'              Recorded your horses name into the database.
-'Stable List'           View your alts and their horses.
-'Horse Stats'           View statistics for your current character.
-'Horse Stats [player]'  View statistics for a specific character.
-'Stabled'               Show if your horse is stabled or not.
-'Horse Reset Stats'     Reset all data.
-'Horse Reset Handler'   Reset handler data.
-'Horse Reset Charge'    Reset charge data.
+**'Horse Help'** -- See these commands in-game.  
+**'ID Mount'** -- Recorded your horses name into the database.  
+**'Stable List'** -- View your alts and their horses.  
+**'Horse Stats'** -- View statistics for your current character.  
+**'Horse Stats [player]'** -- View statistics for a specific character.  
+**'Stabled'** -- Show if your horse is stabled or not.  
+**'Horse Reset Stats'** -- Reset all data.  
+**'Horse Reset Handler'** -- Reset handler data.  
+**'Horse Reset Charge'** -- Reset charge data.  
 
 Example of how it looks when 'Horse Stats' is entered:
 
