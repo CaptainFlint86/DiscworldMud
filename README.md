@@ -21,6 +21,11 @@ Example of how it looks when 'Horse Stats' is entered:
 
 <img width="436" alt="Screenshot 2022-12-21 at 11 54 48" src="https://user-images.githubusercontent.com/119447171/208899464-71ee52d3-dca1-4f2a-84ae-d7bdcd2722d7.png">
 
+
+This plugin uses the character identifier written by Quow and will require the Quowbar plugins to work.  
+You can download the Quowbar (and other plugins) at https://quow.co.uk/
+
+
 # Warcry Manager  
 **V1.1**  
 **Quite a few bugs have been squished**
