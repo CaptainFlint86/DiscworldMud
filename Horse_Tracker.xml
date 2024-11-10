@@ -10,70 +10,23 @@
    date_written="2022-11-21 10:05:30"
    save_state="y"
    requires="5.06"
-   version="2.2"
+   version="3.0"
    >
 </plugin>
 
-<!--  Aliases  -->
-<aliases>
-  <alias
-   script="MyHorseStats"
-   match="^(HorseStats|Horse Stats)$"
-   enabled="y"
-   ignore_case="y"
-   regexp="y"
-   sequence="30"
-  >
-  </alias>
-  <alias
-   script="MyHorseStatsResetAll"
-   match="^(HorseStatsReset|Horse Stats Reset)$"
-   enabled="y"
-   ignore_case="y"
-   regexp="y"
-   sequence="30"
-  >
-  </alias>
-	  <alias
-   script="MyHorseStatsResetHandler"
-   match="^(HorseHandlerReset|Horse Handler Reset)$"
-   enabled="y"
-   ignore_case="y"
-   regexp="y"
-   sequence="30"
-  >
-  </alias>
-	  <alias
-   script="MyHorseStatsResetCharge"
-   match="^(HorseChargeReset|Horse Charge Reset)$"
-   enabled="y"
-   ignore_case="y"
-   regexp="y"
-   sequence="30"
-  >
-  </alias>
-	  <alias
-   script="HorseHelp"
-   match="^(HorseHelp|Horse Help)$"
-   enabled="y"
-   ignore_case="y"
-   regexp="y"
-   sequence="30"
-  >
-  </alias>
-	  <alias
-   script="HorseStableStatus"
-   match="^(HorseStable|Horse Stable)$"
-   enabled="y"
-   ignore_case="y"
-   regexp="y"
-   sequence="30"
-  >
-  </alias>
-</aliases>
--- Many Many Triggers
-<!--  Triggers  -->
 <triggers>
+  <trigger
+   enabled="n"
+   keep_evaluating="y"
+   match="^(?P<HorseName>.*) the (?P<HorseColour>.*) horse.$"
+   omit_from_output="y"
+   sequence="1"
+   regexp="y"
+   script="ID_Horse"
+   name="HorseName"
+  >
+  </trigger>
+
 <trigger
    enabled="y"
    keep_evaluating="y"
@@ -82,7 +35,7 @@
    sequence="18"
    regexp="y"
    script="StableHorse"
-   name="Yes"
+   name="Horse_Stabled"
   >
   </trigger>
 
@@ -94,19 +47,19 @@
    sequence="18"
    regexp="y"
    script="StableHorse"
-   name="No"
+   name="Horse_Destabled"
   >
   </trigger>
 
 <trigger
    enabled="y"
    keep_evaluating="y"
-   match="^(?:> )?You rename (?:.+ )?the (.+) horse as (.+)\.$$"
+   match="^(?:> )?You rename (?:.+ )?the (.+) horse as (?P<HorseName>.+)\.$$"
    omit_from_output="n"
    sequence="18"
    regexp="y"
    script="NameMyHorse"
-   name="Named"
+   name="Horse_Named"
   >
   </trigger>
 
@@ -118,7 +71,7 @@
    sequence="18"
    regexp="y"
    script="NameMyHorse"
-   name="Denamed"
+   name="Horse_Denamed"
   >
   </trigger>
 
@@ -126,7 +79,7 @@
    enabled="y"
    custom_colour="15"
    keep_evaluating="y"
-   match="^(?:> )?You mount(?: )?(.+)? the (.+) horse\.$"
+   match="^(?:> )?(You mount(?: )?(.+)? the (.+) horse\.|You take two steps back, then run towards .* horse and hop onto .* back.)$"
    omit_from_output="n"
    sequence="18"
    regexp="y"
@@ -375,208 +328,414 @@
   </trigger>
 </triggers>
 
+<!--  Aliases  -->
+<aliases>
+
+  <alias
+   script="StableShowList"
+   match="Stable List"
+   enabled="y"
+   ignore_case="y"
+   omit_from_output="n"
+   sequence="10"
+  >
+  </alias>
+
+  <alias
+   script="HorseNameFinder"
+   match="ID Mount"
+   enabled="y"
+   ignore_case="y"
+   omit_from_output="n"
+   sequence="10"
+  >
+  </alias>
+
+  <alias
+   script="MyHorseStats"
+   match="^(Horse Stats|Horse Stats (?P<Player>.*))$"
+   enabled="y"
+   ignore_case="y"
+   regexp="y"
+   sequence="30"
+  >
+  </alias>
+
+  <alias
+   script="MyHorseStatsResetAll"
+   match="^(Horse Reset Stats)$"
+   enabled="y"
+   ignore_case="y"
+   regexp="y"
+   sequence="30"
+  >
+  </alias>
+	  <alias
+   script="MyHorseStatsResetHandler"
+   match="^(Horse Reset Handler)$"
+   enabled="y"
+   ignore_case="y"
+   regexp="y"
+   sequence="30"
+  >
+  </alias>
+	  <alias
+   script="MyHorseStatsResetCharge"
+   match="^(Horse Reset Charge)$"
+   enabled="y"
+   ignore_case="y"
+   regexp="y"
+   sequence="30"
+  >
+  </alias>
+	  <alias
+   script="HorseHelp"
+   match="^(HorseHelp|Horse Help)$"
+   enabled="y"
+   ignore_case="y"
+   regexp="y"
+   sequence="30"
+  >
+  </alias>
+	  <alias
+   script="HorseStableStatus"
+   match="^Stabled$"
+   enabled="y"
+   ignore_case="y"
+   regexp="y"
+   sequence="30"
+  >
+  </alias>
+
+	  <alias
+   script="checktable"
+   match="^Check StableTable$"
+   enabled="y"
+   ignore_case="y"
+   regexp="y"
+   sequence="30"
+  >
+  </alias>
+</aliases>
+
 <script>
 <![CDATA[
--- Lets load our variables from Mush
+require "serialize"
+stabletable = {}
 
---Variables used for retrieving/storing/reseting values
-	VarHNames = {'mount', 'stash', 'lead', 'dress', 'groom', 'ride', 'tip'}
-	VarXNames = {'falloff', 'wanderoff', 'doorframe'}
-	VarCNames = {'walk', 'trot', 'canter', 'gallop'}
-function LoadVariables ()
--- Horses Name
-	MyHorseID = tostring(GetVariable("MyHorseID")) or  "-"
-	HorseName = tostring(GetVariable("HorseName")) or  "The "
-	HorseColour = tostring(GetVariable("HorseColour")) or  "-"
--- Stable Status
-	StableStatus = tostring(GetVariable("StableStatus")) or  "-"
--- Handling Variables
-	for i, VarHName in ipairs(VarHNames) do
-		_G['i' .. VarHName .. 'success'] = tonumber(GetVariable("i" .. VarHName .. "success")) or 0
-		_G['i' .. VarHName .. 'fail'] = tonumber(GetVariable("i" .. VarHName .. "fail")) or 0
-		_G['i' .. VarHName .. 'ratio'] = tostring(GetVariable("i" .. VarHName .. "ratio") or "-")
-	end
--- Handling Variables that don't have a fail ratio
-	for i, VarXName in ipairs(VarXNames) do
-		_G['i' .. VarXName] = tonumber(GetVariable("i" .. VarXName)) or 0
-	end
--- Charge Variables
-	for i, VarCName in ipairs(VarCNames) do
-		_G['ichargesuccess' .. VarCName] = tonumber(GetVariable("ichargesuccess" .. VarCName)) or 0
-		_G['ichargefail' .. VarCName] = tonumber(GetVariable("ichargefail" .. VarCName)) or 0
-		_G['icharge' .. VarCName .. 'ratio'] = tostring(GetVariable("icharge" .. VarCName .. "ratio") or "-")
-	end
+-- Do this when the plugin is loaded
+function OnPluginInstall () 
+	assert (loadstring (GetVariable ("stabletable") or "")) ()
+	ColourNote("orange","", "Horse tracker has been installed. Use 'Horse Help' to view list of commands.")
+end -- function OnPluginInstall
+
+----------------------------------This bit stolen from Quow's mindspace plugin----------------------------------
+-- See if we can find out who we are from the CowBar since we won't know who we are on plugin-launch
+sCurrentCharacter = ""
+if (PluginSupports("bfe35205f026786ea1d56e3b", "CheckCharacterName") == 0) then
+  iReturnCode, sCurrentCharacter = CallPlugin ("bfe35205f026786ea1d56e3b", "CheckCharacterName", "")
+  sCurrentCharacter = string.lower(sCurrentCharacter)
+end
+if (sCurrentCharacter == nil or sCurrentCharacter == "") then
+  -- We still aren't sure who this is, maybe try load our previously-loaded name, then?
+  local sPossibleName = GetVariable("sCurChar")
+  if (sPossibleName ~= nil and sPossibleName ~= "") then
+    sCurrentCharacter = sPossibleName
+    sPossibleName = nil
+  else
+    -- Final fallback, call ourselves "NoName"
+    sCurrentCharacter = "NoName"
+  end
+end
+-- And quickly save to file who we are, for plugin reloads after this
+SetVariable("sCurChar", sCurrentCharacter)
+
+-- See if we can find out our guild/order from the CowBar
+sCurrentGuild, sCurrentSpec = "", ""
+if (PluginSupports("bfe35205f026786ea1d56e3b", "CheckGuildSpec") == 0) then
+  iReturnCode, sCurrentGuild, sCurrentSpec = CallPlugin ("bfe35205f026786ea1d56e3b", "CheckGuildSpec", "")
+  sCurrentGuild = string.lower(sCurrentGuild)
+  sCurrentSpec = string.lower(sCurrentSpec)
 end
 
--- When Plugin is installed
-function OnPluginInstall ()
-ColourNote("orange","", "Horse tracker has been installed. Use 'Horse Help' to view list of commands.")
-LoadVariables ()
+-- In case the CowBar wasn't loaded before this plugin was, let the CowBar prepare us...
+function UpdateMySupports()
+  if (PluginSupports("bfe35205f026786ea1d56e3b", "CheckCharacterName") == 0) then
+    iReturnCode, sCurrentCharacter = CallPlugin ("bfe35205f026786ea1d56e3b", "CheckCharacterName", "")
+    sCurrentCharacter = string.lower(sCurrentCharacter)
+  end
+  if (sCurrentCharacter == nil or sCurrentCharacter == "") then
+    -- We still aren't sure who this is, maybe try load our previously-loaded name, then?
+    local sPossibleName = GetVariable("sCurChar")
+    if (sPossibleName ~= nil and sPossibleName ~= "") then
+      sCurrentCharacter = sPossibleName
+      sPossibleName = nil
+    else
+      -- Final fallback, call ourselves "NoName"
+      sCurrentCharacter = "NoName"
+    end
+  end
+  -- And quickly save to file who we are, for plugin reloads after this
+  SetVariable("sCurChar", sCurrentCharacter)
+  -- See if we can find out our guild/order from the CowBar
+  sCurrentGuild, sCurrentSpec = "", ""
+  if (PluginSupports("bfe35205f026786ea1d56e3b", "CheckGuildSpec") == 0) then
+    iReturnCode, sCurrentGuild, sCurrentSpec = CallPlugin ("bfe35205f026786ea1d56e3b", "CheckGuildSpec", "")
+    sCurrentGuild = string.lower(sCurrentGuild)
+    sCurrentSpec = string.lower(sCurrentSpec)
+  end
 end
+----------------------------------end of stolen content from Quow's mindspace plugin----------------------------
 
+-- Check if we exist in the table
+function checktable ()
+	UpdateMySupports()
+	if stabletable[sCurrentCharacter] == nil then
+		ColourNote("orange","","It doesn't look like " .. sCurrentCharacter .. " is in the horse datatbase, lets add you now.")
+		stabletable[sCurrentCharacter] = "Owner"
+		stabletable[sCurrentCharacter .. "_Horse"] = "-"
+		stabletable[sCurrentCharacter .. "_Colour"] = "-"
+		stabletable[sCurrentCharacter .. "_Stabled"] = "may or may not be stabled."
+		MyHorseStatsResetAll ()
+	end
+end -- function checktable
+
+-- register your horses name
+function HorseNameFinder ()
+	UpdateMySupports()
+	EnableTrigger("HorseName", true)  -- enable trigger
+	SendNoEcho ("glance my mount")
+end -- function HorseNameFinder
+
+-- register your horses name
+function ID_Horse (sName, sLine, wildcards)
+	checktable ()
+	Owner = tostring(sCurrentCharacter .. "_Horse")
+	Colour = tostring(sCurrentCharacter .. "_Colour")
+	Horse = tostring(wildcards.HorseName)
+	HorseColour = tostring(wildcards.HorseColour)
+	stabletable[Owner] = Horse
+	stabletable[Colour] = HorseColour
+	EnableTrigger("HorseName", false)  -- disable trigger
+	ColourNote("orange","", "Your horse has been identified as " .. stabletable[sCurrentCharacter .. "_Horse"] .. " the " .. stabletable[sCurrentCharacter .. "_Colour"] .. " horse.")
+end -- function ID_Horse
+
+-- Display the contents of the stable table
+function StableShowList ()
+	checktable ()
+	if type(stabletable) == 'table' then
+
+	ColourNote("orange","","Owner" .. "\t\t" ..  "Horse")
+		for k,v in pairs(stabletable) do
+		if string.match(k, "_Horse") then
+		s = string.gsub(k,"_Horse","")
+	            ColourNote("orange","",s .. "\t" .. v)
+		end
+	end
+	else
+		ColourNote("orange","","No Table to display!")
+	end
+end -- function StableShowList
+
+-- List the Helpfile
 function HorseHelp ()
-ColourNote("orange","", "'Horse Stats' to view your statistics.")
-ColourNote("orange","", "'Horse Stable' will show if your horse is stabled or not.")
-ColourNote("orange","", "'Horse Stats Reset' will reset all data.")
-ColourNote("orange","", "'Horse Handler Reset' will reset handler data.")
-ColourNote("orange","", "'Horse Charge Reset' will reset charge data.")
-end
+	ColourNote("orange","", "A list of commands used in the Horse Tracker plugin")
+	ColourNote("orange","", "")
+	ColourNote("orange","", "'ID Mount'\t\tRecord your horses name into the database.")
+	ColourNote("orange","", "'Stable List'\t\tView your alts and their horses.")
+	ColourNote("orange","", "'Horse Stats'\t\tView statistics for your current character.")
+	ColourNote("orange","", "'Horse Stats [player]'\tView statistics for a specific character.")
+	ColourNote("orange","", "'Stabled'\t\tShow if your horse is stabled or not.")
+	ColourNote("orange","", "'Horse Reset Stats'\tReset all data.")
+	ColourNote("orange","", "'Horse Reset Handler'\tReset handler data.")
+	ColourNote("orange","", "'Horse Reset Charge'\tReset charge data.")
+end -- function HorseHelp
 
 -- Reset All Horse Statistics
 function MyHorseStatsResetAll ()
-DefaultHandlerValues ()
-DefaultChargeValues ()
-ColourNote("orange","", "Horse tracker has been reset")
-end
+	DefaultHandlerValues ()
+	DefaultChargeValues ()
+	ColourNote("orange","", "Horse tracker has been reset")
+end -- function MyHorseStatsResetAll
+
 -- Reset Only Handler Statistics
 function MyHorseStatsResetHandler ()
-DefaultHandlerValues ()
-ColourNote("orange","", "Horse tracker Handler data has been reset")
-end
+	DefaultHandlerValues ()
+	ColourNote("orange","", "Horse tracker Handler data has been reset")
+end -- function MyHorseStatsResetHandler
+
 -- Reset Only Charge Statistics
 function MyHorseStatsResetCharge ()
-DefaultChargeValues ()
-ColourNote("orange","", "Horse tracker Charge data has been reset")
-end
+	DefaultChargeValues ()
+	ColourNote("orange","", "Horse tracker Charge data has been reset")
+end -- function MyHorseStatsResetCharge 
 
 -- Our Default Values
 	-- Handler Values
-
 function DefaultHandlerValues ()
-	for i, VarHName in ipairs(VarHNames) do
-		_G['i' .. VarHName .. 'success'] = 0
-		_G['i' .. VarHName .. 'fail'] = 0
-		_G['i' .. VarHName .. 'ratio'] = "-"
-	end
+	stabletable[sCurrentCharacter .. "_mountsuccess"] = 0
+	stabletable[sCurrentCharacter .. "_mountfail"] = 0
+	stabletable[sCurrentCharacter .. "_mountratio"] = "-"
 
-	for i, VarXName in ipairs(VarXNames) do
-		_G['i' .. VarXName] = 0
-	end
-end
+	stabletable[sCurrentCharacter .. "_stashsuccess"] = 0
+	stabletable[sCurrentCharacter .. "_stashfail"] = 0
+	stabletable[sCurrentCharacter .. "_stashratio"] = "-"
+
+	stabletable[sCurrentCharacter .. "_leadsuccess"] = 0
+	stabletable[sCurrentCharacter .. "_leadfail"] = 0
+	stabletable[sCurrentCharacter .. "_leadratio"] = "-"
+
+	stabletable[sCurrentCharacter .. "_groomsuccess"] = 0
+	stabletable[sCurrentCharacter .. "_groomfail"] = 0
+	stabletable[sCurrentCharacter .. "_groomratio"] = "-"
+
+	stabletable[sCurrentCharacter .. "_dresssuccess"] = 0
+	stabletable[sCurrentCharacter .. "_dressfail"] = 0
+	stabletable[sCurrentCharacter .. "_dressratio"] = "-"
+
+	stabletable[sCurrentCharacter .. "_ridesuccess"] = 0
+	stabletable[sCurrentCharacter .. "_ridefail"] = 0
+	stabletable[sCurrentCharacter .. "_rideratio"] = "-"
+
+	stabletable[sCurrentCharacter .. "_tipsuccess"] = 0
+	stabletable[sCurrentCharacter .. "_tipfail"] = 0
+	stabletable[sCurrentCharacter .. "_tipratio"] = "-"
+
+	stabletable[sCurrentCharacter .. "_falloff"] = 0
+
+	stabletable[sCurrentCharacter .. "_doorframe"] = 0
+
+	stabletable[sCurrentCharacter .. "_wanderoff"] = 0
+end -- function DefaultHandlerValues
+
 	-- Charge Values
 function DefaultChargeValues ()
-	for i, VarCName in ipairs(VarCNames) do
-		_G['ichargesuccess' .. VarCName] = 0
-		_G['ichargefail' .. VarCName] = 0
-		_G['icharge' .. VarCName .. 'ratio'] = "-"
-	end
-end
+	stabletable[sCurrentCharacter .. "_chargesuccesswalk" ] = 0
+	stabletable[sCurrentCharacter .. "_chargefailwalk"] = 0
+	stabletable[sCurrentCharacter .. "_chargewalkratio"] = "-"
+
+	stabletable[sCurrentCharacter .. "_chargesuccesstrot" ] = 0
+	stabletable[sCurrentCharacter .. "_chargefailtrot"] = 0
+	stabletable[sCurrentCharacter .. "_chargetrotratio"] = "-"
+
+	stabletable[sCurrentCharacter .. "_chargesuccesscanter" ] = 0
+	stabletable[sCurrentCharacter .. "_chargefailcanter"] = 0
+	stabletable[sCurrentCharacter .. "_chargecanterratio"] = "-"
+
+	stabletable[sCurrentCharacter .. "_chargesuccessgallop" ] = 0
+	stabletable[sCurrentCharacter .. "_chargefailgallop"] = 0
+	stabletable[sCurrentCharacter .. "_chargegallopratio"] = "-"
+end -- function DefaultChargeValues
 
 -- Function for Horse Naming
 function NameMyHorse (sName, sline, wildcards)
-	if sName == "Named" then
-		HorseName = tostring(wildcards[2] .. " the ")
+	checktable ()
+	s = string.gsub(sName,"Horse_","")
+	if string.match(s, "Named") then
+		stabletable[sCurrentCharacter .. "_Horse"] = tostring(wildcards.HorseName)
 	else
-		HorseName = tostring("The ")
+		stabletable[sCurrentCharacter .. "_Horse"] = "Unnamed"
 	end
-end
+end -- function NameMyHorse 
 
 -- Function for Horse Stabling
 function StableHorse (sName, sline, wildcards)
-	if wildcards[1] == "" then
-	HorseColour = wildcards[2]
+	checktable ()
+	s = string.gsub(sName,"Horse_","")
+	if string.match(s, "Stabled") then
+		stabletable[sCurrentCharacter .. "_Stabled"] = "currently stabled."
 	else
-	HorseName = tostring(wildcards[1] .. " the ")
-	HorseColour = wildcards[2]
+		stabletable[sCurrentCharacter .. "_Stabled"] = "not in any stable."
 	end
-
-	s = string.gsub(sName,"Yes","stabled")
-	s = string.gsub(s,"No","not stabled")
-	StableStatus = tostring(s)
-end
+end -- function StableHorse
 
 -- Function for Horse Handling
 function HorseHandler (sName, sline, wildcards)
+	checktable ()
 	s = string.gsub(sName,"success","")
 	s = string.gsub(s,"fail","")
-	
-	if wildcards[1] == "" then
-	HorseColour = wildcards[2]
-	else
-	HorseName = tostring(wildcards[1] .. " the ")
-	HorseColour = wildcards[2]
-	end
 
-	_G['i' .. sName] = _G['i' .. sName] + 1
+	Result = tostring(sCurrentCharacter .. "_" .. sName)
+
+	stabletable[Result] = stabletable[Result]+1
 
 	if (string.match(sName, "success") or string.match(sName, "fail")) then
-	_G['i' .. s .. 'ratio'] = tostring(math.floor((( _G['i'..s..'success'] /  ( _G['i'..s..'success'] + _G['i'..s..'fail'] ) ) *100)+0.5)) .. "%"
+	Ratio = tostring(sCurrentCharacter .. "_" .. s .. "ratio")
+	Success = tostring(sCurrentCharacter .. "_" .. s .. "success")
+	Fail = tostring(sCurrentCharacter .. "_" .. s .. "fail")
+	stabletable[Ratio] = tostring(math.floor((( stabletable[Success] /  ( stabletable[Success] + stabletable[Fail]) ) *100)+0.5)) .. "%"
 	end
-end
+end -- function HorseHandler
+
 
 -- Function for Charge/Storm
 function HorseChargeHandler (sName, sline, wildcards)
-	if wildcards[1] == "" then
-	HorseColour = wildcards[2]
-	else
-	HorseName = tostring(wildcards[1] .. " the ")
-	HorseColour = wildcards[2]
-	end
+	checktable ()
+	Result = tostring(sCurrentCharacter .. "_" .. sName .. wildcards[3])
 
-	_G['i'..sName .. wildcards[3]] = _G['i' .. sName .. wildcards[3]] + 1
-	_G['icharge' .. wildcards[3] .. 'ratio'] = tostring(math.floor((( _G['ichargesuccess' .. wildcards[3]] /( _G['ichargesuccess' .. wildcards[3]] + _G['ichargefail' .. wildcards[3]] ))*100)+0.5)) .. "%"
-end
+	stabletable[Result] = stabletable[Result] + 1
+
+	Ratio = tostring(sCurrentCharacter .. "_" .. "charge" .. wildcards[3] .. "ratio")
+	Success = tostring(sCurrentCharacter .. "_" .. "chargesuccess" .. wildcards[3])
+	Fail = tostring(sCurrentCharacter .. "_" .. "chargefail" .. wildcards[3])
+
+	stabletable[Ratio] = tostring(math.floor((( stabletable[Success] /  ( stabletable[Success] + stabletable[Fail]) ) *100)+0.5)) .. "%"
+end -- function HorseChargeHandler
 
 -- Messages sent to the Mud
 function HorseStableStatus ()
-	MyHorseID = tostring(HorseName  .. HorseColour .. " horse")
+	checktable ()
+ColourNote("orange","", stabletable[sCurrentCharacter .. "_Horse"] .. " the " .. stabletable[sCurrentCharacter .. "_Colour"] .. " horse is " .. stabletable[sCurrentCharacter .. "_Stabled"] )
+end -- function HorseStableStatus 
 
-	if StableStatus == "-" then
-		ColourNote("orange","", "Cannot tell if " .. MyHorseID .. " is stabled or not.")
-	else
-		ColourNote("orange","", MyHorseID .. " horse is " .. StableStatus .. ".")
+function MyHorseStats (sName, sLine, wildcards)
+	checktable ()
+
+	if (wildcards.Player) ~= "" then
+		My_ID = tostring(wildcards.Player .. "_")
+		ID_Check = tostring(wildcards.Player)
+		else	
+		My_ID = tostring(sCurrentCharacter .. "_")
+		ID_Check = tostring(sCurrentCharacter)
 	end
-end
-
-
-function MyHorseStats ()
-	MyHorseID = tostring(HorseName  .. HorseColour .. " horse")
-
-    ColourNote("orange","", MyHorseID .. ":")
-    ColourNote("orange","", "Mount:          Success: " .. imountsuccess .. "\tFail: ".. imountfail .. " \t(" .. imountratio .. ")")
-    ColourNote("orange","", "Stash/Retrieve: Success: " .. istashsuccess .. "\tFail: ".. istashfail .. " \t(" .. istashratio .. ")")
-    ColourNote("orange","", "Lead:           Success: " .. ileadsuccess .. "\tFail: ".. ileadfail .. " \t(" .. ileadratio .. ")")
-    ColourNote("orange","", "Groom:          Success: " .. igroomsuccess .. "\tFail: ".. igroomfail .. " \t(" .. igroomratio .. ")")
-    ColourNote("orange","", "Dress:          Success: " .. idresssuccess .. "\tFail: ".. idressfail .. " \t(" .. idressratio .. ")")
-    ColourNote("orange","", "Riding:         Success: " .. iridesuccess .. "\tFail: ".. iridefail .. " \t(" .. irideratio .. ")")
-    ColourNote("orange","", "Resist tipped:  Success: " .. itipsuccess .. "\tFail: ".. itipfail .. " \t(" .. itipratio .. ")")
-    ColourNote("orange","", "You have fallen off " .. ifalloff .. " times")
-    ColourNote("orange","", "You have ridden into " .. idoorframe .. " doorframes")
-    ColourNote("orange","", "Your horse has wandered off " .. iwanderoff .. " times")
-    ColourNote("orange","", "Charge/Storm")
-    ColourNote("orange","", "Walk:           Success: " .. ichargesuccesswalk .. "\tFail: ".. ichargefailwalk .. " \t(" .. ichargewalkratio .. ")")
-    ColourNote("orange","", "Trot:           Success: " .. ichargesuccesstrot .. "\tFail: ".. ichargefailtrot .. " \t(" .. ichargetrotratio .. ")")
-    ColourNote("orange","", "Canter:         Success: " .. ichargesuccesscanter .. "\tFail: ".. ichargefailcanter .. " \t(" .. ichargecanterratio .. ")")
-    ColourNote("orange","", "Gallop:         Success: " .. ichargesuccessgallop .. "\tFail: ".. ichargefailgallop .. " \t(" .. ichargegallopratio .. ")")
-end
-
-
--- Save variables when session closed
-function OnPluginClose ()
-	-- My Horse
-	SetVariable("MyHorseID", tostring(_G['MyHorseID']))
-	SetVariable("HorseName", tostring(_G['HorseName']))
-	SetVariable("HorseColour", tostring(_G['HorseColour']))
-	SetVariable("StableStatus", tostring(_G['StableStatus']))
 	
-	-- Handling Variables
-	for i, VarHName in ipairs(VarHNames) do
-		SetVariable("i" .. VarHName .. "success", tostring(_G['i' .. VarHName .. 'success']))
-		SetVariable("i" .. VarHName .. "fail", tostring(_G['i' .. VarHName .. 'fail']))
-		SetVariable("i" .. VarHName .. "ratio", tostring(_G['i' .. VarHName .. 'ratio']))
+	if stabletable[ID_Check] == nil then
+		ColourNote("orange","", "No records found for " .. ID_Check .. ".")
+	else
+    
+	if stabletable[My_ID.. "Horse"] == "-" then
+   	ColourNote("orange","", "No registered horse, please use 'ID Mount' to update records.")
+	else
+   	ColourNote("orange","", stabletable[My_ID.. "Horse"] .. " the " .. stabletable[My_ID .. "Colour"] .. " horse.")
 	end
-	-- Handling Variables that don't have a fail ratio
-	for i, VarXName in ipairs(VarXNames) do
-		SetVariable("i" .. VarXName, tostring(_G['i' .. VarXName]))
-	end
-	-- Charge Variables
-	for i, VarCName in ipairs(VarCNames) do
-		SetVariable("ichargesuccess" .. VarCName, tostring(_G['ichargesuccess' .. VarCName]))
-		SetVariable("ichargefail" .. VarCName, tostring(_G['ichargefail' .. VarCName]))
-		SetVariable("icharge" .. VarCName .. "ratio", tostring(_G['icharge' .. VarCName .. 'ratio']))
-	end
-end
-  
+    ColourNote("orange","", "Mount:          Success: " .. stabletable[My_ID .. "mountsuccess"]  .. "\tFail: ".. stabletable[My_ID .. "mountfail"] .. " \t(" .. stabletable[My_ID .. "mountratio"] .. ")")
+    ColourNote("orange","", "Stash/Retrieve: Success: " .. stabletable[My_ID .. "stashsuccess"] .. "\tFail: ".. stabletable[My_ID .. "stashfail"] .. " \t(" .. stabletable[My_ID .. "stashratio"] .. ")")
+    ColourNote("orange","", "Lead:           Success: " .. stabletable[My_ID .. "leadsuccess"] .. "\tFail: ".. stabletable[My_ID .. "leadfail"] .. " \t(" .. stabletable[My_ID .. "leadratio"] .. ")")
+    ColourNote("orange","", "Groom:          Success: " .. stabletable[My_ID .. "groomsuccess"] .. "\tFail: ".. stabletable[My_ID .. "groomfail"] .. " \t(" .. stabletable[My_ID .. "groomratio"] .. ")")
+    ColourNote("orange","", "Dress:          Success: " .. stabletable[My_ID .. "dresssuccess"] .. "\tFail: ".. stabletable[My_ID .. "dressfail"] .. " \t(" .. stabletable[My_ID .. "dressratio"] .. ")")
+    ColourNote("orange","", "Riding:         Success: " .. stabletable[My_ID .. "ridesuccess"] .. "\tFail: ".. stabletable[My_ID .. "ridefail"] .. " \t(" .. stabletable[My_ID .. "rideratio"] .. ")")
+    ColourNote("orange","", "Resist tipped:  Success: " .. stabletable[My_ID .. "tipsuccess"] .. "\tFail: ".. stabletable[My_ID .. "tipfail"] .. " \t(" .. stabletable[My_ID .. "tipratio"] .. ")")
+    ColourNote("orange","", "You have fallen off " .. stabletable[My_ID .. "falloff"] .. " times")
+    ColourNote("orange","", "You have ridden into " .. stabletable[My_ID .. "doorframe"] .. " doorframes")
+    ColourNote("orange","", "Your horse has wandered off " .. stabletable[My_ID .. "wanderoff"] .. " times")
+    ColourNote("orange","", "Charge/Storm")
+    ColourNote("orange","", "Walk:           Success: " .. stabletable[My_ID .. "chargesuccesswalk"] .. "\tFail: " .. stabletable[My_ID .. "chargefailwalk"] .. " \t(" .. stabletable[My_ID .. "chargewalkratio"] .. ")")
+    ColourNote("orange","", "Trot:           Success: " .. stabletable[My_ID .. "chargesuccesstrot"] .. "\tFail: " .. stabletable[My_ID .. "chargefailtrot"] .. " \t(" .. stabletable[My_ID .. "chargetrotratio"] .. ")")
+    ColourNote("orange","", "Canter:         Success: " .. stabletable[My_ID .. "chargesuccesscanter"] .. "\tFail: " .. stabletable[My_ID .. "chargefailcanter"] .. " \t(" .. stabletable[My_ID .. "chargecanterratio"] .. ")")
+    ColourNote("orange","", "Gallop:         Success: " .. stabletable[My_ID .. "chargesuccessgallop"] .. "\tFail: " .. stabletable[My_ID .. "chargefailgallop"] .. " \t(" .. stabletable[My_ID .. "chargegallopratio"] .. ")")
+	
+    end
+end -- function MyHorseStats 
+
+function OnPluginSaveState ()
+	SetVariable ("stabletable","stabletable = " .. serialize.save_simple(stabletable))
+end -- function OnPluginSaveState
+
+-- Save the table when the plugin closes
+function OnPluginClose ()
+	SetVariable ("stabletable","stabletable = " .. serialize.save_simple(stabletable))
+end -- function OnPluginClose
+
 ]]>
 </script> 
 </muclient>
