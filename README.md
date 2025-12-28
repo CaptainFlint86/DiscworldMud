@@ -1,4 +1,6 @@
-Plugins for mushclient cobbled together by Proeliator  
+Plugins for mushclient cobbled together by Proeliator.
+
+AI has not been used in the creation of these plugins, as it appears to be against MUD policy.
 
 # Horse Tracker
 **V3.0**
