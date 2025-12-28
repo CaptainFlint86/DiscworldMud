@@ -53,10 +53,3 @@ Just type 'firebreathe list' to see your current results
 
 <img width="780" alt="Screenshot 2023-09-30 at 23 19 23" src="https://github.com/CaptainFlint86/DiscworldMud/assets/119447171/02587525-2268-46e9-9bf9-f636a079db49">
 
-# Hogswatch Tree Watcher
-
-Logs each present you unwrap/present other people unwrap from the Hogswatch Tree
-
-'Hogswatch help' lists all commands
-
-also includes a tree timer, notification of when the tree spawns, records new items and has a checklist for all bread types for the bacon dagger scabbard
