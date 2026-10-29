@@ -1,11 +1,13 @@
 Plugins for mushclient cobbled together by Proeliator.
 
-AI has not been used in the creation of these plugins, as it appears to be against MUD policy.
-
 # Horse Tracker
-**V3.0**
+**V4.0**
 
-**Now works across alts!**
+New feature include!
+Riding routes mapping
+List all passengers (only for fools)
+Keep track of how many rooms you move till you fall off
+other stuff i've forgotten about!
 
 Keep track of your success rates when using your horse  
 
