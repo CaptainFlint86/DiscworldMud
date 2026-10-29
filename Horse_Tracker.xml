@@ -490,7 +490,7 @@ function EnsureRoomID(target_name)
     if RoomID == "" or RoomID == nil then
         if target_name then pending_loc_name = target_name else pending_view_routes = true end
         SendNoEcho("glance")
-        ColourNote("orange", "", "[Horse Tracker] RoomID missing. Nudging game...")
+        ColourNote("orange", "", "[Horse Tracker] RoomID missing. Nudging game... Task will complete automatically.")
         return false
     end
     return true
@@ -734,7 +734,7 @@ end
 function ProcessSyncLine(name, line, wildcards)
     if sCurrentCharacter == "noname" then return end
     local source = wildcards.source:lower():trim()
-    local connectionsRaw = wildcards.dests:lower()
+    local connectionsRaw = wildcards.dest:lower()  -- <--- Changed from 'dests' to 'dest'
     stabletable.routes = stabletable.routes or {}
     stabletable.locations = stabletable.locations or {}
     if not stabletable.locations[source] then stabletable.locations[source] = "pending" end
