@@ -177,7 +177,8 @@ function OnPluginTelnetSubnegotiation (type, data)
                 if captured_id ~= RoomID then
                     RoomID = captured_id
                     if last_intended_destination ~= "" then
-                        if stabletable.locations and stabletable.locations[last_intended_destination] == RoomID then
+                        local charData = stabletable[sCurrentCharacter]
+                        if charData and charData.locations and charData.locations[last_intended_destination] == RoomID then
                             last_intended_destination = "" 
                         end
                     end
@@ -211,7 +212,6 @@ function UpdateCharName(forced_name)
         
         if old_char == "noname" and sCurrentCharacter ~= "noname" then
             if stabletable["noname"] then
-                -- Only migrate noname data if the target character doesn't already have an established table
                 if not stabletable[sCurrentCharacter] then
                     stabletable[sCurrentCharacter] = stabletable["noname"]
                 end
@@ -229,21 +229,23 @@ function UpdateCharName(forced_name)
         end
     end
     SetVariable("sCurChar", sCurrentCharacter)
-    checktable() -- Immediately initialize character keys upon resolution
+    checktable()
 end
 
 function checktable()
     if sCurrentCharacter == "noname" then return false end
     stabletable = stabletable or {}
     
-    -- Ensure the main character data entry exists as a table
     if not stabletable[sCurrentCharacter] or type(stabletable[sCurrentCharacter]) ~= "table" then
         local old_val = stabletable[sCurrentCharacter]
         stabletable[sCurrentCharacter] = { 
             falloff=0, doorframe=0, wanderoff=0, 
             total_success_rooms=0, total_fail_rooms=0, 
             total_falls=0, total_rides=0,
-            passengers = {}
+            passengers = {},
+            locations = {},
+            routes = {},
+            favs = {}
         }
         if type(old_val) == "string" and not stabletable[sCurrentCharacter .. "_MountName"] then
             stabletable[sCurrentCharacter .. "_MountName"] = old_val
@@ -252,6 +254,9 @@ function checktable()
         DefaultChargeValues()
     else
         stabletable[sCurrentCharacter].passengers = {}
+        stabletable[sCurrentCharacter].locations = stabletable[sCurrentCharacter].locations or {}
+        stabletable[sCurrentCharacter].routes = stabletable[sCurrentCharacter].routes or {}
+        stabletable[sCurrentCharacter].favs = stabletable[sCurrentCharacter].favs or {}
         stabletable[sCurrentCharacter].total_success_rooms = stabletable[sCurrentCharacter].total_success_rooms or 0
         stabletable[sCurrentCharacter].total_fail_rooms = stabletable[sCurrentCharacter].total_fail_rooms or 0
         stabletable[sCurrentCharacter].total_falls = stabletable[sCurrentCharacter].total_falls or 0
@@ -261,7 +266,6 @@ function checktable()
         stabletable[sCurrentCharacter].wanderoff = stabletable[sCurrentCharacter].wanderoff or 0
     end
     
-    -- Ensure flat keys have safe defaults if missing
     stabletable[sCurrentCharacter .. "_MountName"] = stabletable[sCurrentCharacter .. "_MountName"] or "Unnamed"
     stabletable[sCurrentCharacter .. "_MountColour"] = stabletable[sCurrentCharacter .. "_MountColour"] or "unknown"
     stabletable[sCurrentCharacter .. "_MountType"] = stabletable[sCurrentCharacter .. "_MountType"] or "horse"
@@ -269,6 +273,7 @@ function checktable()
 
     return true
 end
+
 function OnPluginInstall () 
     stabletable = {}
     local savedData = GetVariable("stabletable")
@@ -400,6 +405,7 @@ function FoolMountPosition(sName, sLine, wildcards)
 
     charData.passengers[pos] = passenger
     ColourNote("green", "", string.format("[Horse Tracker] (Fool Mount) %s mounted at Position %d.", passenger, pos))
+    OnPluginSaveState()
 end
 
 function FoolDismountPosition(sName, sLine, wildcards)
@@ -414,6 +420,7 @@ function FoolDismountPosition(sName, sLine, wildcards)
     if passenger:lower() == "you" then
         stabletable[sCurrentCharacter].passengers = {}
         ColourNote("orange", "", "[Horse Tracker] You have dismounted. Passenger stack cleared.")
+        OnPluginSaveState()
         return
     end
 
@@ -431,9 +438,11 @@ function FoolDismountPosition(sName, sLine, wildcards)
 
     if was_passenger then
         ColourNote("orange", "", string.format("[Horse Tracker] (Fool Fall/Dismount) %s fell off your horse.", passenger))
+        OnPluginSaveState()
     elseif sLine:find("strike your heads hard on the doorframe") then
         charData.passengers = {}
         ColourNote("red", "", "[Horse Tracker] Doorframe crash! All Fool passengers dislodged.")
+        OnPluginSaveState()
     end
 end
 
@@ -461,7 +470,7 @@ function ListFoolPassengers()
 end
 
 ------------------------
--- LOCATION ROUTE ENGINE
+-- LOCATION ROUTE ENGINE (Character Specific)
 ------------------------
 function CaptureIntentName (sName, sLine, wildcards)
     last_recorded_loc_name = wildcards.loc_name
@@ -470,9 +479,10 @@ end
 
 function FinishPendingTasks()
     if RoomID ~= "" then
+        local charData = stabletable[sCurrentCharacter]
         if pending_loc_name ~= "" then
-            stabletable.locations = stabletable.locations or {}
-            stabletable.locations[pending_loc_name] = RoomID
+            charData.locations = charData.locations or {}
+            charData.locations[pending_loc_name] = RoomID
             ColourNote("green", "", "[Horse Tracker] Auto-Saved: '" .. pending_loc_name .. "' is now mapped.")
             pending_loc_name = ""
             OnPluginSaveState()
@@ -501,8 +511,9 @@ function LearnLocation (sName, sLine, wildcards)
     if not checktable() then return end
     if last_recorded_loc_name == "" then return end
     if EnsureRoomID(last_recorded_loc_name) then
-        stabletable.locations = stabletable.locations or {}
-        stabletable.locations[last_recorded_loc_name] = RoomID
+        local charData = stabletable[sCurrentCharacter]
+        charData.locations = charData.locations or {}
+        charData.locations[last_recorded_loc_name] = RoomID
         ColourNote("green", "", "[Horse Tracker] Location Mapped: " .. last_recorded_loc_name)
         OnPluginSaveState()
         last_recorded_loc_name = "" 
@@ -512,12 +523,13 @@ end
 function RecordRoute (sName, sLine, wildcards)
     if sCurrentCharacter == "noname" then return end
     if not checktable() then return end
-    stabletable.routes = stabletable.routes or {}
+    local charData = stabletable[sCurrentCharacter]
+    charData.routes = charData.routes or {}
     local loc1, loc2 = wildcards.loc1, wildcards.loc2
-    stabletable.routes[loc1] = stabletable.routes[loc1] or {}
-    stabletable.routes[loc2] = stabletable.routes[loc2] or {}
-    stabletable.routes[loc1][loc2] = true
-    stabletable.routes[loc2][loc1] = true
+    charData.routes[loc1] = charData.routes[loc1] or {}
+    charData.routes[loc2] = charData.routes[loc2] or {}
+    charData.routes[loc1][loc2] = true
+    charData.routes[loc2][loc1] = true
     ColourNote("green", "", "[Horse Tracker] Route Linked: " .. loc1 .. " <-> " .. loc2)
     last_recorded_loc_name = ""
     OnPluginSaveState()
@@ -528,8 +540,9 @@ function ManualAddLocation (sName, sLine, wildcards)
     if not checktable() then return end
     local name = wildcards.loc_name
     if EnsureRoomID(name) then
-        stabletable.locations = stabletable.locations or {}
-        stabletable.locations[name] = RoomID
+        local charData = stabletable[sCurrentCharacter]
+        charData.locations = charData.locations or {}
+        charData.locations[name] = RoomID
         ColourNote("green", "", "[Horse Tracker] Manually added '" .. name)
         OnPluginSaveState()
     end
@@ -538,16 +551,17 @@ end
 function ManualAddRoute (sName, sLine, wildcards)
     if sCurrentCharacter == "noname" then return end
     if not checktable() then return end
+    local charData = stabletable[sCurrentCharacter]
     local loc1, loc2 = wildcards.loc1:lower(), wildcards.loc2:lower()
-    if not stabletable.locations[loc1] or not stabletable.locations[loc2] then
+    if not charData.locations or not charData.locations[loc1] or not charData.locations[loc2] then
         ColourNote("orange", "", "[Horse Tracker] Error: Unknown locations. Use 'horse map loc' first.")
         return
     end
-    stabletable.routes = stabletable.routes or {}
-    stabletable.routes[loc1] = stabletable.routes[loc1] or {}
-    stabletable.routes[loc2] = stabletable.routes[loc2] or {}
-    stabletable.routes[loc1][loc2] = true
-    stabletable.routes[loc2][loc1] = true
+    charData.routes = charData.routes or {}
+    charData.routes[loc1] = charData.routes[loc1] or {}
+    charData.routes[loc2] = charData.routes[loc2] or {}
+    charData.routes[loc1][loc2] = true
+    charData.routes[loc2][loc1] = true
     ColourNote("green", "", "[Horse Tracker] Manually linked: " .. loc1 .. " <-> " .. loc2)
     OnPluginSaveState()
 end
@@ -555,12 +569,14 @@ end
 function RenameLocation (sName, sLine, wildcards)
     if sCurrentCharacter == "noname" then return end
     if not checktable() then return end
+    local charData = stabletable[sCurrentCharacter]
+    charData.locations = charData.locations or {}
     local old = wildcards.old_name:trim()
     local new = wildcards.new_name:trim()
-    local existingID = stabletable.locations[old]
+    local existingID = charData.locations[old]
     
     if not existingID then
-        for k, v in pairs(stabletable.locations) do
+        for k, v in pairs(charData.locations) do
             if k:lower() == old:lower() then
                 old = k
                 existingID = v
@@ -572,15 +588,15 @@ function RenameLocation (sName, sLine, wildcards)
     local id_to_use = existingID or "pending"
     if RoomID and RoomID ~= "" then id_to_use = RoomID end
 
-    stabletable.locations[new] = id_to_use
-    if old ~= new then stabletable.locations[old] = nil end
+    charData.locations[new] = id_to_use
+    if old ~= new then charData.locations[old] = nil end
     
-    if stabletable.routes then
-        if stabletable.routes[old] then
-            stabletable.routes[new] = stabletable.routes[old]
-            stabletable.routes[old] = nil
+    if charData.routes then
+        if charData.routes[old] then
+            charData.routes[new] = charData.routes[old]
+            charData.routes[old] = nil
         end
-        for startNode, connections in pairs(stabletable.routes) do
+        for startNode, connections in pairs(charData.routes) do
             if connections[old] then
                 connections[new] = true
                 connections[old] = nil
@@ -593,13 +609,14 @@ end
 function ToggleFavorite(sName, sLine, wildcards)
     if sCurrentCharacter == "noname" then return end
     if not checktable() then return end
+    local charData = stabletable[sCurrentCharacter]
     local loc = wildcards.loc:lower():trim()
-    stabletable.favs = stabletable.favs or {}
-    if stabletable.favs[loc] then
-        stabletable.favs[loc] = nil
+    charData.favs = charData.favs or {}
+    if charData.favs[loc] then
+        charData.favs[loc] = nil
         ColourNote("orange", "", "[Horse Tracker] Removed '" .. loc .. "' from favorites.")
     else
-        stabletable.favs[loc] = true
+        charData.favs[loc] = true
         ColourNote("green", "", "[Horse Tracker] Added '" .. loc .. "' to favorites.")
     end
     OnPluginSaveState()
@@ -608,12 +625,13 @@ end
 function ListHorseRoutes(sName, sLine, wildcards)
     if sCurrentCharacter == "noname" then return end
     if not checktable() then return end
+    local charData = stabletable[sCurrentCharacter]
     local show_all = true
     if wildcards.fav and wildcards.fav:trim() == "fav" then show_all = false end
     if not EnsureRoomID() then return end
 
     local currentLoc = nil
-    for name, id in pairs(stabletable.locations or {}) do
+    for name, id in pairs(charData.locations or {}) do
         if id == RoomID then currentLoc = name; break end
     end
 
@@ -622,7 +640,7 @@ function ListHorseRoutes(sName, sLine, wildcards)
         return
     end
 
-    local reachableDestinations = GetAllReachable(currentLoc)
+    local reachableDestinations = GetAllReachable(currentLoc, charData)
     if #reachableDestinations > 0 then
         local title = show_all and "All Available Routes" or "Favorite Routes"
         ColourNote("green", "", title .. " from " .. currentLoc .. ":")
@@ -630,7 +648,7 @@ function ListHorseRoutes(sName, sLine, wildcards)
         local found_any = false
         
         for _, destination in ipairs(reachableDestinations) do
-            local is_fav = stabletable.favs and stabletable.favs[destination:lower()] or false
+            local is_fav = charData.favs and charData.favs[destination:lower()] or false
             if show_all or is_fav then
                 found_any = true
                 local my_label = tostring(destination) 
@@ -653,18 +671,20 @@ end
 function HorseMapDebug()
     if sCurrentCharacter == "noname" then return end
     if not checktable() then return end
+    local charData = stabletable[sCurrentCharacter]
     ColourNote("green", "", "--- MOUNT MAP DEBUG ---")
-    for name, id in pairs(stabletable.locations or {}) do print("  " .. name) end
+    for name, id in pairs(charData.locations or {}) do print("  " .. name) end
 end
 
 function ClearMapAll(name, line, wildcards)
     if sCurrentCharacter == "noname" then return end
     if not checktable() then return end
+    local charData = stabletable[sCurrentCharacter]
     local confirmation = string.trim(wildcards[1]):lower()
     if confirmation == "confirm" then
-        stabletable.locations = {}
-        stabletable.routes = {}
-        ColourNote("white", "red", "[Horse Tracker] ALL locations and routes wiped.")
+        charData.locations = {}
+        charData.routes = {}
+        ColourNote("white", "red", "[Horse Tracker] ALL locations and routes wiped for " .. sCurrentCharacter .. ".")
         OnPluginSaveState()
     else
         ColourNote("orange", "", "[Horse Tracker] Type: horse map clear all confirm")
@@ -680,14 +700,15 @@ end
 function ForgetLocation (sName, sLine, wildcards)
     if sCurrentCharacter == "noname" then return end
     if not checktable() then return end
+    local charData = stabletable[sCurrentCharacter]
     local target = pending_forget_name
     if target == "" then return end
-    for k, v in pairs(stabletable.locations) do
+    for k, v in pairs(charData.locations or {}) do
         if k:lower() == target:lower() then
-            stabletable.locations[k] = nil
-            if stabletable.routes then
-                stabletable.routes[k] = nil
-                for _, connections in pairs(stabletable.routes) do connections[k] = nil end
+            charData.locations[k] = nil
+            if charData.routes then
+                charData.routes[k] = nil
+                for _, connections in pairs(charData.routes) do connections[k] = nil end
             end
             ColourNote("orange", "", "[Horse Tracker] Forgotten: " .. k)
             OnPluginSaveState()
@@ -700,8 +721,9 @@ end
 function HorseMapSummary()
     if sCurrentCharacter == "noname" then return end
     if not checktable() then return end
+    local charData = stabletable[sCurrentCharacter]
     local total_locs, mapped_locs = 0, 0
-    for _, id in pairs(stabletable.locations or {}) do
+    for _, id in pairs(charData.locations or {}) do
         total_locs = total_locs + 1
         if id ~= "pending" then mapped_locs = mapped_locs + 1 end
     end
@@ -726,34 +748,38 @@ end
 
 function ProcessSyncSingle(name, line, wildcards)
     if sCurrentCharacter == "noname" then return end
+    local charData = stabletable[sCurrentCharacter]
     local source = wildcards.source:lower():trim()
-    stabletable.locations = stabletable.locations or {}
-    if not stabletable.locations[source] then stabletable.locations[source] = "pending" end
+    charData.locations = charData.locations or {}
+    if not charData.locations[source] then charData.locations[source] = "pending" end
 end
 
 function ProcessSyncLine(name, line, wildcards)
     if sCurrentCharacter == "noname" then return end
+    local charData = stabletable[sCurrentCharacter]
     local source = wildcards.source:lower():trim()
-    local connectionsRaw = wildcards.dest:lower()  -- <--- Changed from 'dests' to 'dest'
-    stabletable.routes = stabletable.routes or {}
-    stabletable.locations = stabletable.locations or {}
-    if not stabletable.locations[source] then stabletable.locations[source] = "pending" end
+    local connectionsRaw = wildcards.dest:lower()
+    charData.routes = charData.routes or {}
+    charData.locations = charData.locations or {}
+    if not charData.locations[source] then charData.locations[source] = "pending" end
     connectionsRaw = connectionsRaw:gsub("%s+and%s+", ", ")
     for target in connectionsRaw:gmatch("[^,]+") do
         target = target:trim()
-        if not stabletable.locations[target] then stabletable.locations[target] = "pending" end
-        stabletable.routes[source] = stabletable.routes[source] or {}
-        stabletable.routes[target] = stabletable.routes[target] or {}
-        stabletable.routes[source][target] = true
-        stabletable.routes[target][source] = true
+        if not charData.locations[target] then charData.locations[target] = "pending" end
+        charData.routes[source] = charData.routes[source] or {}
+        charData.routes[target] = charData.routes[target] or {}
+        charData.routes[source][target] = true
+        charData.routes[target][source] = true
     end
 end
 
 function ConfirmArrival()
     if sCurrentCharacter == "noname" then return end
+    local charData = stabletable[sCurrentCharacter]
     if last_intended_destination == "" then return end
     if RoomID == "" then SendNoEcho("glance"); return end
-    stabletable.locations[last_intended_destination] = RoomID
+    charData.locations = charData.locations or {}
+    charData.locations[last_intended_destination] = RoomID
     ColourNote("green", "", "[Horse Tracker] Verified destination: " .. last_intended_destination)
     last_intended_destination = "" 
     OnPluginSaveState()
@@ -762,20 +788,21 @@ end
 function ListUnmappedLocations()
     if sCurrentCharacter == "noname" then return end
     if not checktable() then return end
+    local charData = stabletable[sCurrentCharacter]
     local unmapped = {}
-    for name, val in pairs(stabletable.locations or {}) do
+    for name, val in pairs(charData.locations or {}) do
         if val == "pending" then table.insert(unmapped, name) end
     end
     ColourNote("orange", "", "Pending Calibration: " .. (#unmapped > 0 and table.concat(unmapped, ", ") or "None"))
 end
 
-function GetAllReachable(startNode)
+function GetAllReachable(startNode, charData)
     local reachable, visited, queue = {}, {}, {startNode}
     visited[startNode] = true
     local i = 1
     while i <= #queue do
         local current = queue[i]; i = i + 1
-        for neighbour, _ in pairs(stabletable.routes and stabletable.routes[current] or {}) do
+        for neighbour, _ in pairs(charData.routes and charData.routes[current] or {}) do
             if not visited[neighbour] then
                 visited[neighbour] = true
                 table.insert(queue, neighbour)
@@ -947,7 +974,7 @@ function StableShowList ()
     if not checktable() then return end
     
     local owners = {}
-    local max_len = string.len("Owner") -- start with at least header size
+    local max_len = string.len("Owner")
     
     for k, v in pairs(stabletable) do
         if type(k) == "string" and k:find("_MountName") then 
@@ -973,7 +1000,7 @@ function StableShowList ()
     local fmt_row    = "%-" .. col_width .. "s   %s"
     
     ColourNote("green", "", string.format(fmt_header, "Owner", "Mount Name"))
-    ColourNote("white", "", string.rep("-", col_width + 15)) -- dynamic divider line
+    ColourNote("white", "", string.rep("-", col_width + 15))
     
     for _, data in ipairs(owners) do
         ColourNote("orange", "", string.format(fmt_row, data.owner, data.mount))
@@ -1047,7 +1074,10 @@ function MyMountStatsResetAll()
         falloff=0, doorframe=0, wanderoff=0,
         total_success_rooms = 0, total_fail_rooms = 0,
         total_falls = 0, total_rides = 0,
-        passengers = {}
+        passengers = {},
+        locations = {},
+        routes = {},
+        favs = {}
     }
     DefaultHandlerValues()
     DefaultChargeValues()
