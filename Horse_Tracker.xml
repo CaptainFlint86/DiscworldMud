@@ -6,736 +6,1075 @@
    author="Proeliator"
    id="1a51e592868f18f275a46619"
    language="Lua"
-   purpose="Track the success/failure of horse usage"
+   purpose="Track mount usage stats"
    date_written="2022-11-21 10:05:30"
    save_state="y"
    requires="5.06"
-   version="3.0"
+   version="4.0"
    >
 </plugin>
 
 <triggers>
-  <trigger
-   enabled="n"
-   keep_evaluating="y"
-   match="^(?P<HorseName>.*) the (?P<HorseColour>.*) horse.$"
-   omit_from_output="y"
-   sequence="1"
-   regexp="y"
-   script="ID_Horse"
-   name="HorseName"
-  >
-  </trigger>
-
-<trigger
-   enabled="y"
-   keep_evaluating="y"
-   match="^(?:> )?You hand (.+ )?the (.+) horse over to the stablehands\.$"
-   omit_from_output="n"
-   sequence="18"
-   regexp="y"
-   script="StableHorse"
-   name="Horse_Stabled"
-  >
-  </trigger>
-
- <trigger
-   enabled="y"
-   keep_evaluating="y"
-   match="^(?:> )?You pay the stablehands .+ and (?:they bring |one of them leaves to fetch your)(?:(.+)? the)? (.+) (?:horse out of the stalls for you\.|(?:mare|stallion|gelding) for you\.)$"
-   omit_from_output="n"
-   sequence="18"
-   regexp="y"
-   script="StableHorse"
-   name="Horse_Destabled"
-  >
-  </trigger>
-
-<trigger
-   enabled="y"
-   keep_evaluating="y"
-   match="^(?:> )?You rename (?:.+ )?the (.+) horse as (?P<HorseName>.+)\.$$"
-   omit_from_output="n"
-   sequence="18"
-   regexp="y"
-   script="NameMyHorse"
-   name="Horse_Named"
-  >
-  </trigger>
-
- <trigger
-   enabled="y"
-   keep_evaluating="y"
-   match="^(?:> )?You remove (.+) the (.+) horse's name, leaving .+ anonymous once more\.$"
-   omit_from_output="n"
-   sequence="18"
-   regexp="y"
-   script="NameMyHorse"
-   name="Horse_Denamed"
-  >
-  </trigger>
-
-<trigger
-   enabled="y"
-   custom_colour="15"
-   keep_evaluating="y"
-   match="^(?:> )?(You mount(?: )?(.+)? the (.+) horse\.|You take two steps back, then run towards .* horse and hop onto .* back.)$"
-   omit_from_output="n"
-   sequence="18"
-   regexp="y"
-   script="HorseHandler"
-   name="mountsuccess"
-  >
-  </trigger>
-
-<trigger
-   enabled="y"
-   custom_colour="7"
-   keep_evaluating="y"
-   match="^(?:> )?You try to climb onto(?: )?(.+)? the (.+) horse, but .+ easily shakes you off and you land with a thump on the ground\.$"
-   omit_from_output="n"
-   sequence="19"
-   regexp="y"
-   script="HorseHandler"
-   name="mountfail"
-  >
-  </trigger>
-
-<trigger
-   enabled="y"
-   custom_colour="15"
-   keep_evaluating="y"
-   match="^(?:> )?You (?:stash|retrieve) .+(?:in|from)(?: )?(.+)? the (.+) horse's pair of(?: .+)? saddlebags\.$"
-   omit_from_output="n"
-   sequence="20"
-   regexp="y"
-   script="HorseHandler"
-   name="stashsuccess"
-  >
-  </trigger>
-
-<trigger
-   enabled="y"
-   custom_colour="7"
-   keep_evaluating="y"
-   match="^(?:> )?You try to access(?: )?(.+)? the (.+) horse's saddlebag and promptly get kicked for your trouble\.$"
-   omit_from_output="n"
-   sequence="21"
-   regexp="y"
-   script="HorseHandler"
-   name="stashfail"
-  >
-  </trigger>
-
-<trigger
-   enabled="y"
-   custom_colour="7"
-   keep_evaluating="y"
-   match="^(?:> )?You try to convince(?: )?(.+)? the (.+) horse to follow you, but .+ is having none of it\.$"
-   omit_from_output="n"
-   sequence="22"
-   regexp="y"
-   script="HorseHandler"
-   name="leadfail"
-  >
-  </trigger>
-
-<trigger
-   enabled="y"
-   custom_colour="15"
-   keep_evaluating="y"
-   match="^(?:> )?([^([:]+)?(?: the|The) (.+) horse starts to follow you\.$"
-   omit_from_output="n"
-   sequence="23"
-   regexp="y"
-   script="HorseHandler"
-   name="leadsuccess"
-  >
-  </trigger>
-
-<trigger
-   enabled="y"
-   custom_colour="15"
-   keep_evaluating="y"
-   match="^(?:> )?You dress(?: )?(.+)? the (.+) horse with .+\.$"
-   omit_from_output="n"
-   sequence="23"
-   regexp="y"
-   script="HorseHandler"
-   name="dresssuccess"
-  >
-  </trigger>
-
-<trigger
-   enabled="y"
-   custom_colour="7"
-   keep_evaluating="y"
-   match="^(?:> )?You try to dress(?: )?(.+)? the (.+) horse with .+$"
-   omit_from_output="n"
-   sequence="23"
-   regexp="y"
-   script="HorseHandler"
-   name="dressfail"
-  >
-  </trigger>
-
-<trigger
-   enabled="y"
-   custom_colour="15"
-   keep_evaluating="y"
-   match="^(?:> )?You approach(?: )?(.+)? the (.+) horse, preparing to groom .+$"
-   omit_from_output="n"
-   sequence="23"
-   regexp="y"
-   script="HorseHandler"
-   name="groomsuccess"
-  >
-  </trigger>
-
-<trigger
-   enabled="y"
-   custom_colour="7"
-   keep_evaluating="y"
-   match="^(?:> )?You pick out a brush and have a go at(?: )?(.+)? the (.+) horse's .+ with it.*$"
-   omit_from_output="n"
-   sequence="23"
-   regexp="y"
-   script="HorseHandler"
-   name="groomfail"
-  >
-  </trigger>
-
-<trigger
-   enabled="y"
-   custom_colour="7"
-   keep_evaluating="y"
-   match="^(?:> )?You mess up the rhythm of your riding and are promptly tossed off(?: )?(.+)? the (.+) horse onto the ground\.$"
-   omit_from_output="n"
-   sequence="24"
-   regexp="y"
-   script="HorseHandler"
-   name="falloff"
-  >
-  </trigger>
-
-<trigger
-   enabled="y"
-   custom_colour="7"
-   keep_evaluating="y"
-   match="^(?:> )?As you ride(?: )?(.+)? the (.+) through the door, you strike your head hard on the doorframe and are sent tumbling out of the saddle\.$"
-   omit_from_output="n"
-   sequence="24"
-   regexp="y"
-   script="HorseHandler"
-   name="doorframe"
-  >
-  </trigger>
-
-<trigger
-   enabled="y"
-   custom_colour="7"
-   keep_evaluating="y"
-   match="^(?:> )?([^([:]+ )?(?:the|The) (.+) horse seems to get bored of following you and wanders off\.$"
-   omit_from_output="n"
-   sequence="24"
-   regexp="y"
-   script="HorseHandler"
-   name="wanderoff"
-  >
-  </trigger>
+<!-- Mount ID (Named and Unnamed/Anonymous Support) -->
+	<trigger enabled="n" match="^(?P<MountName>.*) the (?P<MountDesc>.+)\.$" regexp="y" script="ID_Mount" name="MountName" sequence="1" />
+	<trigger enabled="n" match="^A[n]? (?P<MountDesc>.+)\.$" regexp="y" script="ID_UnnamedMount" name="MountUnnamed" sequence="2" />
+    
+	<trigger enabled="y" match="^You rename (?:(.+) the )?.+ (.+) as (?P<MountName>[^\.]+)\.$" regexp="y" script="NameMyMount" name="Mount_Named" sequence="18" />
+	<trigger enabled="y" match="^You remove (?P<MountName>.*) the (.+) (.+)'s name, leaving .+ anonymous once more\.$" regexp="y" script="DenameMyMount" name="Mount_Denamed" sequence="18" />
+    
+<!-- Stabling -->
+	<trigger enabled="y" match="^You hand(?P<MountName>.+?)? the (?<MountColour>.+) horse over to the stablehands\.$" regexp="y" script="StableMount" name="Mount_Stabled" sequence="18" />
+	<trigger enabled="y" match="^You pay the stablehands .+ and (?:they bring |one of them leaves to fetch your)(?:(.+)? the)? (.+) (.+) horse out of the stalls for you\.$" regexp="y" script="StableMount" name="Mount_Destabled" sequence="18" />
+  
+<!-- Dress -->
+	<trigger enabled="y" custom_colour="15" match="^You dress(?P<MountName>.+?)? the (?<MountColour>.+) horse with .+\.$" regexp="y" script="MountHandler" name="dresssuccess" sequence="23" />
+	<trigger enabled="y" custom_colour="7" match="^You try to dress(?P<MountName>.+?)? the (?<MountColour>.+) horse with .+$" regexp="y" script="MountHandler" name="dressfail" sequence="23" />
+  
+<!-- Mount -->
+	<trigger enabled="y" custom_colour="15" match="^You mount(?P<MountName>.+)? the (?<MountColour>.+) horse\.$" regexp="y" script="MountHandler" name="mountsuccess" sequence="18" />
+	<trigger enabled="y" custom_colour="15" match="^You take two steps back, then run towards(?P<MountName>.+?)? the (?<MountColour>.+) horse and hop onto .* back\.$" regexp="y" script="MountHandler" name="mountsuccess_run" sequence="18" />
+	<trigger enabled="y" custom_colour="7" match="^You try to climb onto(?P<MountName>.+?)? the (?<MountColour>.+) horse, but .+ easily shakes you off and you land with a thump on the ground\.$" regexp="y" script="MountHandler" name="mountfail" sequence="19" />
+    
+<!-- Dismount Triggers -->
+	<trigger enabled="y" custom_colour="15" match="^You get off(?P<MountName>.+)? the (?<MountColour>.+) horse\.$" regexp="y" script="MountHandler" name="dismount" sequence="26" />
+	<trigger enabled="y" custom_colour="15" match="^You get down from the saddle with a quick hop\.$" regexp="y" script="MountHandler" name="dismount_hop" sequence="26" />
+  
+<!-- Stash/Retrieve -->
+	<trigger enabled="y" custom_colour="15" match="^You (?:covertly )?(?:stash|retrieve) .+(?:in|from)(?P<MountName>.+?)? the (?<MountColour>.+) horse's pair of(?: .+)? saddlebags\.$" regexp="y" script="MountHandler" name="stashsuccess" sequence="20" />
+	<trigger enabled="y" custom_colour="7" match="^You try to access(?P<MountName>.+?)? the (?<MountColour>.+) horse's saddlebag and promptly get kicked for your trouble\.$" regexp="y" script="MountHandler" name="stashfail" sequence="21" />
+  
+<!-- Leading -->
+	<trigger enabled="y" custom_colour="7" match="^You try to convince(?P<MountName>.+?)? the (?<MountColour>.+) horse to follow you, but .+ is having none of it\.$" regexp="y" script="MountHandler" name="leadfail" sequence="22" />
+	<trigger enabled="y" custom_colour="15" match="^(?P<MountName>.+?)? the (?<MountColour>.+) horse starts to follow you\.$" regexp="y" script="MountHandler" name="leadsuccess" sequence="23" />
+  
+<!-- Grooming -->
+	<trigger enabled="y" custom_colour="15" match="^You approach(?P<MountName>.+?)? the (?<MountColour>.+) horse, preparing to groom .+$" regexp="y" script="MountHandler" name="groomsuccess" sequence="23" />
+	<trigger enabled="y" custom_colour="7" match="^You pick out a brush and have a go at(?P<MountName>.+?)? the (?<MountColour>.+) horse's .+ with it.*$" regexp="y" script="MountHandler" name="groomfail" sequence="23" />
+  
+<!-- Falling off -->
+	<trigger enabled="y" custom_colour="7" match="^You mess up the rhythm of your riding and are promptly tossed off(?P<MountName>.+?)? the (?<MountColour>.+) horse onto the ground\.$" regexp="y" script="MountHandler" name="falloff" sequence="24" />
+	<trigger enabled="y" custom_colour="7" match="^As you ride(?P<MountName>.+?)? the (?<MountColour>.+) horse through the door, you strike your head hard on the doorframe and are sent tumbling out of the saddle\.$" regexp="y" script="MountHandler" name="doorframe" sequence="24" />
+	<trigger enabled="y" match="^(?:[^(>\[])(?:[^:]+) you, (?:almost|slightly) unseating you from(?P<MountName>.+?)? the (?<MountColour>.+) horse\.$" regexp="y" script="MountHandler" name="tipsuccess" sequence="24" />
+	<trigger enabled="y" match="^(?:[^(>\[])(?:[^:]+) off(?P<MountName>.+?)? the (?<MountColour>.+) horse, sending you crashing to the ground\.$" regexp="y" script="MountHandler" name="tipfail" sequence="24" />
 	
-<trigger
-   enabled="y"
-   keep_evaluating="y"
-   match="^(?:> )?You tell(?: )?(.+)? the (.+) horse to take you to .+ and .+ starts off at a trot\.$"
-   omit_from_output="n"
-   sequence="24"
-   regexp="y"
-   script="HorseHandler"
-   name="ridesuccess"
-  >
-  </trigger>
-	
-<trigger
-   enabled="y"
-   keep_evaluating="y"
-   match="^(?:> )?You tell(?: )?(.+)? the (.+) horse to take you to .+, but .+ seems unwilling to move\.$"
-   omit_from_output="n"
-   sequence="24"
-   regexp="y"
-   script="HorseHandler"
-   name="ridefail"
-  >
-  </trigger>	
+<!-- Wandering off -->
+	<trigger enabled="y" custom_colour="7" match="^(?P<MountName>.+?)? the (?<MountColour>.+) horse seems to get bored of following you and wanders off\.$" regexp="y" script="MountHandler" name="wanderoff" sequence="24" />
+  
+<!-- Riding -->
+	<trigger enabled="y" match="^You tell(?P<MountName>.+?)? the (?<MountColour>.+) horse to take you to (?<dest>.+) and .+ starts off at a trot\.$" regexp="y" script="MountHandler" name="ridesuccess" sequence="24" />
+	<trigger enabled="y" match="^You tell(?P<MountName>.+?)? the (?<MountColour>.+) horse to take you to .+, but .+ seems unwilling to move\.$" regexp="y" script="MountHandler" name="ridefail" sequence="24" />
 
-<trigger
-   enabled="y"
-   keep_evaluating="y"
-   match="^(?:> )?(?:[^(>\[])(?:[^:]+) you, (?:almost|slightly) unseating you from(?: )?(.+)? the (.+) (?:horse\.|horse before you regain your balance\.)$"
-   omit_from_output="n"
-   sequence="24"
-   regexp="y"
-   script="HorseHandler"
-   name="tipsuccess"
-  >
-  </trigger>	
-	
-<trigger
-   enabled="y"
-   keep_evaluating="y"
-   match="^(?:> )?(?:[^(>\[])(?:[^:]+) off(?: )?(.+)? the (.+) horse, sending you crashing to the ground\.$"
-   omit_from_output="n"
-   sequence="24"
-   regexp="y"
-   script="HorseHandler"
-   name="tipfail"
-  >
-  </trigger>	
-	
-<trigger
-   enabled="y"
-   custom_colour="7"
-   keep_evaluating="y"
-   match="^(?:> )?The jolt knocks .+ off(?: )?(.+)? the (.+) horse's pack saddle\.$"
-   omit_from_output="n"
-   sequence="24"
-   regexp="y"
-  >
-  </trigger>
+<!-- Charge/Storm -->
+	<trigger enabled="y" match="^You hunch down over(?P<MountName>.+?)? the (?<MountColour>.+) horse and spur .+ into a (\w*) at the .+$" regexp="y" script="MountChargeHandler" name="chargesuccess" sequence="25" />
+	<trigger enabled="y" match="^You hunch down over(?P<MountName>.+?)? the (?<MountColour>.+) horse and try to spur .+ into a (\w*) at the .+$" regexp="y" script="MountChargeHandler" name="chargefail" sequence="26" />
+  
+<!-- Fools Guild Multi-Rider Position Triggers -->
+    <trigger enabled="y" match="^(?<Passenger>.+) climbs onto(?: (?P<MountName>.+))? the (?<MountColour>.+) horse's back behind you" regexp="y" script="FoolMountPosition" name="Pos2" sequence="50" />
+    <trigger enabled="y" match="^Wriggling .+ way between you and .+, (?P<Passenger>.+) manages to get .+ belly onto(?: (?P<MountName>.+))? the (?<MountColour>.+) horse's back" regexp="y" script="FoolMountPosition" name="Pos3" sequence="50" />
+    <trigger enabled="y" match="^(?<Passenger>.+) walks up to(?: (?P<MountName>.+))? the (?<MountColour>.+) horse holding a ladder, sets it up against .+ flank and lies face-down" regexp="y" script="FoolMountPosition" name="Pos4" sequence="50" />
+    <trigger enabled="y" match="^(?<Passenger>.+) gives(?: (?P<MountName>.+))? the (?<MountColour>.+) horse a big, wet smooch on the lips, then quickly climbs under .+ belly" regexp="y" script="FoolMountPosition" name="Pos5" sequence="50" />
+    <trigger enabled="y" match='^With a fearsome yell that sounds remarkably like "Pancakes!", (?P<Passenger>.+) rushes towards(?: (?P<MountName>.+))? the (?<MountColour>.+) horse, then launches into a leap' regexp="y" script="FoolMountPosition" name="Pos6" sequence="50" />
+    <trigger enabled="y" match="^(?<Passenger>.+) examines the pile before .+, then walks up to(?: (?P<MountName>.+))? the (?<MountColour>.+) horse and whispers something" regexp="y" script="FoolMountPosition" name="Pos7" sequence="50" />
+    <trigger enabled="y" match="^(?<Passenger>.+) gives a loud whistle, then breaks into a run toward(?: (?P<MountName>.+))? the (?<MountColour>.+) horse\." regexp="y" script="FoolMountPosition" name="Pos8" sequence="50" />
+    <trigger enabled="y" match="^With another loud whistle, (?P<Passenger>.+) runs to the other side of(?: (?P<MountName>.+))? the (?<MountColour>.+) horse" regexp="y" script="FoolMountPosition" name="Pos9" sequence="50" />
+    <trigger enabled="y" match="^(?<Passenger>.+) approaches(?: (?P<MountName>.+))? the (?<MountColour>.+) horse, uses .+ as a stirrup" regexp="y" script="FoolMountPosition" name="Pos10" sequence="50" />
+    <trigger enabled="y" match="^(?<Passenger>.+) tries to get on top of(?: (?P<MountName>.+))? the (?<MountColour>.+) horse, and nearly causes the entire troupe" regexp="y" script="FoolMountPosition" name="Pos11" sequence="50" />
 
-<trigger
-   enabled="y"
-   keep_evaluating="n"
-   match="^(?:> )?You hunch down over(?: )?(.+)? the (.+) horse and spur .+ into a (\w*) at the .+$"
-   omit_from_output="n"
-   sequence="25"
-   regexp="y"
-   script="HorseChargeHandler"
-   name="chargesuccess"
-  >
-  </trigger>
-	
-<trigger
-   enabled="y"
-   keep_evaluating="n"
-   match="^(?:> )?You hunch down over(?: )?(.+)? the (.+) horse and try to spur .+ into a (\w*) at the .+$"
-   omit_from_output="n"
-   sequence="26"
-   regexp="y"
-   script="HorseChargeHandler"
-   name="chargefail"
-  >
-  </trigger>
+<!-- Fools Guild Dismount and Fall Position Triggers -->
+    <trigger enabled="y" match="^(?<Passenger>.+) descends from (?:the back of )?(?:(?:.+)? the )?(?<MountName>.+)? the (?<MountColour>.+) horse" regexp="y" script="FoolDismountPosition" sequence="50" />
+    <trigger enabled="y" match="^(?<Passenger>.+) tries to land on his feet, but doesn't quite make it and tumbles painfully onto his buttocks\." regexp="y" script="FoolDismountPosition" sequence="50" />
+    <trigger enabled="y" match="^(?<Passenger>.+) is dislodged from his spot and falls off (?:.+)? the (?<MountColour>.+) horse\." regexp="y" script="FoolDismountPosition" sequence="50" />
+    <trigger enabled="y" match="^(?<Passenger>.+) is dislodged from her spot and falls off (?:.+)? the (?<MountColour>.+) horse\." regexp="y" script="FoolDismountPosition" sequence="50" />
+    <trigger enabled="y" match="^(?<Passenger>.+) loses her precarious attachment to (?:.+)? the (?<MountColour>.+) horse and goes flying\." regexp="y" script="FoolDismountPosition" sequence="50" />
+    <trigger enabled="y" match="^Then (?<Passenger>.+) gently climbs down from (?:.+)? the (?<MountColour>.+) horse's back and lands on his feet" regexp="y" script="FoolDismountPosition" sequence="50" />
+    <trigger enabled="y" match="^You strike your heads hard on the doorframe and are sent tumbling out of the saddle\.$" regexp="y" script="FoolDismountPosition" sequence="50" />
+
+<!-- Routes Mapping -->
+    <trigger enabled="y" match="^(?P<MountName>.+?)? the (?<MountColour>.+) horse looks around carefully, committing this place to memory\.$" regexp="y" script="LearnLocation" sequence="10" />
+    <trigger enabled="y" match="^(?P<MountName>.+?)? the (?<MountColour>.+) horse recognises this place as (?<dest>.+)\.  (?:She|He|It) will be able to find (?:her|his|its) way between (?<loc1>.+) and (?<loc2>.+) from now on\.$" regexp="y" script="RecordRoute" sequence="10" />
+	<trigger enabled="y" match="^This location was already known to .* as (?<old_name>.+), so (?:she|he|it) mentally relabels it as (?<new_name>.+) instead\.$" regexp="y" script="RenameLocation" sequence="10" />
+	<trigger enabled="y" match="^(?P<MountName>.+?)? the (?<MountColour>.+) horse looks forgetful for a moment\.$" regexp="y" script="ForgetLocation" sequence="10" />
+    <trigger enabled="y" match="^(?P<MountName>.+?)? the (?<MountColour>.+) horse knows the following locations:$" regexp="y" script="StartHorseSync" sequence="1" />
+    <trigger enabled="n" name="HorseSyncLine" match="^  (?<source>[^,]+), connected to (?<dest>.+)$" regexp="y" script="ProcessSyncLine" sequence="1" />
+    <trigger enabled="n" name="HorseSyncSingle" match="^  (?<source>[^,]+)$" regexp="y" script="ProcessSyncSingle" sequence="2" />
+    <trigger enabled="n" name="HorseSyncEnd" match="^(?!  ).*$" regexp="y" script="StopHorseSync" sequence="1" />
 </triggers>
 
-<!--  Aliases  -->
 <aliases>
+<!-- General -->
+	<alias script="HorseHelp" match="^(HorseHelp|Horse Help)$" enabled="y" ignore_case="y" regexp="y" sequence="30" />
+	<alias script="StableShowList" match="Stable List" enabled="y" ignore_case="y" sequence="10" />
+	<alias script="MountNameFinder" match="ID Mount" enabled="y" ignore_case="y" sequence="10" />
+	<alias script="MountStableStatus" match="^Stabled$" enabled="y" ignore_case="y" regexp="y" sequence="30" />
+    <alias script="ListFoolPassengers" match="horse passengers" enabled="y" ignore_case="y" sequence="10" />
 
-  <alias
-   script="StableShowList"
-   match="Stable List"
-   enabled="y"
-   ignore_case="y"
-   omit_from_output="n"
-   sequence="10"
-  >
-  </alias>
+<!-- Statistics -->
+	<alias script="MyMountStats" match="^(Horse Stats|Horse Stats (?P<Player>.*))$" enabled="y" ignore_case="y" regexp="y" sequence="30" />
+	<alias script="MyMountStatsResetAll" match="^Horse Reset Stats$" enabled="y" ignore_case="y" regexp="y" sequence="30" />
 
-  <alias
-   script="HorseNameFinder"
-   match="ID Mount"
-   enabled="y"
-   ignore_case="y"
-   omit_from_output="n"
-   sequence="10"
-  >
-  </alias>
-
-  <alias
-   script="MyHorseStats"
-   match="^(Horse Stats|Horse Stats (?P<Player>.*))$"
-   enabled="y"
-   ignore_case="y"
-   regexp="y"
-   sequence="30"
-  >
-  </alias>
-
-  <alias
-   script="MyHorseStatsResetAll"
-   match="^(Horse Reset Stats)$"
-   enabled="y"
-   ignore_case="y"
-   regexp="y"
-   sequence="30"
-  >
-  </alias>
-	  <alias
-   script="MyHorseStatsResetHandler"
-   match="^(Horse Reset Handler)$"
-   enabled="y"
-   ignore_case="y"
-   regexp="y"
-   sequence="30"
-  >
-  </alias>
-	  <alias
-   script="MyHorseStatsResetCharge"
-   match="^(Horse Reset Charge)$"
-   enabled="y"
-   ignore_case="y"
-   regexp="y"
-   sequence="30"
-  >
-  </alias>
-	  <alias
-   script="HorseHelp"
-   match="^(HorseHelp|Horse Help)$"
-   enabled="y"
-   ignore_case="y"
-   regexp="y"
-   sequence="30"
-  >
-  </alias>
-	  <alias
-   script="HorseStableStatus"
-   match="^Stabled$"
-   enabled="y"
-   ignore_case="y"
-   regexp="y"
-   sequence="30"
-  >
-  </alias>
-
-	  <alias
-   script="checktable"
-   match="^Check StableTable$"
-   enabled="y"
-   ignore_case="y"
-   regexp="y"
-   sequence="30"
-  >
-  </alias>
+<!-- Mapping -->
+	<alias match="^ask (.+) to learn location (?P<loc_name>.+)$" regexp="y" enabled="y" script="CaptureIntentName" sequence="5" />
+	<alias match="^horse map loc (?P<loc_name>.+)$" regexp="y" enabled="y" script="ManualAddLocation" sequence="10" />
+	<alias match="^horse map link (?P<loc1>.+) (?P<loc2>.+)$" regexp="y" enabled="y" script="ManualAddRoute" sequence="10" />
+	<alias match="horse routes" enabled="y" script="ListHorseRoutes" sequence="10" />
+	<alias match="horse map debug" enabled="y" script="HorseMapDebug" sequence="10" />
+	<alias match="^horse map clear all(.*)$" regexp="y" enabled="y" script="ClearMapAll" sequence="10" />
+	<alias match="^horse map delete (?P<loc>.+)$" regexp="y" enabled="y" script="ForgetLocation" sequence="10" />
+	<alias match="horse map here" enabled="y" script="ConfirmArrival" sequence="10" />
+	<alias match="horse map pending" enabled="y" script="ListUnmappedLocations" sequence="10" />
+	<alias match="horse map summary" enabled="y" script="HorseMapSummary" sequence="10" />
+	<alias match="^ask (.+) to forget location (?P<loc>.+)$" regexp="y" enabled="y" script="CaptureForgetIntent" sequence="5" />
+	<alias match="^horse routes(?P<fav> fav)?$" regexp="y" enabled="y" script="ListHorseRoutes" sequence="10" />
+	<alias match="^horse fav (?P<loc>.+)$" regexp="y" enabled="y" script="ToggleFavorite" sequence="10" />
 </aliases>
 
 <script>
 <![CDATA[
-require "serialize"
+local serialize = require "serialize"
+
+------------
+-- VARIABLES
+------------
 stabletable = {}
+local sCurrentCharacter = "noname"
+local is_mounted = false
+local current_ride_rooms = 0
+RoomID = "" 
+local last_recorded_loc_name = ""
+local pending_loc_name = "" 
+local pending_view_routes = false 
+local last_intended_destination = ""
+local is_syncing = false
 
--- Do this when the plugin is loaded
-function OnPluginInstall () 
-	assert (loadstring (GetVariable ("stabletable") or "")) ()
-	ColourNote("orange","", "Horse tracker has been installed. Use 'Horse Help' to view list of commands.")
-end -- function OnPluginInstall
+-- GMCP Protocol Constants
+local IAC = 255
+local SB = 250
+local SE = 240
+local GMCP = 201
 
-----------------------------------This bit stolen from Quow's mindspace plugin----------------------------------
--- See if we can find out who we are from the CowBar since we won't know who we are on plugin-launch
-sCurrentCharacter = ""
-if (PluginSupports("bfe35205f026786ea1d56e3b", "CheckCharacterName") == 0) then
-  iReturnCode, sCurrentCharacter = CallPlugin ("bfe35205f026786ea1d56e3b", "CheckCharacterName", "")
-  sCurrentCharacter = string.lower(sCurrentCharacter)
-end
-if (sCurrentCharacter == nil or sCurrentCharacter == "") then
-  -- We still aren't sure who this is, maybe try load our previously-loaded name, then?
-  local sPossibleName = GetVariable("sCurChar")
-  if (sPossibleName ~= nil and sPossibleName ~= "") then
-    sCurrentCharacter = sPossibleName
-    sPossibleName = nil
-  else
-    -- Final fallback, call ourselves "NoName"
-    sCurrentCharacter = "NoName"
-  end
-end
--- And quickly save to file who we are, for plugin reloads after this
-SetVariable("sCurChar", sCurrentCharacter)
-
--- See if we can find out our guild/order from the CowBar
-sCurrentGuild, sCurrentSpec = "", ""
-if (PluginSupports("bfe35205f026786ea1d56e3b", "CheckGuildSpec") == 0) then
-  iReturnCode, sCurrentGuild, sCurrentSpec = CallPlugin ("bfe35205f026786ea1d56e3b", "CheckGuildSpec", "")
-  sCurrentGuild = string.lower(sCurrentGuild)
-  sCurrentSpec = string.lower(sCurrentSpec)
+function Send_GMCP_Packet (what)
+    assert (what, "Send_GMCP_Packet passed a nil message.")
+    SendPkt (string.char (IAC, SB, GMCP) .. (string.gsub (what, "\255", "\255\255")) .. string.char (IAC, SE))
 end
 
--- In case the CowBar wasn't loaded before this plugin was, let the CowBar prepare us...
-function UpdateMySupports()
-  if (PluginSupports("bfe35205f026786ea1d56e3b", "CheckCharacterName") == 0) then
-    iReturnCode, sCurrentCharacter = CallPlugin ("bfe35205f026786ea1d56e3b", "CheckCharacterName", "")
-    sCurrentCharacter = string.lower(sCurrentCharacter)
-  end
-  if (sCurrentCharacter == nil or sCurrentCharacter == "") then
-    -- We still aren't sure who this is, maybe try load our previously-loaded name, then?
-    local sPossibleName = GetVariable("sCurChar")
-    if (sPossibleName ~= nil and sPossibleName ~= "") then
-      sCurrentCharacter = sPossibleName
-      sPossibleName = nil
-    else
-      -- Final fallback, call ourselves "NoName"
-      sCurrentCharacter = "NoName"
+function SendGMCPHandshake()
+    Send_GMCP_Packet('Core.Hello { "client": "MUSHclient", "version": "5.06" }')
+    Send_GMCP_Packet('Core.Supports.Set [ "char.login", "char.info", "char.vitals", "room.info", "room.map", "room.writtenmap" ]')
+end
+
+function OnPluginConnect()
+    SendGMCPHandshake()
+end
+
+--------------------------
+-- RAW TELNET GMCP HANDLER
+--------------------------
+function OnPluginTelnetSubnegotiation (type, data)
+    if type == GMCP then
+        if string.find(data, "^room%.info") then
+            local captured_id = string.match(data, '"identifier"%s*:%s*"([^"]+)"')
+            if captured_id then
+                if captured_id ~= RoomID then
+                    RoomID = captured_id
+                    if last_intended_destination ~= "" then
+                        if stabletable.locations and stabletable.locations[last_intended_destination] == RoomID then
+                            last_intended_destination = "" 
+                        end
+                    end
+                    FinishPendingTasks()
+                    if is_mounted then 
+                        current_ride_rooms = current_ride_rooms + 1 
+                    end
+                end
+            end
+        elseif string.find(data, "^char%.login") then
+            local char_name = string.match(data, 'char%.login%s+"([^"]+)"')
+            if char_name and char_name ~= "" then
+                UpdateCharName(char_name)
+            end
+        elseif string.find(data, "^char%.info") then
+            local char_name = string.match(data, '"name"%s*:%s*"([^"]+)"')
+            if char_name and char_name ~= "" then
+                UpdateCharName(char_name)
+            end
+        end
     end
-  end
-  -- And quickly save to file who we are, for plugin reloads after this
-  SetVariable("sCurChar", sCurrentCharacter)
-  -- See if we can find out our guild/order from the CowBar
-  sCurrentGuild, sCurrentSpec = "", ""
-  if (PluginSupports("bfe35205f026786ea1d56e3b", "CheckGuildSpec") == 0) then
-    iReturnCode, sCurrentGuild, sCurrentSpec = CallPlugin ("bfe35205f026786ea1d56e3b", "CheckGuildSpec", "")
-    sCurrentGuild = string.lower(sCurrentGuild)
-    sCurrentSpec = string.lower(sCurrentSpec)
-  end
 end
-----------------------------------end of stolen content from Quow's mindspace plugin----------------------------
 
--- Check if we exist in the table
-function checktable ()
-	UpdateMySupports()
-	if stabletable[sCurrentCharacter] == nil then
-		ColourNote("orange","","It doesn't look like " .. sCurrentCharacter .. " is in the horse datatbase, lets add you now.")
-		stabletable[sCurrentCharacter] = "Owner"
-		stabletable[sCurrentCharacter .. "_Horse"] = "-"
-		stabletable[sCurrentCharacter .. "_Colour"] = "-"
-		stabletable[sCurrentCharacter .. "_Stabled"] = "may or may not be stabled."
-		MyHorseStatsResetAll ()
-	end
-end -- function checktable
-
--- register your horses name
-function HorseNameFinder ()
-	UpdateMySupports()
-	EnableTrigger("HorseName", true)  -- enable trigger
-	SendNoEcho ("glance my mount")
-end -- function HorseNameFinder
-
--- register your horses name
-function ID_Horse (sName, sLine, wildcards)
-	checktable ()
-	Owner = tostring(sCurrentCharacter .. "_Horse")
-	Colour = tostring(sCurrentCharacter .. "_Colour")
-	Horse = tostring(wildcards.HorseName)
-	HorseColour = tostring(wildcards.HorseColour)
-	stabletable[Owner] = Horse
-	stabletable[Colour] = HorseColour
-	EnableTrigger("HorseName", false)  -- disable trigger
-	ColourNote("orange","", "Your horse has been identified as " .. stabletable[sCurrentCharacter .. "_Horse"] .. " the " .. stabletable[sCurrentCharacter .. "_Colour"] .. " horse.")
-end -- function ID_Horse
-
--- Display the contents of the stable table
-function StableShowList ()
-	checktable ()
-	if type(stabletable) == 'table' then
-
-	ColourNote("orange","","Owner" .. "\t\t" ..  "Horse")
-		for k,v in pairs(stabletable) do
-		if string.match(k, "_Horse") then
-		s = string.gsub(k,"_Horse","")
-	            ColourNote("orange","",s .. "\t" .. v)
-		end
-	end
-	else
-		ColourNote("orange","","No Table to display!")
-	end
-end -- function StableShowList
-
--- List the Helpfile
-function HorseHelp ()
-	ColourNote("orange","", "A list of commands used in the Horse Tracker plugin")
-	ColourNote("orange","", "")
-	ColourNote("orange","", "'ID Mount'\t\tRecord your horses name into the database.")
-	ColourNote("orange","", "'Stable List'\t\tView your alts and their horses.")
-	ColourNote("orange","", "'Horse Stats'\t\tView statistics for your current character.")
-	ColourNote("orange","", "'Horse Stats [player]'\tView statistics for a specific character.")
-	ColourNote("orange","", "'Stabled'\t\tShow if your horse is stabled or not.")
-	ColourNote("orange","", "'Horse Reset Stats'\tReset all data.")
-	ColourNote("orange","", "'Horse Reset Handler'\tReset handler data.")
-	ColourNote("orange","", "'Horse Reset Charge'\tReset charge data.")
-end -- function HorseHelp
-
--- Reset All Horse Statistics
-function MyHorseStatsResetAll ()
-	DefaultHandlerValues ()
-	DefaultChargeValues ()
-	ColourNote("orange","", "Horse tracker has been reset")
-end -- function MyHorseStatsResetAll
-
--- Reset Only Handler Statistics
-function MyHorseStatsResetHandler ()
-	DefaultHandlerValues ()
-	ColourNote("orange","", "Horse tracker Handler data has been reset")
-end -- function MyHorseStatsResetHandler
-
--- Reset Only Charge Statistics
-function MyHorseStatsResetCharge ()
-	DefaultChargeValues ()
-	ColourNote("orange","", "Horse tracker Charge data has been reset")
-end -- function MyHorseStatsResetCharge 
-
--- Our Default Values
-	-- Handler Values
-function DefaultHandlerValues ()
-	stabletable[sCurrentCharacter .. "_mountsuccess"] = 0
-	stabletable[sCurrentCharacter .. "_mountfail"] = 0
-	stabletable[sCurrentCharacter .. "_mountratio"] = "-"
-
-	stabletable[sCurrentCharacter .. "_stashsuccess"] = 0
-	stabletable[sCurrentCharacter .. "_stashfail"] = 0
-	stabletable[sCurrentCharacter .. "_stashratio"] = "-"
-
-	stabletable[sCurrentCharacter .. "_leadsuccess"] = 0
-	stabletable[sCurrentCharacter .. "_leadfail"] = 0
-	stabletable[sCurrentCharacter .. "_leadratio"] = "-"
-
-	stabletable[sCurrentCharacter .. "_groomsuccess"] = 0
-	stabletable[sCurrentCharacter .. "_groomfail"] = 0
-	stabletable[sCurrentCharacter .. "_groomratio"] = "-"
-
-	stabletable[sCurrentCharacter .. "_dresssuccess"] = 0
-	stabletable[sCurrentCharacter .. "_dressfail"] = 0
-	stabletable[sCurrentCharacter .. "_dressratio"] = "-"
-
-	stabletable[sCurrentCharacter .. "_ridesuccess"] = 0
-	stabletable[sCurrentCharacter .. "_ridefail"] = 0
-	stabletable[sCurrentCharacter .. "_rideratio"] = "-"
-
-	stabletable[sCurrentCharacter .. "_tipsuccess"] = 0
-	stabletable[sCurrentCharacter .. "_tipfail"] = 0
-	stabletable[sCurrentCharacter .. "_tipratio"] = "-"
-
-	stabletable[sCurrentCharacter .. "_falloff"] = 0
-
-	stabletable[sCurrentCharacter .. "_doorframe"] = 0
-
-	stabletable[sCurrentCharacter .. "_wanderoff"] = 0
-end -- function DefaultHandlerValues
-
-	-- Charge Values
-function DefaultChargeValues ()
-	stabletable[sCurrentCharacter .. "_chargesuccesswalk" ] = 0
-	stabletable[sCurrentCharacter .. "_chargefailwalk"] = 0
-	stabletable[sCurrentCharacter .. "_chargewalkratio"] = "-"
-
-	stabletable[sCurrentCharacter .. "_chargesuccesstrot" ] = 0
-	stabletable[sCurrentCharacter .. "_chargefailtrot"] = 0
-	stabletable[sCurrentCharacter .. "_chargetrotratio"] = "-"
-
-	stabletable[sCurrentCharacter .. "_chargesuccesscanter" ] = 0
-	stabletable[sCurrentCharacter .. "_chargefailcanter"] = 0
-	stabletable[sCurrentCharacter .. "_chargecanterratio"] = "-"
-
-	stabletable[sCurrentCharacter .. "_chargesuccessgallop" ] = 0
-	stabletable[sCurrentCharacter .. "_chargefailgallop"] = 0
-	stabletable[sCurrentCharacter .. "_chargegallopratio"] = "-"
-end -- function DefaultChargeValues
-
--- Function for Horse Naming
-function NameMyHorse (sName, sline, wildcards)
-	checktable ()
-	s = string.gsub(sName,"Horse_","")
-	if string.match(s, "Named") then
-		stabletable[sCurrentCharacter .. "_Horse"] = tostring(wildcards.HorseName)
-	else
-		stabletable[sCurrentCharacter .. "_Horse"] = "Unnamed"
-	end
-end -- function NameMyHorse 
-
--- Function for Horse Stabling
-function StableHorse (sName, sline, wildcards)
-	checktable ()
-	s = string.gsub(sName,"Horse_","")
-	if string.match(s, "Stabled") then
-		stabletable[sCurrentCharacter .. "_Stabled"] = "currently stabled."
-	else
-		stabletable[sCurrentCharacter .. "_Stabled"] = "not in any stable."
-	end
-end -- function StableHorse
-
--- Function for Horse Handling
-function HorseHandler (sName, sline, wildcards)
-	checktable ()
-	s = string.gsub(sName,"success","")
-	s = string.gsub(s,"fail","")
-
-	Result = tostring(sCurrentCharacter .. "_" .. sName)
-
-	stabletable[Result] = stabletable[Result]+1
-
-	if (string.match(sName, "success") or string.match(sName, "fail")) then
-	Ratio = tostring(sCurrentCharacter .. "_" .. s .. "ratio")
-	Success = tostring(sCurrentCharacter .. "_" .. s .. "success")
-	Fail = tostring(sCurrentCharacter .. "_" .. s .. "fail")
-	stabletable[Ratio] = tostring(math.floor((( stabletable[Success] /  ( stabletable[Success] + stabletable[Fail]) ) *100)+0.5)) .. "%"
-	end
-end -- function HorseHandler
-
-
--- Function for Charge/Storm
-function HorseChargeHandler (sName, sline, wildcards)
-	checktable ()
-	Result = tostring(sCurrentCharacter .. "_" .. sName .. wildcards[3])
-
-	stabletable[Result] = stabletable[Result] + 1
-
-	Ratio = tostring(sCurrentCharacter .. "_" .. "charge" .. wildcards[3] .. "ratio")
-	Success = tostring(sCurrentCharacter .. "_" .. "chargesuccess" .. wildcards[3])
-	Fail = tostring(sCurrentCharacter .. "_" .. "chargefail" .. wildcards[3])
-
-	stabletable[Ratio] = tostring(math.floor((( stabletable[Success] /  ( stabletable[Success] + stabletable[Fail]) ) *100)+0.5)) .. "%"
-end -- function HorseChargeHandler
-
--- Messages sent to the Mud
-function HorseStableStatus ()
-	checktable ()
-ColourNote("orange","", stabletable[sCurrentCharacter .. "_Horse"] .. " the " .. stabletable[sCurrentCharacter .. "_Colour"] .. " horse is " .. stabletable[sCurrentCharacter .. "_Stabled"] )
-end -- function HorseStableStatus 
-
-function MyHorseStats (sName, sLine, wildcards)
-	checktable ()
-
-	if (wildcards.Player) ~= "" then
-		My_ID = tostring(wildcards.Player .. "_")
-		ID_Check = tostring(wildcards.Player)
-		else	
-		My_ID = tostring(sCurrentCharacter .. "_")
-		ID_Check = tostring(sCurrentCharacter)
-	end
-	
-	if stabletable[ID_Check] == nil then
-		ColourNote("orange","", "No records found for " .. ID_Check .. ".")
-	else
+function UpdateCharName(forced_name)
+    if not forced_name or forced_name == "" then return end
+    local resolved_name = forced_name:lower()
     
-	if stabletable[My_ID.. "Horse"] == "-" then
-   	ColourNote("orange","", "No registered horse, please use 'ID Mount' to update records.")
-	else
-   	ColourNote("orange","", stabletable[My_ID.. "Horse"] .. " the " .. stabletable[My_ID .. "Colour"] .. " horse.")
-	end
-    ColourNote("orange","", "Mount:          Success: " .. stabletable[My_ID .. "mountsuccess"]  .. "\tFail: ".. stabletable[My_ID .. "mountfail"] .. " \t(" .. stabletable[My_ID .. "mountratio"] .. ")")
-    ColourNote("orange","", "Stash/Retrieve: Success: " .. stabletable[My_ID .. "stashsuccess"] .. "\tFail: ".. stabletable[My_ID .. "stashfail"] .. " \t(" .. stabletable[My_ID .. "stashratio"] .. ")")
-    ColourNote("orange","", "Lead:           Success: " .. stabletable[My_ID .. "leadsuccess"] .. "\tFail: ".. stabletable[My_ID .. "leadfail"] .. " \t(" .. stabletable[My_ID .. "leadratio"] .. ")")
-    ColourNote("orange","", "Groom:          Success: " .. stabletable[My_ID .. "groomsuccess"] .. "\tFail: ".. stabletable[My_ID .. "groomfail"] .. " \t(" .. stabletable[My_ID .. "groomratio"] .. ")")
-    ColourNote("orange","", "Dress:          Success: " .. stabletable[My_ID .. "dresssuccess"] .. "\tFail: ".. stabletable[My_ID .. "dressfail"] .. " \t(" .. stabletable[My_ID .. "dressratio"] .. ")")
-    ColourNote("orange","", "Riding:         Success: " .. stabletable[My_ID .. "ridesuccess"] .. "\tFail: ".. stabletable[My_ID .. "ridefail"] .. " \t(" .. stabletable[My_ID .. "rideratio"] .. ")")
-    ColourNote("orange","", "Resist tipped:  Success: " .. stabletable[My_ID .. "tipsuccess"] .. "\tFail: ".. stabletable[My_ID .. "tipfail"] .. " \t(" .. stabletable[My_ID .. "tipratio"] .. ")")
-    ColourNote("orange","", "You have fallen off " .. stabletable[My_ID .. "falloff"] .. " times")
-    ColourNote("orange","", "You have ridden into " .. stabletable[My_ID .. "doorframe"] .. " doorframes")
-    ColourNote("orange","", "Your horse has wandered off " .. stabletable[My_ID .. "wanderoff"] .. " times")
-    ColourNote("orange","", "Charge/Storm")
-    ColourNote("orange","", "Walk:           Success: " .. stabletable[My_ID .. "chargesuccesswalk"] .. "\tFail: " .. stabletable[My_ID .. "chargefailwalk"] .. " \t(" .. stabletable[My_ID .. "chargewalkratio"] .. ")")
-    ColourNote("orange","", "Trot:           Success: " .. stabletable[My_ID .. "chargesuccesstrot"] .. "\tFail: " .. stabletable[My_ID .. "chargefailtrot"] .. " \t(" .. stabletable[My_ID .. "chargetrotratio"] .. ")")
-    ColourNote("orange","", "Canter:         Success: " .. stabletable[My_ID .. "chargesuccesscanter"] .. "\tFail: " .. stabletable[My_ID .. "chargefailcanter"] .. " \t(" .. stabletable[My_ID .. "chargecanterratio"] .. ")")
-    ColourNote("orange","", "Gallop:         Success: " .. stabletable[My_ID .. "chargesuccessgallop"] .. "\tFail: " .. stabletable[My_ID .. "chargefailgallop"] .. " \t(" .. stabletable[My_ID .. "chargegallopratio"] .. ")")
-	
+    if resolved_name ~= sCurrentCharacter then
+        local old_char = sCurrentCharacter
+        sCurrentCharacter = resolved_name
+        
+        if old_char == "noname" and sCurrentCharacter ~= "noname" then
+            if stabletable["noname"] then
+                -- Only migrate noname data if the target character doesn't already have an established table
+                if not stabletable[sCurrentCharacter] then
+                    stabletable[sCurrentCharacter] = stabletable["noname"]
+                end
+                stabletable["noname"] = nil
+            end
+            for _, suffix in ipairs({"_MountName", "_MountColour", "_MountType", "_Stabled", "_Horse"}) do
+                if stabletable["noname" .. suffix] then
+                    if not stabletable[sCurrentCharacter .. suffix] then
+                        stabletable[sCurrentCharacter .. suffix] = stabletable["noname" .. suffix]
+                    end
+                    stabletable["noname" .. suffix] = nil
+                end
+            end
+            OnPluginSaveState()
+        end
     end
-end -- function MyHorseStats 
+    SetVariable("sCurChar", sCurrentCharacter)
+    checktable() -- Immediately initialize character keys upon resolution
+end
 
-function OnPluginSaveState ()
-	SetVariable ("stabletable","stabletable = " .. serialize.save_simple(stabletable))
-end -- function OnPluginSaveState
+function checktable()
+    if sCurrentCharacter == "noname" then return false end
+    stabletable = stabletable or {}
+    
+    -- Ensure the main character data entry exists as a table
+    if not stabletable[sCurrentCharacter] or type(stabletable[sCurrentCharacter]) ~= "table" then
+        local old_val = stabletable[sCurrentCharacter]
+        stabletable[sCurrentCharacter] = { 
+            falloff=0, doorframe=0, wanderoff=0, 
+            total_success_rooms=0, total_fail_rooms=0, 
+            total_falls=0, total_rides=0,
+            passengers = {}
+        }
+        if type(old_val) == "string" and not stabletable[sCurrentCharacter .. "_MountName"] then
+            stabletable[sCurrentCharacter .. "_MountName"] = old_val
+        end
+        DefaultHandlerValues() 
+        DefaultChargeValues()
+    else
+        stabletable[sCurrentCharacter].passengers = {}
+        stabletable[sCurrentCharacter].total_success_rooms = stabletable[sCurrentCharacter].total_success_rooms or 0
+        stabletable[sCurrentCharacter].total_fail_rooms = stabletable[sCurrentCharacter].total_fail_rooms or 0
+        stabletable[sCurrentCharacter].total_falls = stabletable[sCurrentCharacter].total_falls or 0
+        stabletable[sCurrentCharacter].total_rides = stabletable[sCurrentCharacter].total_rides or 0
+        stabletable[sCurrentCharacter].falloff = stabletable[sCurrentCharacter].falloff or 0
+        stabletable[sCurrentCharacter].doorframe = stabletable[sCurrentCharacter].doorframe or 0
+        stabletable[sCurrentCharacter].wanderoff = stabletable[sCurrentCharacter].wanderoff or 0
+    end
+    
+    -- Ensure flat keys have safe defaults if missing
+    stabletable[sCurrentCharacter .. "_MountName"] = stabletable[sCurrentCharacter .. "_MountName"] or "Unnamed"
+    stabletable[sCurrentCharacter .. "_MountColour"] = stabletable[sCurrentCharacter .. "_MountColour"] or "unknown"
+    stabletable[sCurrentCharacter .. "_MountType"] = stabletable[sCurrentCharacter .. "_MountType"] or "horse"
+    stabletable[sCurrentCharacter .. "_Stabled"] = stabletable[sCurrentCharacter .. "_Stabled"] or "not stabled."
 
--- Save the table when the plugin closes
-function OnPluginClose ()
-	SetVariable ("stabletable","stabletable = " .. serialize.save_simple(stabletable))
-end -- function OnPluginClose
+    return true
+end
+function OnPluginInstall () 
+    stabletable = {}
+    local savedData = GetVariable("stabletable")
+    if savedData and savedData ~= "" then
+        local f, err = loadstring(savedData)
+        if f then
+            local success, result = pcall(f)
+            if not success then
+                Note("Error executing saved mount stats data: " .. tostring(result))
+            end
+        else 
+            Note("Error compiling mount stats: " .. tostring(err)) 
+        end
+    end
+    
+    sCurrentCharacter = "noname"
+
+    if IsConnected() then
+        SendGMCPHandshake()
+    end
+
+    ColourNote("orange","", string.format("Horse Tracker loaded (v4.0). Awaiting GMCP character verification..."))
+end
+
+-----------------
+-- MOUNT ID STUFF
+-----------------
+function ValidateMountOwnership(wildcards)
+    if not wildcards or not wildcards.MountName then return true end
+    local mentioned_name = wildcards.MountName:trim()
+    if mentioned_name == "" then return true end
+    
+    local registered_name = stabletable[sCurrentCharacter .. "_MountName"]
+    if registered_name and registered_name ~= "Unnamed" then
+        if mentioned_name:lower() ~= registered_name:lower() then
+            return false
+        end
+    end
+    return true
+end
+
+function ID_Mount (sName, sLine, wildcards)
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    local name = (sName == "MountUnnamed" or not wildcards.MountName or wildcards.MountName == "") and "Unnamed" or wildcards.MountName
+    local desc = wildcards.MountDesc 
+    
+    local words = {}
+    for word in desc:gmatch("%S+") do
+        table.insert(words, word)
+    end
+    
+    if #words > 0 then
+        local mountType = table.remove(words) 
+        local mountColour = table.concat(words, " ") 
+        
+        stabletable[sCurrentCharacter .. "_MountName"]   = tostring(name)
+        stabletable[sCurrentCharacter .. "_MountColour"] = tostring(mountColour)
+        stabletable[sCurrentCharacter .. "_MountType"]   = mountType
+        
+        EnableTrigger("MountName", false)
+        EnableTrigger("MountUnnamed", false)
+        
+        if name == "Unnamed" then
+            ColourNote("orange", "", string.format("Mount Registered: Unnamed %s (%s) â [Type 'name mount as <name>']", mountType, mountColour))
+        else
+            ColourNote("orange", "", string.format("Mount Registered: %s the %s %s", name, mountColour, mountType))
+        end
+        OnPluginSaveState()
+    end
+end
+
+function ID_UnnamedMount (sName, sLine, wildcards)
+    ID_Mount(sName, sLine, wildcards)
+end
+
+function MountNameFinder ()
+    if sCurrentCharacter == "noname" then
+        ColourNote("orange", "", "[Horse Tracker] Character identity not yet verified by GMCP.")
+        return
+    end
+    EnableTrigger("MountName", true)
+    EnableTrigger("MountUnnamed", true)
+    SendNoEcho("glance my mount")
+end
+
+function NameMyMount (sName, sLine, wildcards)
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    if wildcards.MountName and wildcards.MountName ~= "" then
+        stabletable[sCurrentCharacter .. "_MountName"] = wildcards.MountName:trim()
+        ColourNote("green", "", "[Horse Tracker] Your mount has been named: " .. stabletable[sCurrentCharacter .. "_MountName"])
+        OnPluginSaveState()
+    end
+end
+
+function DenameMyMount (sName, sLine, wildcards)
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    stabletable[sCurrentCharacter .. "_MountName"] = "Unnamed"
+    ColourNote("orange", "", "[Horse Tracker] Your mount is now anonymous.")
+    OnPluginSaveState()
+end
+
+--------------------------------
+-- FOOLS GUILD POSITION HANDLERS
+--------------------------------
+function FoolMountPosition(sName, sLine, wildcards)
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    
+    if not ValidateMountOwnership(wildcards) then return end
+    
+    local passenger = wildcards.Passenger and wildcards.Passenger:trim()
+    if not passenger or passenger == "" then return end
+    if passenger:lower() == "you" then return end
+
+    local pos = tonumber(sName:match("Pos(%d+)"))
+    if not pos then return end
+
+    local charData = stabletable[sCurrentCharacter]
+    charData.passengers = charData.passengers or {}
+
+    for existingPos, name in pairs(charData.passengers) do
+        if name:lower() == passenger:lower() then
+            charData.passengers[existingPos] = nil
+        end
+    end
+
+    charData.passengers[pos] = passenger
+    ColourNote("green", "", string.format("[Horse Tracker] (Fool Mount) %s mounted at Position %d.", passenger, pos))
+end
+
+function FoolDismountPosition(sName, sLine, wildcards)
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    
+    if not ValidateMountOwnership(wildcards) then return end
+    
+    local passenger = wildcards.Passenger and wildcards.Passenger:trim()
+    if not passenger or passenger == "" then return end
+    
+    if passenger:lower() == "you" then
+        stabletable[sCurrentCharacter].passengers = {}
+        ColourNote("orange", "", "[Horse Tracker] You have dismounted. Passenger stack cleared.")
+        return
+    end
+
+    local charData = stabletable[sCurrentCharacter]
+    charData.passengers = charData.passengers or {}
+
+    local was_passenger = false
+    for pos, name in pairs(charData.passengers) do
+        if name:lower() == passenger:lower() then
+            charData.passengers[pos] = nil
+            was_passenger = true
+            break
+        end
+    end
+
+    if was_passenger then
+        ColourNote("orange", "", string.format("[Horse Tracker] (Fool Fall/Dismount) %s fell off your horse.", passenger))
+    elseif sLine:find("strike your heads hard on the doorframe") then
+        charData.passengers = {}
+        ColourNote("red", "", "[Horse Tracker] Doorframe crash! All Fool passengers dislodged.")
+    end
+end
+
+function ListFoolPassengers()
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    local charData = stabletable[sCurrentCharacter]
+    local passengers = charData.passengers or {}
+    
+    local riderName = charData.rider or sCurrentCharacter
+    if riderName == sCurrentCharacter and sCurrentCharacter ~= "noname" then
+        riderName = sCurrentCharacter:gsub("^%l", string.upper)
+    end
+    
+    ColourNote("orange", "", "--- HORSE PASSENGERS ---")
+    ColourNote("white", "", "1 - " .. riderName .. " (Rider)")
+    
+    for i = 2, 11 do
+        if passengers[i] then
+            ColourNote("white", "", i .. " - " .. passengers[i])
+        end
+    end
+    
+    ColourNote("orange", "", "----------------------------------")
+end
+
+------------------------
+-- LOCATION ROUTE ENGINE
+------------------------
+function CaptureIntentName (sName, sLine, wildcards)
+    last_recorded_loc_name = wildcards.loc_name
+    Send(sLine) 
+end
+
+function FinishPendingTasks()
+    if RoomID ~= "" then
+        if pending_loc_name ~= "" then
+            stabletable.locations = stabletable.locations or {}
+            stabletable.locations[pending_loc_name] = RoomID
+            ColourNote("green", "", "[Horse Tracker] Auto-Saved: '" .. pending_loc_name .. "' is now mapped.")
+            pending_loc_name = ""
+            OnPluginSaveState()
+        end
+
+        if pending_view_routes then
+            pending_view_routes = false
+            Note("") 
+            ListHorseRoutes() 
+        end
+    end
+end
+
+function EnsureRoomID(target_name)
+    if RoomID == "" or RoomID == nil then
+        if target_name then pending_loc_name = target_name else pending_view_routes = true end
+        SendNoEcho("glance")
+        ColourNote("orange", "", "[Horse Tracker] RoomID missing. Nudging game...")
+        return false
+    end
+    return true
+end
+
+function LearnLocation (sName, sLine, wildcards)
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    if last_recorded_loc_name == "" then return end
+    if EnsureRoomID(last_recorded_loc_name) then
+        stabletable.locations = stabletable.locations or {}
+        stabletable.locations[last_recorded_loc_name] = RoomID
+        ColourNote("green", "", "[Horse Tracker] Location Mapped: " .. last_recorded_loc_name)
+        OnPluginSaveState()
+        last_recorded_loc_name = "" 
+    end
+end
+
+function RecordRoute (sName, sLine, wildcards)
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    stabletable.routes = stabletable.routes or {}
+    local loc1, loc2 = wildcards.loc1, wildcards.loc2
+    stabletable.routes[loc1] = stabletable.routes[loc1] or {}
+    stabletable.routes[loc2] = stabletable.routes[loc2] or {}
+    stabletable.routes[loc1][loc2] = true
+    stabletable.routes[loc2][loc1] = true
+    ColourNote("green", "", "[Horse Tracker] Route Linked: " .. loc1 .. " <-> " .. loc2)
+    last_recorded_loc_name = ""
+    OnPluginSaveState()
+end
+
+function ManualAddLocation (sName, sLine, wildcards)
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    local name = wildcards.loc_name
+    if EnsureRoomID(name) then
+        stabletable.locations = stabletable.locations or {}
+        stabletable.locations[name] = RoomID
+        ColourNote("green", "", "[Horse Tracker] Manually added '" .. name)
+        OnPluginSaveState()
+    end
+end
+
+function ManualAddRoute (sName, sLine, wildcards)
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    local loc1, loc2 = wildcards.loc1:lower(), wildcards.loc2:lower()
+    if not stabletable.locations[loc1] or not stabletable.locations[loc2] then
+        ColourNote("orange", "", "[Horse Tracker] Error: Unknown locations. Use 'horse map loc' first.")
+        return
+    end
+    stabletable.routes = stabletable.routes or {}
+    stabletable.routes[loc1] = stabletable.routes[loc1] or {}
+    stabletable.routes[loc2] = stabletable.routes[loc2] or {}
+    stabletable.routes[loc1][loc2] = true
+    stabletable.routes[loc2][loc1] = true
+    ColourNote("green", "", "[Horse Tracker] Manually linked: " .. loc1 .. " <-> " .. loc2)
+    OnPluginSaveState()
+end
+
+function RenameLocation (sName, sLine, wildcards)
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    local old = wildcards.old_name:trim()
+    local new = wildcards.new_name:trim()
+    local existingID = stabletable.locations[old]
+    
+    if not existingID then
+        for k, v in pairs(stabletable.locations) do
+            if k:lower() == old:lower() then
+                old = k
+                existingID = v
+                break
+            end
+        end
+    end
+
+    local id_to_use = existingID or "pending"
+    if RoomID and RoomID ~= "" then id_to_use = RoomID end
+
+    stabletable.locations[new] = id_to_use
+    if old ~= new then stabletable.locations[old] = nil end
+    
+    if stabletable.routes then
+        if stabletable.routes[old] then
+            stabletable.routes[new] = stabletable.routes[old]
+            stabletable.routes[old] = nil
+        end
+        for startNode, connections in pairs(stabletable.routes) do
+            if connections[old] then
+                connections[new] = true
+                connections[old] = nil
+            end
+        end
+    end
+    OnPluginSaveState()
+end
+
+function ToggleFavorite(sName, sLine, wildcards)
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    local loc = wildcards.loc:lower():trim()
+    stabletable.favs = stabletable.favs or {}
+    if stabletable.favs[loc] then
+        stabletable.favs[loc] = nil
+        ColourNote("orange", "", "[Horse Tracker] Removed '" .. loc .. "' from favorites.")
+    else
+        stabletable.favs[loc] = true
+        ColourNote("green", "", "[Horse Tracker] Added '" .. loc .. "' to favorites.")
+    end
+    OnPluginSaveState()
+end
+
+function ListHorseRoutes(sName, sLine, wildcards)
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    local show_all = true
+    if wildcards.fav and wildcards.fav:trim() == "fav" then show_all = false end
+    if not EnsureRoomID() then return end
+
+    local currentLoc = nil
+    for name, id in pairs(stabletable.locations or {}) do
+        if id == RoomID then currentLoc = name; break end
+    end
+
+    if not currentLoc then
+        ColourNote("orange", "", "[Horse Tracker] No known location name for this Room ID.")
+        return
+    end
+
+    local reachableDestinations = GetAllReachable(currentLoc)
+    if #reachableDestinations > 0 then
+        local title = show_all and "All Available Routes" or "Favorite Routes"
+        ColourNote("green", "", title .. " from " .. currentLoc .. ":")
+        table.sort(reachableDestinations)
+        local found_any = false
+        
+        for _, destination in ipairs(reachableDestinations) do
+            local is_fav = stabletable.favs and stabletable.favs[destination:lower()] or false
+            if show_all or is_fav then
+                found_any = true
+                local my_label = tostring(destination) 
+                local my_command = "ride to " .. my_label .. " on my mount"
+                local my_color = is_fav and "yellow" or "cyan"
+                Tell("  [")
+                Hyperlink(my_command, my_label, "Ride to " .. my_label, my_color, "black", false)
+                Tell("]")
+                Note("") 
+            end
+        end
+        if not found_any and not show_all then
+            Note("  (No favorites defined for this route.)")
+        end
+    else
+        ColourNote("orange", "", "[Horse Tracker] No routes found from " .. currentLoc)
+    end
+end
+
+function HorseMapDebug()
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    ColourNote("green", "", "--- MOUNT MAP DEBUG ---")
+    for name, id in pairs(stabletable.locations or {}) do print("  " .. name) end
+end
+
+function ClearMapAll(name, line, wildcards)
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    local confirmation = string.trim(wildcards[1]):lower()
+    if confirmation == "confirm" then
+        stabletable.locations = {}
+        stabletable.routes = {}
+        ColourNote("white", "red", "[Horse Tracker] ALL locations and routes wiped.")
+        OnPluginSaveState()
+    else
+        ColourNote("orange", "", "[Horse Tracker] Type: horse map clear all confirm")
+    end
+end
+
+local pending_forget_name = "" 
+function CaptureForgetIntent (sName, sLine, wildcards)
+    pending_forget_name = wildcards.loc
+    Send(sLine) 
+end
+
+function ForgetLocation (sName, sLine, wildcards)
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    local target = pending_forget_name
+    if target == "" then return end
+    for k, v in pairs(stabletable.locations) do
+        if k:lower() == target:lower() then
+            stabletable.locations[k] = nil
+            if stabletable.routes then
+                stabletable.routes[k] = nil
+                for _, connections in pairs(stabletable.routes) do connections[k] = nil end
+            end
+            ColourNote("orange", "", "[Horse Tracker] Forgotten: " .. k)
+            OnPluginSaveState()
+            break
+        end
+    end
+    pending_forget_name = "" 
+end
+
+function HorseMapSummary()
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    local total_locs, mapped_locs = 0, 0
+    for _, id in pairs(stabletable.locations or {}) do
+        total_locs = total_locs + 1
+        if id ~= "pending" then mapped_locs = mapped_locs + 1 end
+    end
+    ColourNote("orange", "", string.format("--- MAPPED LOCATIONS: %d total (%d calibrated) ---", total_locs, mapped_locs))
+end
+
+function StartHorseSync()
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    is_syncing = true 
+    EnableTrigger("HorseSyncLine", true)
+    EnableTrigger("HorseSyncSingle", true)
+    EnableTrigger("HorseSyncEnd", true)
+end
+
+function StopHorseSync()
+    EnableTrigger("HorseSyncLine", false)
+    EnableTrigger("HorseSyncSingle", false)
+    EnableTrigger("HorseSyncEnd", false)
+    if is_syncing then is_syncing = false; OnPluginSaveState() end
+end
+
+function ProcessSyncSingle(name, line, wildcards)
+    if sCurrentCharacter == "noname" then return end
+    local source = wildcards.source:lower():trim()
+    stabletable.locations = stabletable.locations or {}
+    if not stabletable.locations[source] then stabletable.locations[source] = "pending" end
+end
+
+function ProcessSyncLine(name, line, wildcards)
+    if sCurrentCharacter == "noname" then return end
+    local source = wildcards.source:lower():trim()
+    local connectionsRaw = wildcards.dests:lower()
+    stabletable.routes = stabletable.routes or {}
+    stabletable.locations = stabletable.locations or {}
+    if not stabletable.locations[source] then stabletable.locations[source] = "pending" end
+    connectionsRaw = connectionsRaw:gsub("%s+and%s+", ", ")
+    for target in connectionsRaw:gmatch("[^,]+") do
+        target = target:trim()
+        if not stabletable.locations[target] then stabletable.locations[target] = "pending" end
+        stabletable.routes[source] = stabletable.routes[source] or {}
+        stabletable.routes[target] = stabletable.routes[target] or {}
+        stabletable.routes[source][target] = true
+        stabletable.routes[target][source] = true
+    end
+end
+
+function ConfirmArrival()
+    if sCurrentCharacter == "noname" then return end
+    if last_intended_destination == "" then return end
+    if RoomID == "" then SendNoEcho("glance"); return end
+    stabletable.locations[last_intended_destination] = RoomID
+    ColourNote("green", "", "[Horse Tracker] Verified destination: " .. last_intended_destination)
+    last_intended_destination = "" 
+    OnPluginSaveState()
+end
+
+function ListUnmappedLocations()
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    local unmapped = {}
+    for name, val in pairs(stabletable.locations or {}) do
+        if val == "pending" then table.insert(unmapped, name) end
+    end
+    ColourNote("orange", "", "Pending Calibration: " .. (#unmapped > 0 and table.concat(unmapped, ", ") or "None"))
+end
+
+function GetAllReachable(startNode)
+    local reachable, visited, queue = {}, {}, {startNode}
+    visited[startNode] = true
+    local i = 1
+    while i <= #queue do
+        local current = queue[i]; i = i + 1
+        for neighbour, _ in pairs(stabletable.routes and stabletable.routes[current] or {}) do
+            if not visited[neighbour] then
+                visited[neighbour] = true
+                table.insert(queue, neighbour)
+                table.insert(reachable, neighbour)
+            end
+        end
+    end
+    return reachable
+end
+
+function string.trim(s) return s:match("^%s*(.-)%s*$") end
+
+----------------
+-- CORE HANDLERS
+----------------
+function MountHandler(sName, sline, wildcards)
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    
+    if not ValidateMountOwnership(wildcards) then return end
+    
+    local charData = stabletable[sCurrentCharacter]
+    
+    local event_name = sName
+    if sName == "dismount_hop" then
+        event_name = "dismount"
+    elseif sName == "mountsuccess_run" then
+        event_name = "mountsuccess"
+    end
+    
+    charData[event_name] = (charData[event_name] or 0) + 1
+    
+    if event_name == "mountsuccess" then 
+        is_mounted = true 
+        current_ride_rooms = 0
+    elseif event_name == "dismount" then 
+        if is_mounted then
+            charData.total_success_rooms = charData.total_success_rooms + current_ride_rooms 
+            charData.total_rides = charData.total_rides + 1 
+        end
+        is_mounted = false
+        current_ride_rooms = 0
+        charData.passengers = {}
+    elseif (event_name == "falloff" or event_name == "tipfail" or event_name == "doorframe") and is_mounted then
+    	charData.total_fail_rooms = charData.total_fail_rooms + current_ride_rooms 
+        charData.total_falls = charData.total_falls + 1 
+        is_mounted = false 
+        current_ride_rooms = 0
+        charData.passengers = {}
+    end
+    
+    local action = event_name:gsub("success", ""):gsub("fail", "")
+    local s = charData[action .. "success"] or 0
+    local f = charData[action .. "fail"] or 0
+    if (s + f) > 0 then charData[action .. "ratio"] = math.floor(((s / (s + f)) * 100) + 0.5) .. "%" end
+    
+	if event_name == "ridesuccess" then
+        is_mounted = true
+        current_ride_rooms = 0
+        if wildcards.dest then
+            last_intended_destination = wildcards.dest:lower():trim()
+        end
+    end
+    OnPluginSaveState()
+end
+
+function MountChargeHandler(sName, sline, wildcards)
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    
+    if not ValidateMountOwnership(wildcards) then return end
+
+    local gait = wildcards[3]:lower()
+    local charData = stabletable[sCurrentCharacter]
+    local statKey = sName .. gait
+    charData[statKey] = (charData[statKey] or 0) + 1
+    local s = charData["chargesuccess" .. gait] or 0
+    local f = charData["chargefail" .. gait] or 0
+    if (s + f) > 0 then charData["charge" .. gait .. "ratio"] = math.floor(((s / (s + f)) * 100) + 0.5) .. "%" end
+    OnPluginSaveState()
+end
+
+---------------------
+-- VIEW STATS & HELP
+---------------------
+function MyMountStats (sName, sLine, wildcards)
+    if sCurrentCharacter == "noname" then
+        ColourNote("orange", "", "[Horse Tracker] Character identity not yet verified by GMCP.")
+        return
+    end
+    if not checktable() then return end
+    
+    local mountKey = sCurrentCharacter .. "_MountName"
+    local mountName = stabletable[mountKey]
+    if not mountName then
+        ColourNote("orange", "", "[Horse Tracker] Mount details unverified. Querying mount details...")
+        MountNameFinder()
+        return
+    end
+
+    local target = (wildcards.Player ~= "") and wildcards.Player:lower() or sCurrentCharacter
+    local data = stabletable[target]
+
+    if not data or type(data) ~= "table" then
+        ColourNote("orange","", "No records found for " .. target)
+        return
+    end
+
+    local mName = stabletable[target .. "_MountName"] or "Unnamed"
+    local mCol = stabletable[target .. "_MountColour"] or "unknown"
+    local mType = stabletable[target .. "_MountType"] or "horse"
+    
+    ColourNote("green","", string.format("%s the %s %s.", mName, mCol, mType))
+    ColourNote("white","", "--------------------------------------------------")
+    ColourNote("green", "", "Mount Handling")
+    
+    local rows = {
+        {"Mount", "mount"}, 
+        {"Stash", "stash"}, 
+        {"Lead", "lead"}, 
+        {"Groom", "groom"}, 
+        {"Dress", "dress"}, 
+        {"Riding", "ride"}, 
+        {"Resist tipped", "tip"}
+    }
+    
+    for _, r in ipairs(rows) do
+        local s = data[r[2].."success"] or 0
+        local f = data[r[2].."fail"] or 0
+        local pct = data[r[2].."ratio"] or "-"
+        ColourNote("orange", "", string.format("  %-15s Success: %-4d Fail: %-4d (%s)", r[1] .. ":", s, f, pct))
+    end
+    
+    ColourNote("orange","", "  You have fallen off " .. (data.falloff or 0) .. " times")
+    ColourNote("orange","", "  You have ridden into " .. (data.doorframe or 0) .. " doorframes")
+    ColourNote("orange","", "  Your mount has wandered off " .. (data.wanderoff or 0) .. " times")
+    
+    local s_rooms = data.total_success_rooms or 0
+    local f_rooms = data.total_fail_rooms or 0
+    local active_rooms = (is_mounted and target == sCurrentCharacter) and current_ride_rooms or 0
+    local falls = data.total_falls or 0
+    local rides = data.total_rides or 0
+    local avg_fail = falls > 0 and math.floor(f_rooms / falls) or 0
+    local success_rate = (rides + falls) > 0 and math.floor((rides / (rides + falls)) * 100) or 0
+
+    ColourNote("white","", "--------------------------------------------------")
+    ColourNote("green", "", "Riding Endurance")
+    ColourNote("orange", "", "  Successful Rides: " .. rides .. " trips (" .. success_rate .. "% completion)")
+    ColourNote("orange", "", "  Average rooms before falling: " .. avg_fail)
+    ColourNote("orange", "", "  Total rooms traveled: " .. (s_rooms + f_rooms + active_rooms) .. (active_rooms > 0 and (" (" .. active_rooms .. " current)") or ""))
+    
+    ColourNote("white","", "--------------------------------------------------")
+    ColourNote("green","", "Charge/Storm Stats:")
+    
+    local gaits = {"walk", "trot", "canter", "gallop"}
+    for _, g in ipairs(gaits) do
+        local s = data["chargesuccess"..g] or 0
+        local f = data["chargefail"..g] or 0
+        local pct = data["charge"..g.."ratio"] or "-"
+        local displayGait = g:gsub("^%l", string.upper)
+        ColourNote("orange", "", string.format("  %-15s Success: %-4d Fail: %-4d (%s)", displayGait .. ":", s, f, pct))
+    end
+    ColourNote("white","", "--------------------------------------------------")
+    OnPluginSaveState()
+end
+
+function StableShowList ()
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    
+    local owners = {}
+    local max_len = string.len("Owner") -- start with at least header size
+    
+    for k, v in pairs(stabletable) do
+        if type(k) == "string" and k:find("_MountName") then 
+            local owner = k:gsub("_MountName","")
+            local display_owner = owner:gsub("^%l", string.upper)
+            local mount_name = tostring(v)
+            
+            table.insert(owners, {owner = display_owner, mount = mount_name})
+            if string.len(display_owner) > max_len then
+                max_len = string.len(display_owner)
+            end
+        end 
+    end
+    
+    if #owners == 0 then
+        ColourNote("orange", "", "[Horse Tracker] No mounts registered across characters.")
+        return
+    end
+    
+    local col_width = max_len + 4
+    
+    local fmt_header = "%-" .. col_width .. "s   %s"
+    local fmt_row    = "%-" .. col_width .. "s   %s"
+    
+    ColourNote("green", "", string.format(fmt_header, "Owner", "Mount Name"))
+    ColourNote("white", "", string.rep("-", col_width + 15)) -- dynamic divider line
+    
+    for _, data in ipairs(owners) do
+        ColourNote("orange", "", string.format(fmt_row, data.owner, data.mount))
+    end
+end
+
+function HorseHelp () 
+	ColourNote("green", "", "Below are a list of commands used in the Horse Tracker Plugin.")
+    	ColourNote("white","", "--------------------------------------------------")
+	ColourNote("green", "", "Plugin Management")
+	ColourNote("orange", "", "  ID Mount" .. "\t\t\t" .. "Capture your horses name.")
+	ColourNote("orange", "", "  Stable List" .. "\t\t\t" .. "List all alts and their horses.")
+    	ColourNote("white","", "--------------------------------------------------")
+	ColourNote("green", "", "General")
+	ColourNote("orange", "", "  Stabled" .. "\t\t\t" .. "Shows if your horse is stabled or not.")
+	ColourNote("orange", "", "  Horse Passengers" .. "\t\t" .. "List players currently mounted on your horse.")
+
+    	ColourNote("white","", "--------------------------------------------------")
+	ColourNote("green", "", "Statistics")	
+	ColourNote("orange", "", "  Horse Stats" .. "\t\t\t" .. "Show stats for your current character.")
+	ColourNote("orange", "", "  Horse Stats [character]" .. "\t" .. "Shows stats for a specific character.")
+	ColourNote("orange", "", "  Horse Reset Stats" .. "\t\t" .. "Reset the stats for your current character.")
+
+    	ColourNote("white","", "--------------------------------------------------")
+	ColourNote("green", "", "Riding Commands")
+	ColourNote("orange", "", "  Horse Routes" .. "\t\t\t" .. "Show a list of destinations your horse can ride to from the current room.")
+	ColourNote("orange", "", "  Horse Routes Fav" .. "\t\t" .. "Show a list of favourite destinations your horse can ride to from the current room.")
+	
+    	ColourNote("white","", "--------------------------------------------------")
+	ColourNote("green", "", "Mapping Commands")
+	ColourNote("orange", "", "  ask horse to remember" .. "\t\t" .. "Import all horse locations/routes.")
+	ColourNote("orange", "", "  Horse Fav [location]" .. "\t\t" .. "Toggle a location as a favourite.")
+	ColourNote("orange", "", "  Horse Map Loc [name]" .. "\t\t" .. "Manually add a horse location to the plugin.")
+	ColourNote("orange", "", "  Horse Map Link [loc1] [loc2]" .. "\t" .. "Manually add a route to the plugin.")
+    	ColourNote("orange", "", "  Horse Map Summary" .. "\t\t" .. "Show mapping progress stats.")
+    	ColourNote("orange", "", "  Horse Map Pending" .. "\t\t" .. "List locations needing a Room ID.")
+    	ColourNote("orange", "", "  Horse Map Here" .. "\t\t" .. "Pin the current Room ID to your last ride.")
+    	ColourNote("orange", "", "  Horse Map Clear All" .. "\t\t" .. "Clear all routes & locations from the plugin.")
+    	ColourNote("white","", "--------------------------------------------------")
+end
+
+function DefaultHandlerValues()
+    if sCurrentCharacter == "noname" then return end
+    local cats = {"mount", "stash", "lead", "groom", "dress", "ride", "tip"}
+    for _, name in ipairs(cats) do 
+    	stabletable[sCurrentCharacter][name .. "success"] = 0 
+    	stabletable[sCurrentCharacter][name .. "fail"] = 0 
+    	stabletable[sCurrentCharacter][name .. "ratio"] = "-" 
+    end
+end
+
+function DefaultChargeValues()
+    if sCurrentCharacter == "noname" then return end
+    for _, gait in ipairs({"walk", "trot", "canter", "gallop"}) do 
+    	stabletable[sCurrentCharacter]["chargesuccess" .. gait] = 0 
+    	stabletable[sCurrentCharacter]["chargefail" .. gait] = 0 
+    	stabletable[sCurrentCharacter]["charge" .. gait .. "ratio"] = "-" 
+    end
+end
+
+function OnPluginSaveState () 
+	if stabletable then 
+		SetVariable("stabletable", "stabletable = " .. serialize.save_simple(stabletable)) 
+	end 
+end
+
+function MyMountStatsResetAll()
+    if sCurrentCharacter == "noname" then return end
+    if not checktable() then return end
+    stabletable[sCurrentCharacter] = {
+        falloff=0, doorframe=0, wanderoff=0,
+        total_success_rooms = 0, total_fail_rooms = 0,
+        total_falls = 0, total_rides = 0,
+        passengers = {}
+    }
+    DefaultHandlerValues()
+    DefaultChargeValues()
+    ColourNote("orange","", "Horse Tracker stats reset for " .. sCurrentCharacter)
+    OnPluginSaveState()
+end
+
+function StableMount (sName, sline, wildcards) 
+	if sCurrentCharacter == "noname" then return end
+	if not checktable() then return end
+	stabletable[sCurrentCharacter .. "_Stabled"] = sName:find("Stabled") and "stabled." or "not stabled." 
+end
+
+function MountStableStatus()
+	if sCurrentCharacter == "noname" then return end
+	if not checktable() then return end
+	Note((stabletable[sCurrentCharacter .. "_MountName"] or "Mount") .. " is " .. (stabletable[sCurrentCharacter .. "_Stabled"] or "unknown")) 
+end
+
+function OnPluginDisable()
+    OnPluginSaveState()
+end
+
+function OnPluginClose()
+    OnPluginSaveState()
+end
 
 ]]>
-</script> 
+</script>
 </muclient>
