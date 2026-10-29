@@ -3,11 +3,11 @@ Plugins for mushclient cobbled together by Proeliator.
 # Horse Tracker
 **V4.0**
 
-New feature include!
-Riding routes mapping
-List all passengers (only for fools)
-Keep track of how many rooms you move till you fall off
-other stuff i've forgotten about!
+New feature include!  
+Riding routes mapping.  
+List all passengers (only for fools).  
+Keep track of how many rooms you move till you fall off.  
+other stuff i've forgotten about!   
 
 Keep track of your success rates when using your horse  
 
@@ -24,10 +24,6 @@ Keep track of your success rates when using your horse
 Example of how it looks when 'Horse Stats' is entered:
 
 <img width="436" alt="Screenshot 2022-12-21 at 11 54 48" src="https://user-images.githubusercontent.com/119447171/208899464-71ee52d3-dca1-4f2a-84ae-d7bdcd2722d7.png">
-
-
-This plugin uses the character identifier written by Quow and will require the Quowbar plugins to work.  
-You can download the Quowbar (and other plugins) at https://quow.co.uk/
 
 
 # Warcry Manager  
